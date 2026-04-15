@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Truck cab -->
+  <path d="M28 34 L28 18 L8 18 L8 34" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Truck body top -->
+  <path d="M8 18 L8 34" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Cargo box -->
+  <rect x="8" y="18" width="20" height="16" rx="1.5" stroke="#2C3E6B" stroke-width="2.2"/>
+  <!-- Cab -->
+  <path d="M28 25 L28 34 L40 34 L40 27 L35 20 L28 20 Z" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- Cab window -->
+  <path d="M29.5 21.5 L35 21.5 L38.5 26.5 L29.5 26.5 Z" fill="rgba(200,232,244,0.5)" stroke="#2C3E6B" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Wheels -->
+  <circle cx="14" cy="34" r="4" stroke="#e8704a" stroke-width="2.2" fill="white"/>
+  <circle cx="14" cy="34" r="1.4" fill="#e8704a"/>
+  <circle cx="34" cy="34" r="4" stroke="#e8704a" stroke-width="2.2" fill="white"/>
+  <circle cx="34" cy="34" r="1.4" fill="#e8704a"/>
+  <!-- Speed lines -->
+  <path d="M4 22 L9 22" stroke="#e8704a" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M3 26 L7 26" stroke="#e8704a" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+</svg>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio Vroom Family | Meet Our Cars</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky: #C8E8F4;
+      --sky-dark: #9fd0e8;
+      --cream: #FDFAF5;
+      --navy: #2C3E6B;
+      --navy-light: #4a5f8a;
+      --orange: #F4A261;
+      --orange-dark: #e08c48;
+      --white: #ffffff;
+      --text: #333344;
+      --text-light: #666677;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; color: var(--text); background: var(--cream); }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,232,244,0.5);
+    }
+    .nav-logo img { height: 34px; object-fit: contain; }
+
+    /* ── MAESTRO FEATURED ── */
+    .featured-banner {
+      background: #0a0a0a;
+      padding: 0 48px 0;
+      display: flex; align-items: stretch;
+      min-height: 340px; overflow: hidden;
+      position: relative;
+    }
+    .featured-banner::before {
+      content: 'FEATURED';
+      position: absolute; top: 20px; left: 60px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.3em;
+      color: #C9A84C; border: 1px solid rgba(201,168,76,0.4);
+      padding: 4px 12px; border-radius: 10px;
+    }
+    .featured-img-wrap {
+      flex: 0 0 55%; position: relative; overflow: hidden;
+    }
+    .featured-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; filter: brightness(0.85);
+      transition: transform 0.4s;
+    }
+    .featured-banner:hover .featured-img-wrap img { transform: scale(1.03); }
+    .featured-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 60%, #0a0a0a 100%);
+    }
+    .featured-body {
+      flex: 1; padding: 48px 40px 48px 32px;
+      display: flex; flex-direction: column; justify-content: center;
+      color: white;
+    }
+    .featured-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
+      color: #C9A84C; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; padding: 5px 14px; border-radius: 12px;
+      margin-bottom: 14px; width: fit-content;
+    }
+    .featured-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px; font-weight: 600; line-height: 1;
+      letter-spacing: -0.01em; margin-bottom: 6px;
+    }
+    .featured-model { font-size: 14px; opacity: 0.55; margin-bottom: 20px; letter-spacing: 0.04em; }
+    .featured-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+    .featured-trait {
+      font-size: 12px; background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75); padding: 5px 12px; border-radius: 10px;
+      font-weight: 600;
+    }
+    .featured-fee { font-size: 12px; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    .featured-price {
+      font-size: 32px; font-weight: 700; margin-bottom: 20px;
+      background: linear-gradient(135deg, #e8c97a, #C9A84C);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-meet-gold {
+      display: inline-block; padding: 12px 28px; border-radius: 22px;
+      background: linear-gradient(135deg, #e8c97a, #C9A84C);
+      color: #0a0a0a; font-weight: 700; font-size: 14px;
+      text-decoration: none; transition: all 0.2s; width: fit-content;
+    }
+    .btn-meet-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(201,168,76,0.4); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; color: var(--navy); text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--orange); }
+    .nav-cta {
+      background: var(--orange); color: white !important;
+      padding: 8px 20px; border-radius: 24px;
+    }
+    .nav-cta:hover { background: var(--orange-dark) !important; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      padding: 72px 48px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('images/hero-bg.jpg') center/cover;
+      opacity: 0.15;
+    }
+    .page-hero-content { position: relative; z-index: 1; }
+    .page-hero-eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--sky); margin-bottom: 12px;
+    }
+    .page-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 600; margin-bottom: 16px;
+    }
+    .page-hero p {
+      font-size: 17px; opacity: 0.75; max-width: 480px;
+      margin: 0 auto; line-height: 1.6;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      background: white;
+      padding: 20px 48px;
+      border-bottom: 1px solid #eef0f5;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 13px; font-weight: 700; color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px;
+    }
+    .filter-btn {
+      padding: 7px 18px; border-radius: 20px; border: 1.5px solid #dde0ea;
+      background: white; font-family: 'Nunito', sans-serif;
+      font-size: 13px; font-weight: 600; color: var(--text-light);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--navy); background: var(--navy); color: white;
+    }
+    .filter-count {
+      margin-left: auto; font-size: 13px; color: var(--text-light);
+    }
+    .filter-count strong { color: var(--navy); }
+
+    /* ── MAIN GRID ── */
+    .family-section {
+      padding: 56px 48px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    /* ── CAR CARD ── */
+    .car-card {
+      background: white; border-radius: 24px; overflow: hidden;
+      box-shadow: 0 2px 20px rgba(44,62,107,0.07);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .car-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(44,62,107,0.15);
+    }
+
+    .car-img-wrap {
+      position: relative; overflow: hidden;
+    }
+    .car-img-wrap img {
+      width: 100%; height: 220px;
+      object-fit: cover; display: block;
+      transition: transform 0.4s;
+    }
+    .car-card:hover .car-img-wrap img { transform: scale(1.05); }
+
+    .car-badge {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(200,232,244,0.9);
+      backdrop-filter: blur(4px);
+      color: var(--navy);
+      font-size: 11px; font-weight: 700;
+      padding: 5px 12px; border-radius: 12px;
+      letter-spacing: 0.04em;
+    }
+    .car-badge.adopted {
+      background: rgba(244,162,97,0.9);
+      color: white;
+    }
+
+    .car-body { padding: 24px; }
+
+    .car-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 600;
+      color: var(--navy); margin-bottom: 2px;
+    }
+    .car-model {
+      font-size: 13px; color: var(--text-light); margin-bottom: 14px;
+    }
+
+    .car-traits {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+    }
+    .trait {
+      font-size: 12px; background: #f4f6fb; color: var(--text-light);
+      padding: 5px 12px; border-radius: 12px; font-weight: 600;
+    }
+
+    .car-specs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-bottom: 20px;
+    }
+    .spec-item {
+      background: #f9fafd; border-radius: 10px; padding: 10px 12px;
+    }
+    .spec-label { font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; }
+    .spec-value { font-size: 14px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+
+    .car-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #f0f2f7; padding-top: 18px;
+    }
+    .car-fee-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; }
+    .car-fee { font-size: 22px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+
+    .btn-meet {
+      display: inline-block; padding: 11px 22px; border-radius: 22px;
+      background: var(--orange); color: white;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px;
+      text-decoration: none; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-meet:hover {
+      background: var(--orange-dark);
+      transform: translateY(-1px);
+    }
+    .btn-meet.adopted-btn {
+      background: #dde0ea; color: var(--text-light); cursor: default;
+    }
+    .btn-meet.adopted-btn:hover { transform: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: white;
+      padding: 48px; text-align: center;
+    }
+    .footer-logo img {
+      height: 36px; filter: brightness(0) invert(1);
+      margin-bottom: 12px;
+    }
+    footer p { font-size: 14px; opacity: 0.5; }
+    footer a {
+      color: var(--sky); text-decoration: none; font-size: 14px;
+      margin: 0 12px;
+    }
+    footer a:hover { color: var(--orange); }
+    .footer-links { margin: 12px 0 20px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav, .filter-bar, .page-hero { padding-left: 24px; padding-right: 24px; }
+      .family-section { padding: 40px 24px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .cars-grid { grid-template-columns: 1fr; }
+      .car-specs { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="family.html" class="active">Studio Vroom Family</a></li>
+      <li><a href="index.html#work">Our Work</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAESTRO FEATURED -->
+  <div class="featured-banner">
+    <div class="featured-img-wrap">
+      <img src="cars/panamera/front.jpg" alt="Maestro" />
+    </div>
+    <div class="featured-body">
+      <div class="featured-tag">★ Featured</div>
+      <p class="featured-name">Maestro</p>
+      <p class="featured-model">2012 Porsche Panamera S · V8 4.8L · Basalt Black Metallic</p>
+      <div class="featured-traits">
+        <span class="featured-trait">🎭 Dark &amp; Commanding</span>
+        <span class="featured-trait">⚡ 400HP</span>
+        <span class="featured-trait">🏆 German Precision</span>
+        <span class="featured-trait">🎵 Bose Sound</span>
+      </div>
+      <div class="featured-fee">Adoption Fee</div>
+      <div class="featured-price">$34,900</div>
+      <a href="maestro.html" class="btn-meet-gold">Meet Maestro 🩵</a>
+    </div>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-hero-content">
+      <p class="page-hero-eyebrow">Studio Vroom Family</p>
+      <h1>Meet the Family</h1>
+      <p>Each one has a name, a personality, and a story. Find the one that speaks to you.</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Sedan</button>
+    <button class="filter-btn">SUV</button>
+    <button class="filter-btn">Under $20k</button>
+    <button class="filter-btn">Low Mileage</button>
+    <span class="filter-count"><strong>5</strong> looking for a forever family</span>
+  </div>
+
+  <div class="family-section">
+    <div class="cars-grid">
+
+      <!-- Sunny -->
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img src="images/car-sunny.jpg" alt="Sunny" / onerror="this.src='images/placeholder-car.svg'">
+          <span class="car-badge">🩵 Available</span>
+        </div>
+        <div class="car-body">
+          <p class="car-name">Sunny</p>
+          <p class="car-model">2019 Toyota Camry LE • Silver</p>
+          <div class="car-traits">
+            <span class="trait">😌 Calm &amp; Reliable</span>
+            <span class="trait">🌟 Low Mileage</span>
+            <span class="trait">⛽ Fuel Efficient</span>
+          </div>
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-label">Mileage</div>
+              <div class="spec-value">38,200 mi</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Year</div>
+              <div class="spec-value">2019</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Engine</div>
+              <div class="spec-value">2.5L 4-cyl</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Trans.</div>
+              <div class="spec-value">Automatic</div>
+            </div>
+          </div>
+          <div class="car-footer">
+            <div>
+              <div class="car-fee-label">Adoption Fee</div>
+              <div class="car-fee">$17,900</div>
+            </div>
+            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blu -->
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img src="images/car-gray.jpg" alt="Blu" / onerror="this.src='images/placeholder-car.svg'">
+          <span class="car-badge">🩵 Available</span>
+        </div>
+        <div class="car-body">
+          <p class="car-name">Blu</p>
+          <p class="car-model">2020 Honda Accord Sport • Blue</p>
+          <div class="car-traits">
+            <span class="trait">⚡ Energetic</span>
+            <span class="trait">🏙️ City-Ready</span>
+            <span class="trait">🎵 Great Sound System</span>
+          </div>
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-label">Mileage</div>
+              <div class="spec-value">29,400 mi</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Year</div>
+              <div class="spec-value">2020</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Engine</div>
+              <div class="spec-value">1.5L Turbo</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Trans.</div>
+              <div class="spec-value">CVT</div>
+            </div>
+          </div>
+          <div class="car-footer">
+            <div>
+              <div class="car-fee-label">Adoption Fee</div>
+              <div class="car-fee">$21,500</div>
+            </div>
+            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Luna -->
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img src="images/car-luna.jpg" alt="Luna" / onerror="this.src='images/placeholder-car.svg'">
+          <span class="car-badge">🩵 Available</span>
+        </div>
+        <div class="car-body">
+          <p class="car-name">Luna</p>
+          <p class="car-model">2018 Nissan Rogue SV • White</p>
+          <div class="car-traits">
+            <span class="trait">🌙 Smooth &amp; Quiet</span>
+            <span class="trait">👨‍👩‍👧 Family Friendly</span>
+            <span class="trait">🛡️ Safety Rated</span>
+          </div>
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-label">Mileage</div>
+              <div class="spec-value">54,800 mi</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Year</div>
+              <div class="spec-value">2018</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Engine</div>
+              <div class="spec-value">2.5L 4-cyl</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Trans.</div>
+              <div class="spec-value">CVT</div>
+            </div>
+          </div>
+          <div class="car-footer">
+            <div>
+              <div class="car-fee-label">Adoption Fee</div>
+              <div class="car-fee">$16,400</div>
+            </div>
+            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Max -->
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img src="images/car-rosie.jpg" alt="Max" / onerror="this.src='images/placeholder-car.svg'">
+          <span class="car-badge">🩵 Available</span>
+        </div>
+        <div class="car-body">
+          <p class="car-name">Max</p>
+          <p class="car-model">2021 Jeep Compass Latitude • Black</p>
+          <div class="car-traits">
+            <span class="trait">🏔️ Adventurous</span>
+            <span class="trait">💪 Strong &amp; Bold</span>
+            <span class="trait">🌧️ AWD Ready</span>
+          </div>
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-label">Mileage</div>
+              <div class="spec-value">22,100 mi</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Year</div>
+              <div class="spec-value">2021</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Engine</div>
+              <div class="spec-value">2.4L 4-cyl</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Trans.</div>
+              <div class="spec-value">9-Speed Auto</div>
+            </div>
+          </div>
+          <div class="car-footer">
+            <div>
+              <div class="car-fee-label">Adoption Fee</div>
+              <div class="car-fee">$24,800</div>
+            </div>
+            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rosie — Adopted -->
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img src="images/about.jpg" alt="Rosie" style="filter:grayscale(30%)" / onerror="this.src='images/placeholder-car.svg'">
+          <span class="car-badge adopted">🩵 Adopted</span>
+        </div>
+        <div class="car-body">
+          <p class="car-name">Rosie</p>
+          <p class="car-model">2017 Ford Escape SE • Red</p>
+          <div class="car-traits">
+            <span class="trait">🌸 Sweet &amp; Spirited</span>
+            <span class="trait">☀️ Happy Commuter</span>
+          </div>
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-label">Mileage</div>
+              <div class="spec-value">67,300 mi</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Year</div>
+              <div class="spec-value">2017</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Engine</div>
+              <div class="spec-value">1.5L Turbo</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Trans.</div>
+              <div class="spec-value">6-Speed Auto</div>
+            </div>
+          </div>
+          <div class="car-footer">
+            <div>
+              <div class="car-fee-label">Adopted 🩵</div>
+              <div class="car-fee" style="color:var(--text-light); font-size:16px;">Found her forever home!</div>
+            </div>
+            <span class="btn-meet adopted-btn">Adopted ✓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" />
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="family.html">Family</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <p>© 2024 Studio Vroom · The World's First Car Adoption Agency 🩵</p>
+  </footer>
+
+  <script>
+    // Simple filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

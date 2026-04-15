@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Screen / camera body -->
+  <rect x="6" y="15" width="26" height="18" rx="3.5" stroke="#2C3E6B" stroke-width="2.2"/>
+  <!-- Play triangle (live indicator) -->
+  <path d="M15 21 L15 27 L21 24 Z" fill="#e8704a"/>
+  <!-- Camera lens side panel -->
+  <path d="M32 20 L42 16 L42 32 L32 28 Z" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- Live dot -->
+  <circle cx="26" cy="17" r="2" fill="#e8704a"/>
+</svg>

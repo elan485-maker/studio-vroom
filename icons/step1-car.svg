@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Car body -->
+  <path d="M8 30 L8 34 Q8 36 10 36 L12 36 M36 36 L38 36 Q40 36 40 34 L40 30" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Car roof + windows -->
+  <path d="M14 30 L15 22 Q16 18 20 18 L28 18 Q32 18 33 22 L34 30 Z" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Car floor -->
+  <path d="M8 30 L40 30" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Window divider -->
+  <path d="M24 18 L23.5 28" stroke="#2C3E6B" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- Front window slant -->
+  <path d="M33 28 L15 28" stroke="#2C3E6B" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0"/>
+  <!-- Wheels -->
+  <circle cx="15" cy="36" r="4" stroke="#e8704a" stroke-width="2.2" fill="white"/>
+  <circle cx="33" cy="36" r="4" stroke="#e8704a" stroke-width="2.2" fill="white"/>
+  <circle cx="15" cy="36" r="1.4" fill="#e8704a"/>
+  <circle cx="33" cy="36" r="1.4" fill="#e8704a"/>
+  <!-- Headlight -->
+  <path d="M34 26 L38 27" stroke="#e8704a" stroke-width="2" stroke-linecap="round"/>
+  <!-- Taillight -->
+  <path d="M10 26 L14 26" stroke="#2C3E6B" stroke-width="2" stroke-linecap="round"/>
+</svg>

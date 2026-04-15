@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet Maestro | Studio Vroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:wght@700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-top: #1a1e2e;
+      --bg-mid: #232840;
+      --bg-bot: #2c3252;
+      --cream: #FDFAF5;
+      --navy: #2C3E6B;
+      --gold: #C9A84C;
+      --gold-light: #e8c97a;
+      --green: #4aaa82;
+      --text: #f0f0f8;
+      --text-muted: rgba(240,240,248,0.55);
+      --card-bg: rgba(255,255,255,0.06);
+      --card-border: rgba(255,255,255,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 40%, var(--bg-bot) 100%);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── TOP NAV ── */
+    .top-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px 10px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600; color: var(--gold);
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+    .back-link {
+      font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 4px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 20px 24px 0;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+    }
+
+    .ready-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold); font-size: 13px; font-weight: 700;
+      padding: 7px 18px; border-radius: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Car preview card */
+    .car-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      width: 100%; max-width: 360px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+      margin-bottom: 6px;
+    }
+
+    .car-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .car-card-title { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.85); }
+    .heart-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(201,168,76,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    .car-photo-area {
+      width: 100%; height: 200px;
+      border-radius: 14px; overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .car-photo-area img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Thumbnail strip */
+    .thumb-strip {
+      display: flex; gap: 6px; margin-bottom: 12px;
+    }
+    .thumb {
+      flex: 1; height: 52px; border-radius: 8px; overflow: hidden;
+      border: 1.5px solid transparent; cursor: pointer; transition: border-color 0.2s;
+    }
+    .thumb.active { border-color: var(--gold); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .german-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(201,168,76,0.1);
+      color: var(--gold); font-size: 12px; font-weight: 700;
+      padding: 5px 12px; border-radius: 12px;
+    }
+
+    /* ── MEET TITLE ── */
+    .meet-section {
+      padding: 28px 24px 0;
+      text-align: center;
+    }
+
+    .meet-heading {
+      font-size: 52px; line-height: 1.0;
+      margin-bottom: 10px; letter-spacing: -0.01em;
+    }
+    .meet-word {
+      font-family: 'Playfair Display', serif;
+      font-weight: 800; color: var(--text); font-style: normal;
+    }
+    .car-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500; font-style: italic; font-size: 58px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .car-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+
+    .family-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,168,76,0.1);
+      border: 1.5px solid rgba(201,168,76,0.3);
+      color: var(--gold); font-size: 13px; font-weight: 700;
+      padding: 8px 20px; border-radius: 24px; margin-bottom: 32px;
+    }
+
+    /* ── BIO SECTION ── */
+    .bio-section {
+      background: #0d0f1a;
+      border-radius: 28px 28px 0 0;
+      padding: 32px 24px 48px;
+      border-top: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .bio-quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px; line-height: 0.7;
+      color: rgba(201,168,76,0.2);
+      margin-bottom: 8px; display: block;
+    }
+
+    .bio-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 500;
+      font-size: 19px;
+      line-height: 1.75; color: rgba(255,255,255,0.82);
+      margin-bottom: 28px;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px; margin-bottom: 28px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.05); border-radius: 14px;
+      padding: 14px 10px; text-align: center;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-val { font-size: 20px; font-weight: 700; color: var(--gold-light); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* Features */
+    .features-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; color: var(--text);
+      margin-bottom: 14px; letter-spacing: 0.01em;
+    }
+    .features-list { list-style: none; margin-bottom: 28px; }
+    .features-list li {
+      font-size: 14px; padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,0.75);
+    }
+    .features-list li::before { content: '✦'; color: var(--gold); font-size: 10px; }
+
+    /* CTA */
+    .cta-box {
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 20px; padding: 28px 24px;
+      text-align: center; margin-bottom: 20px;
+    }
+    .cta-fee-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    .cta-fee {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px; font-weight: 700; margin-bottom: 18px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-adopt {
+      display: block; padding: 16px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #0d0f1a;
+      border-radius: 16px; font-family: 'Nunito', sans-serif;
+      font-size: 16px; font-weight: 700; text-align: center;
+      text-decoration: none; transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+    }
+    .btn-adopt:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(201,168,76,0.4); }
+    .appt-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+    /* Contact */
+    .contact-info { text-align: center; padding: 8px 0 16px; }
+    .contact-info a { color: var(--gold); font-size: 14px; font-weight: 600; text-decoration: none; }
+    .contact-hours { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+
+    /* More cars */
+    .more-section { margin-top: 32px; }
+    .more-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 600; color: var(--text);
+      margin-bottom: 16px;
+    }
+    .more-scroll {
+      display: flex; gap: 14px; overflow-x: auto; padding-bottom: 4px;
+    }
+    .more-scroll::-webkit-scrollbar { display: none; }
+    .mini-card {
+      flex: 0 0 160px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; overflow: hidden;
+      text-decoration: none; color: var(--text);
+      transition: transform 0.2s;
+    }
+    .mini-card:hover { transform: translateY(-3px); }
+    .mini-card img { width: 100%; height: 100px; object-fit: cover; display: block; }
+    .mini-card-body { padding: 10px 12px; }
+    .mini-name { font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; color: rgba(255,255,255,0.9); }
+    .mini-model { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .mini-fee { font-size: 13px; font-weight: 700; color: var(--gold); margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <a class="brand" href="index.html">🚗 Studio Vroom</a>
+    <a class="back-link" href="family.html">← Back to Our Family</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="ready-badge">🩵 Ready for Adoption</div>
+
+    <div class="car-card">
+      <div class="car-card-header">
+        <span class="car-card-title">Maestro — 2012 Porsche Panamera S</span>
+        <span class="heart-icon">🩵</span>
+      </div>
+
+      <div class="car-photo-area">
+        <img id="mainPhoto" src="cars/panamera/front.jpg" alt="Maestro" />
+      </div>
+
+      <div class="thumb-strip">
+        <div class="thumb active" onclick="switchPhoto(this,'cars/panamera/front.jpg')">
+          <img src="cars/panamera/front.jpg" alt="" />
+        </div>
+        <div class="thumb" onclick="switchPhoto(this,'cars/panamera/badge.jpg')">
+          <img src="cars/panamera/badge.jpg" alt="" />
+        </div>
+        <div class="thumb" onclick="switchPhoto(this,'cars/panamera/interior.jpg')">
+          <img src="cars/panamera/interior.jpg" alt="" />
+        </div>
+        <div class="thumb" onclick="switchPhoto(this,'cars/2012 Porsche Panamera S V8/DSC_5907 copy.JPG')">
+          <img src="cars/2012 Porsche Panamera S V8/DSC_5907 copy.JPG" alt="" />
+        </div>
+        <div class="thumb" onclick="switchPhoto(this,'cars/2012 Porsche Panamera S V8/DSC_5919 copy.JPG')">
+          <img src="cars/2012 Porsche Panamera S V8/DSC_5919 copy.JPG" alt="" />
+        </div>
+      </div>
+
+      <span class="german-tag">✦ German Precision</span>
+    </div>
+  </div>
+
+  <!-- MEET SECTION -->
+  <div class="meet-section">
+    <h1 class="meet-heading">
+      <span class="meet-word">Meet </span><span class="car-name">Maestro</span>
+    </h1>
+    <p class="car-subtitle">2012 Porsche Panamera S · V8 4.8L · Basalt Black · 68,400 miles</p>
+    <div class="family-pill">🌿 Looking for a Forever Family</div>
+  </div>
+
+  <!-- BIO + DETAILS -->
+  <div class="bio-section">
+    <span class="bio-quote-mark">"</span>
+    <p class="bio-text">
+      I don't make an entrance — I make a statement. Born in Stuttgart, built to a standard most cars only dream of, I carry 400 horses under my hood and wear the night like a second skin. I've been detailed, cared for, and maintained as if I were royalty — because, frankly, I am. I'm not for everyone. But if you're reading this, something tells me you already know that.
+    </p>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">V8</div>
+        <div class="stat-label">Engine</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">400</div>
+        <div class="stat-label">Horsepower</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">PDK</div>
+        <div class="stat-label">Trans.</div>
+      </div>
+    </div>
+
+    <p class="features-title">Personality Traits</p>
+    <ul class="features-list">
+      <li>Sport Chrono Package Plus</li>
+      <li>Porsche Active Suspension (PASM)</li>
+      <li>Bi-xenon headlights with PDLS</li>
+      <li>Bose surround sound (14 speakers)</li>
+      <li>Heated &amp; ventilated seats with memory</li>
+      <li>Panoramic sunroof</li>
+      <li>Sport exhaust system</li>
+      <li>No accidents — clean Carfax</li>
+    </ul>
+
+    <div class="cta-box">
+      <p class="cta-fee-label">Adoption Fee</p>
+      <p class="cta-fee">$34,900</p>
+      <a href="index.html#contact" class="btn-adopt">Start Adoption Process 🩵</a>
+      <p class="appt-note">By appointment only · info@studio-vroom.com</p>
+    </div>
+
+    <div class="contact-info">
+      <a href="mailto:info@studio-vroom.com">info@studio-vroom.com</a>
+      <p class="contact-hours">Mon – Fri 10am–7pm &nbsp;·&nbsp; Sat 10am–3pm<br/>Bensenville, Illinois</p>
+    </div>
+
+    <div class="more-section">
+      <p class="more-title">Meet the rest of the family</p>
+      <div class="more-scroll">
+        <a href="gray.html" class="mini-card">
+          <img src="images/car-gray.jpg" alt="Gray" / onerror="this.src='images/placeholder-car.svg'">
+          <div class="mini-card-body">
+            <p class="mini-name">Gray</p>
+            <p class="mini-model">2022 Honda Accord EX</p>
+            <p class="mini-fee">$21,900</p>
+          </div>
+        </a>
+        <a href="car-detail.html" class="mini-card">
+          <img src="images/car-sunny.jpg" alt="Sunny" / onerror="this.src='images/placeholder-car.svg'">
+          <div class="mini-card-body">
+            <p class="mini-name">Sunny</p>
+            <p class="mini-model">2019 Toyota Camry LE</p>
+            <p class="mini-fee">$17,900</p>
+          </div>
+        </a>
+        <a href="car-detail.html" class="mini-card">
+          <img src="images/car-luna.jpg" alt="Luna" / onerror="this.src='images/placeholder-car.svg'">
+          <div class="mini-card-body">
+            <p class="mini-name">Luna</p>
+            <p class="mini-model">2018 Nissan Rogue SV</p>
+            <p class="mini-fee">$16,400</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchPhoto(thumb, src) {
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      document.getElementById('mainPhoto').src = src;
+    }
+  </script>
+</body>
+</html>

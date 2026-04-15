@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Envelope body -->
+  <rect x="7" y="13" width="34" height="24" rx="3" stroke="#2C3E6B" stroke-width="2.2"/>
+  <!-- Envelope flap / V -->
+  <path d="M7 15 L24 28 L41 15" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom fold lines -->
+  <path d="M7 36 L18 26" stroke="#2C3E6B" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <path d="M41 36 L30 26" stroke="#2C3E6B" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <!-- Orange dot notification -->
+  <circle cx="37" cy="13" r="5" fill="#e8704a"/>
+  <path d="M35 13 L37 15 L40 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

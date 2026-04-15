@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detailing | Studio Vroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #2C3E6B;
+      --orange: #e8704a;
+      --sky: #C8E8F4;
+      --cream: #FDFAF5;
+      --gold: #c9a96e;
+      --gold-light: #e8d4a8;
+      --dark: #080810;
+      --dark-mid: #111118;
+      --dark-card: #16161f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--dark);
+      color: rgba(255,255,255,0.88);
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       NAV — dark version
+    ══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(8,8,16,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo img { height: 36px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.92; }
+
+    .nav-links { display: flex; gap: 0; list-style: none; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold-light); background: rgba(201,169,110,0.08); }
+    .nav-links a.active { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--orange) !important;
+      color: white !important;
+      border-radius: 24px !important;
+      padding: 9px 22px !important;
+      margin-left: 8px;
+    }
+    .nav-cta:hover { background: #d4603a !important; }
+
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: rgba(255,255,255,0.8); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+      background: rgba(8,8,16,0.97);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 24px 28px;
+      flex-direction: column; gap: 4px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.75); padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .mobile-menu a:hover { color: var(--gold-light); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .detail-hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .detail-hero-bg {
+      position: absolute;
+      inset: 0;
+      /* PHOTO: detailing/hero-main.jpg — replace src with your hero photo */
+      background-image: url('detailing/hero-main.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Fallback gradient when photo not yet added */
+    .detail-hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #080810 0%, #1a1a2e 40%, #0d0d16 100%);
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+
+    /* Hide gradient when photo loads */
+    .detail-hero-bg:not([style*="detailing"]) { background-image: none; }
+
+    .detail-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(8,8,16,0.15) 0%,
+        rgba(8,8,16,0.1) 40%,
+        rgba(8,8,16,0.85) 100%
+      );
+      z-index: 1;
+    }
+
+    .detail-hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 64px 80px;
+      max-width: 780px;
+    }
+
+    .detail-eyebrow {
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .detail-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .detail-hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(72px, 10vw, 130px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 0.9;
+      color: white;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+
+    .detail-hero-sub {
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 440px;
+    }
+
+    .detail-scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      right: 64px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .detail-scroll-hint::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent);
+    }
+
+    /* ══════════════════════════════════════
+       SPLIT PHOTO ROW (hero 2-up)
+    ══════════════════════════════════════ */
+    .split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .split-photo {
+      position: relative;
+      height: 520px;
+      overflow: hidden;
+    }
+
+    .split-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .split-photo:hover img { transform: scale(1.04); }
+
+    .split-photo-label {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Placeholder gradient when no photo */
+    .split-photo.placeholder-left {
+      background: linear-gradient(135deg, #1a0a0a, #2d1010);
+    }
+    .split-photo.placeholder-right {
+      background: linear-gradient(135deg, #0a0a18, #101028);
+    }
+
+    /* ══════════════════════════════════════
+       FEATURED PROJECT
+    ══════════════════════════════════════ */
+    .featured-project {
+      position: relative;
+      height: 640px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .featured-project-bg {
+      position: absolute;
+      inset: 0;
+      /* PHOTO: detailing/bmw-x6-ceramic.jpg */
+      background-image: url('detailing/bmw-x6-ceramic.jpg');
+      background-size: cover;
+      background-position: center 40%;
+      transition: transform 0.7s ease;
+    }
+
+    .featured-project:hover .featured-project-bg { transform: scale(1.02); }
+
+    .featured-project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(8,8,16,0.92) 100%);
+    }
+
+    /* Fallback gradient */
+    .featured-placeholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0d1020 0%, #151525 50%, #0a0a14 100%);
+    }
+
+    .featured-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 64px 56px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .featured-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .featured-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 600;
+      font-style: italic;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border: 1px solid rgba(201,169,110,0.4);
+      border-radius: 32px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ══════════════════════════════════════
+       SERVICES GRID
+    ══════════════════════════════════════ */
+    .services {
+      background: var(--dark-mid);
+      padding: 100px 64px 112px;
+    }
+
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 72px;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .services-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .services-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 54px);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .services-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      max-width: 320px;
+      line-height: 1.65;
+      text-align: right;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .service-card {
+      background: var(--dark-card);
+      padding: 44px 36px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .service-card:hover { background: #1c1c28; }
+    .service-card:hover::before { opacity: 1; }
+
+    .service-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 20px;
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 20px;
+      opacity: 0.85;
+    }
+
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .service-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════
+       GALLERY STRIP
+    ══════════════════════════════════════ */
+    .gallery-strip {
+      display: grid;
+      /* PHOTOS: detailing/gallery-1.jpg through gallery-4.jpg */
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      height: 400px;
+      gap: 2px;
+    }
+
+    .gallery-cell {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-cell:hover img { transform: scale(1.06); }
+
+    /* Placeholder gradients */
+    .gallery-cell:nth-child(1) { background: linear-gradient(160deg, #1a1020, #0d0a18); }
+    .gallery-cell:nth-child(2) { background: linear-gradient(160deg, #1a1008, #0d0a06); }
+    .gallery-cell:nth-child(3) { background: linear-gradient(160deg, #0a1018, #060d18); }
+    .gallery-cell:nth-child(4) { background: linear-gradient(160deg, #181010, #100808); }
+
+    /* ══════════════════════════════════════
+       CTA
+    ══════════════════════════════════════ */
+    .detail-cta {
+      background: var(--dark);
+      padding: 120px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .detail-cta::before {
+      content: 'STUDIO VROOM';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(80px, 14vw, 180px);
+      font-weight: 700;
+      font-style: italic;
+      color: rgba(255,255,255,0.025);
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .cta-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 48px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 44px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      color: var(--gold-light);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+    .btn-gold:hover {
+      background: var(--gold);
+      color: var(--dark);
+    }
+
+    .btn-outline-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 44px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-left: 16px;
+      transition: border-color 0.3s, color 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+    .btn-outline-white:hover { border-color: rgba(255,255,255,0.5); color: white; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 32px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer p { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 0.04em; }
+    footer a { color: rgba(255,255,255,0.25); text-decoration: none; font-size: 12px; }
+    footer a:hover { color: var(--gold); }
+
+    /* ══════════════════════════════════════
+       MOBILE
+    ══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .detail-hero-content { padding: 0 24px 60px; }
+      .detail-scroll-hint { display: none; }
+
+      .split-row { grid-template-columns: 1fr; }
+      .split-photo { height: 320px; }
+
+      .featured-content { padding: 0 24px 40px; flex-direction: column; align-items: flex-start; gap: 16px; }
+
+      .services { padding: 72px 24px 80px; }
+      .services-header { flex-direction: column; align-items: flex-start; }
+      .services-sub { text-align: left; max-width: 100%; }
+      .services-grid { grid-template-columns: 1fr; }
+      .service-card { padding: 32px 24px; }
+
+      .gallery-strip { grid-template-columns: 1fr 1fr; height: 320px; }
+
+      .detail-cta { padding: 80px 24px; }
+
+      footer { padding: 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═══ -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Main</a></li>
+      <li><a href="family.html">Looking for Family</a></li>
+      <li><a href="index.html#work">Our Work</a></li>
+      <li><a href="detailing.html" class="active">Detailing</a></li>
+      <li><a href="adopted.html">Adopted</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <nav class="mobile-menu" id="mobileMenu">
+    <a href="index.html" onclick="closeMobileMenu()">Main</a>
+    <a href="family.html" onclick="closeMobileMenu()">Looking for Family</a>
+    <a href="index.html#work" onclick="closeMobileMenu()">Our Work</a>
+    <a href="detailing.html" onclick="closeMobileMenu()" style="color:var(--gold)">Detailing</a>
+    <a href="adopted.html" onclick="closeMobileMenu()">Adopted</a>
+    <a href="index.html#contact" onclick="closeMobileMenu()">Contact</a>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="detail-hero">
+    <div class="detail-hero-bg"
+      style="background-image: url('detailing/hero-main.jpg');">
+    </div>
+    <div class="detail-hero-overlay"></div>
+
+    <div class="detail-hero-content">
+      <p class="detail-eyebrow">Studio Vroom</p>
+      <h1 class="detail-hero-title">Detailing</h1>
+      <p class="detail-hero-sub">We treat every car like a work of art. From ceramic coatings to full paint corrections — every detail, perfected.</p>
+    </div>
+
+    <div class="detail-scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ═══ 2-UP PHOTO ROW ═══ -->
+  <!-- PHOTOS: Add detailing/split-left.jpg & detailing/split-right.jpg to your folder -->
+  <div class="split-row">
+    <div class="split-photo placeholder-left">
+      <img src="detailing/split-left.jpg" alt="Detail close-up"
+        onerror="this.style.display='none'" />
+      <span class="split-photo-label">Close Detail</span>
+    </div>
+    <div class="split-photo placeholder-right">
+      <img src="detailing/split-right.jpg" alt="Luxury finish"
+        onerror="this.style.display='none'" />
+      <span class="split-photo-label">Luxury Finish</span>
+    </div>
+  </div>
+
+  <!-- ═══ FEATURED PROJECT ═══ -->
+  <!-- PHOTO: Add detailing/bmw-x6-ceramic.jpg to your folder -->
+  <div class="featured-project">
+    <div class="featured-placeholder"></div>
+    <div class="featured-project-bg"
+      style="background-image: url('detailing/bmw-x6-ceramic.jpg');">
+    </div>
+    <div class="featured-project-overlay"></div>
+    <div class="featured-content">
+      <div>
+        <p class="featured-tag">Featured Work</p>
+        <h2 class="featured-title">Ceramic Coat<br>2024 BMW X6</h2>
+      </div>
+      <div class="featured-badge">
+        ✦ Ceramic Coating
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SERVICES ═══ -->
+  <section class="services">
+    <div class="services-header">
+      <div>
+        <p class="services-eyebrow">What We Offer</p>
+        <h2 class="services-title">Every service,<br>done right.</h2>
+      </div>
+      <p class="services-sub">We don't rush. We take the time to make each car look and feel its absolute best.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <p class="service-number">01</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="14" stroke="#c9a96e" stroke-width="2"/>
+          <circle cx="24" cy="24" r="7" stroke="#c9a96e" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <path d="M24 6 L24 10M24 38 L24 42M6 24 L10 24M38 24 L42 24" stroke="#c9a96e" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h3 class="service-name">Ceramic Coating</h3>
+        <p class="service-desc">Long-lasting nano-ceramic protection. Repels water, UV rays, and contaminants while giving your paint a mirror-like depth.</p>
+      </div>
+
+      <div class="service-card">
+        <p class="service-number">02</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 36 Q16 20 24 24 Q32 28 40 12" stroke="#c9a96e" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="40" cy="12" r="3" fill="#c9a96e"/>
+          <path d="M10 40 L14 32 L18 36 Z" fill="#c9a96e" opacity="0.5"/>
+        </svg>
+        <h3 class="service-name">Paint Correction</h3>
+        <p class="service-desc">We eliminate swirl marks, oxidation, and light scratches with precision machine polishing — restoring that showroom shine.</p>
+      </div>
+
+      <div class="service-card">
+        <p class="service-number">03</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="16" width="28" height="20" rx="3" stroke="#c9a96e" stroke-width="2"/>
+          <path d="M16 16 L16 12 Q16 10 18 10 L30 10 Q32 10 32 12 L32 16" stroke="#c9a96e" stroke-width="2"/>
+          <path d="M18 26 L22 30 L30 22" stroke="#c9a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="service-name">Interior Detail</h3>
+        <p class="service-desc">Deep steam cleaning, leather conditioning, and odor elimination. Every surface treated with care — from dash to carpet.</p>
+      </div>
+
+      <div class="service-card">
+        <p class="service-number">04</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 8 C16 8 10 14 10 22 C10 30 16 38 24 42 C32 38 38 30 38 22 C38 14 32 8 24 8Z" stroke="#c9a96e" stroke-width="2"/>
+          <path d="M18 22 L22 26 L30 18" stroke="#c9a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="service-name">Paint Protection Film</h3>
+        <p class="service-desc">Invisible armor for your front bumper, hood, and mirrors. Self-healing TPU film that guards against rock chips and road debris.</p>
+      </div>
+
+      <div class="service-card">
+        <p class="service-number">05</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="20" r="8" stroke="#c9a96e" stroke-width="2"/>
+          <path d="M10 40 Q10 30 24 30 Q38 30 38 40" stroke="#c9a96e" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 18 L23 21 L28 16" stroke="#c9a96e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="service-name">Hand Wash & Wax</h3>
+        <p class="service-desc">A thorough hand wash, clay bar treatment, and premium carnauba wax applied by hand. Perfect before ceramic or as a standalone refresh.</p>
+      </div>
+
+      <div class="service-card">
+        <p class="service-number">06</p>
+        <svg class="service-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 36 L12 20 L24 10 L36 20 L36 36 Z" stroke="#c9a96e" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M19 36 L19 27 Q19 24 24 24 Q29 24 29 27 L29 36" stroke="#c9a96e" stroke-width="1.8" stroke-linejoin="round"/>
+          <rect x="18" y="14" width="6" height="5" rx="1" stroke="#c9a96e" stroke-width="1.5"/>
+        </svg>
+        <h3 class="service-name">Full Detail Package</h3>
+        <p class="service-desc">Our most comprehensive service — exterior, interior, engine bay. We take care of everything so you drive home feeling brand new.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ GALLERY STRIP ═══ -->
+  <!-- PHOTOS: Add detailing/gallery-1.jpg through gallery-4.jpg -->
+  <div class="gallery-strip">
+    <div class="gallery-cell">
+      <img src="detailing/gallery-1.jpg" alt="Detail work" onerror="this.style.display='none'">
+    </div>
+    <div class="gallery-cell">
+      <img src="detailing/gallery-2.jpg" alt="Detail work" onerror="this.style.display='none'">
+    </div>
+    <div class="gallery-cell">
+      <img src="detailing/gallery-3.jpg" alt="Detail work" onerror="this.style.display='none'">
+    </div>
+    <div class="gallery-cell">
+      <img src="detailing/gallery-4.jpg" alt="Detail work" onerror="this.style.display='none'">
+    </div>
+  </div>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="detail-cta">
+    <p class="cta-eyebrow">Ready to get started?</p>
+    <h2 class="cta-title">Your car deserves<br>the best care.</h2>
+    <p class="cta-sub">Reach out and let us know what your car needs. We'll take care of the rest.</p>
+    <a href="index.html#contact" class="btn-gold">Book a Detail ✦</a>
+    <a href="index.html" class="btn-outline-white">Back to Home</a>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <p>© 2024 Studio Vroom · Bensenville, IL</p>
+    <div style="display:flex; gap:24px;">
+      <a href="index.html">Home</a>
+      <a href="family.html">Family</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+    window.addEventListener('scroll', closeMobileMenu);
+  </script>
+
+</body>
+</html>

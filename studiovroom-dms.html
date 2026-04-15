@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Vroom DMS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { margin: 0; background: #0f172a; color: #e2e8f0; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+.fade-in { animation: fadeIn 0.3s ease-in; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; display: flex; align-items: center; justify-content: center; }
+.stat-card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+.sidebar-active { background: linear-gradient(90deg, rgba(99,102,241,0.2) 0%, transparent 100%); border-left: 3px solid #6366f1; }
+input[type="file"] { display: none; }
+.photo-grid img { object-fit: cover; }
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; color: black; }
+}
+</style>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' }
+      }
+    }
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useMemo, useRef, createContext, useContext } = React;
+
+// ==================== DATABASE (IndexedDB) ====================
+const DB_NAME = 'StudioVroomDMS';
+const DB_VERSION = 2;
+const STORES = ['vehicles', 'customers', 'deals', 'expenses', 'settings', 'prospects'];
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onerror = () => reject(req.error);
+    req.onsuccess = () => resolve(req.result);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      STORES.forEach(name => {
+        if (!db.objectStoreNames.contains(name)) {
+          db.createObjectStore(name, { keyPath: 'id' });
+        }
+      });
+    };
+  });
+}
+
+async function dbGetAll(store) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbPut(store, item) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).put(item);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function dbDelete(store, id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+// ==================== CONTEXT ====================
+const AppContext = createContext();
+
+function AppProvider({ children }) {
+  const [vehicles, setVehicles] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [deals, setDeals] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [prospects, setProspects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadAll = useCallback(async () => {
+    try {
+      const [v, c, d, e, p] = await Promise.all([
+        dbGetAll('vehicles'), dbGetAll('customers'), dbGetAll('deals'), dbGetAll('expenses'), dbGetAll('prospects')
+      ]);
+      setVehicles(v); setCustomers(c); setDeals(d); setExpenses(e); setProspects(p);
+    } catch(err) { console.error('DB load error:', err); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { loadAll(); }, [loadAll]);
+
+  const saveVehicle = async (v) => { const item = { ...v, id: v.id || genId(), updatedAt: new Date().toISOString() }; if (!v.id) item.createdAt = new Date().toISOString(); await dbPut('vehicles', item); await loadAll(); return item; };
+  const deleteVehicle = async (id) => { await dbDelete('vehicles', id); setVehicles(prev => prev.filter(v => v.id !== id)); };
+  const saveCustomer = async (c) => { const item = { ...c, id: c.id || genId(), updatedAt: new Date().toISOString() }; if (!c.id) item.createdAt = new Date().toISOString(); await dbPut('customers', item); await loadAll(); return item; };
+  const deleteCustomer = async (id) => { await dbDelete('customers', id); setCustomers(prev => prev.filter(c => c.id !== id)); };
+  const saveDeal = async (d) => { const item = { ...d, id: d.id || genId(), updatedAt: new Date().toISOString() }; if (!d.id) item.createdAt = new Date().toISOString(); await dbPut('deals', item); await loadAll(); return item; };
+  const deleteDeal = async (id) => { await dbDelete('deals', id); setDeals(prev => prev.filter(d => d.id !== id)); };
+  const saveExpense = async (e) => { const item = { ...e, id: e.id || genId() }; await dbPut('expenses', item); await loadAll(); return item; };
+  const deleteExpense = async (id) => { await dbDelete('expenses', id); setExpenses(prev => prev.filter(e => e.id !== id)); };
+  const saveProspect = async (p) => { const item = { ...p, id: p.id || genId(), updatedAt: new Date().toISOString() }; if (!p.id) item.createdAt = new Date().toISOString(); await dbPut('prospects', item); await loadAll(); return item; };
+  const deleteProspect = async (id) => { await dbDelete('prospects', id); setProspects(prev => prev.filter(p => p.id !== id)); };
+
+  const exportData = () => {
+    const data = { vehicles, customers, deals, expenses, prospects, exportDate: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `studiovroom-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = async (file) => {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (data.vehicles) for (const v of data.vehicles) await dbPut('vehicles', v);
+    if (data.customers) for (const c of data.customers) await dbPut('customers', c);
+    if (data.deals) for (const d of data.deals) await dbPut('deals', d);
+    if (data.expenses) for (const e of data.expenses) await dbPut('expenses', e);
+    if (data.prospects) for (const p of data.prospects) await dbPut('prospects', p);
+    await loadAll();
+  };
+
+  return (
+    <AppContext.Provider value={{ vehicles, customers, deals, expenses, prospects, loading, saveVehicle, deleteVehicle, saveCustomer, deleteCustomer, saveDeal, deleteDeal, saveExpense, deleteExpense, saveProspect, deleteProspect, exportData, importData, loadAll }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+function useApp() { return useContext(AppContext); }
+
+// ==================== ICONS (SVG) ====================
+const Icons = {
+  dashboard: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  car: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>,
+  users: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  deal: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  finance: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  settings: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>,
+  plus: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  edit: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  trash: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+  search: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  close: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  menu: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+  camera: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  download: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  upload: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+  eye: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  phone: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+  mail: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+  crown: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M3 20h18"/></svg>,
+  list: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>,
+  link: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>,
+  share: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+  star: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+};
+
+// ==================== UTILITY ====================
+const fmt = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n || 0);
+const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '-';
+const statusColors = { available: 'bg-emerald-500/20 text-emerald-400', pending: 'bg-amber-500/20 text-amber-400', sold: 'bg-blue-500/20 text-blue-400', in_service: 'bg-red-500/20 text-red-400' };
+const statusLabels = { available: 'Available', pending: 'Pending', sold: 'Sold', in_service: 'In Service' };
+const dealStageColors = { inquiry: 'bg-slate-500/20 text-slate-400', negotiation: 'bg-amber-500/20 text-amber-400', pending_finance: 'bg-purple-500/20 text-purple-400', closed: 'bg-emerald-500/20 text-emerald-400', lost: 'bg-red-500/20 text-red-400' };
+const dealStageLabels = { inquiry: 'Inquiry', negotiation: 'Negotiation', pending_finance: 'Pending Finance', closed: 'Closed', lost: 'Lost' };
+
+// ==================== SHARED COMPONENTS ====================
+function Modal({ open, onClose, title, children, wide }) {
+  if (!open) return null;
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className={`bg-slate-800 rounded-2xl shadow-2xl ${wide ? 'w-full max-w-4xl' : 'w-full max-w-lg'} max-h-[90vh] overflow-y-auto m-4 fade-in`} onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-5 border-b border-slate-700">
+          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition">{Icons.close}</button>
+        </div>
+        <div className="p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function Input({ label, ...props }) {
+  return (
+    <div className="mb-3">
+      {label && <label className="block text-sm text-slate-400 mb-1">{label}</label>}
+      <input {...props} className="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-400 transition" />
+    </div>
+  );
+}
+
+function Select({ label, options, ...props }) {
+  return (
+    <div className="mb-3">
+      {label && <label className="block text-sm text-slate-400 mb-1">{label}</label>}
+      <select {...props} className="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-400 transition">
+        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
+function Textarea({ label, ...props }) {
+  return (
+    <div className="mb-3">
+      {label && <label className="block text-sm text-slate-400 mb-1">{label}</label>}
+      <textarea {...props} className="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-brand-400 transition resize-none" rows={3} />
+    </div>
+  );
+}
+
+function Btn({ children, variant = 'primary', className = '', ...props }) {
+  const base = 'px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 disabled:opacity-50';
+  const variants = {
+    primary: 'bg-brand-500 hover:bg-brand-600 text-white',
+    secondary: 'bg-slate-700 hover:bg-slate-600 text-slate-200',
+    danger: 'bg-red-500/20 hover:bg-red-500/30 text-red-400',
+    ghost: 'hover:bg-slate-700 text-slate-400 hover:text-white',
+  };
+  return <button className={`${base} ${variants[variant]} ${className}`} {...props}>{children}</button>;
+}
+
+function Badge({ status, labels = statusLabels, colors = statusColors }) {
+  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] || 'bg-slate-600 text-slate-300'}`}>{labels[status] || status}</span>;
+}
+
+function EmptyState({ icon, title, desc, action }) {
+  return (
+    <div className="text-center py-16">
+      <div className="text-slate-600 flex justify-center mb-4">{icon}</div>
+      <h3 className="text-lg font-medium text-slate-400 mb-2">{title}</h3>
+      <p className="text-sm text-slate-500 mb-6">{desc}</p>
+      {action}
+    </div>
+  );
+}
+
+function ConfirmDialog({ open, onClose, onConfirm, title, message }) {
+  return (
+    <Modal open={open} onClose={onClose} title={title || "Confirm"}>
+      <p className="text-slate-300 mb-6">{message}</p>
+      <div className="flex justify-end gap-3">
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn variant="danger" onClick={() => { onConfirm(); onClose(); }}>Delete</Btn>
+      </div>
+    </Modal>
+  );
+}
+
+// ==================== DASHBOARD ====================
+function Dashboard({ onNavigate }) {
+  const { vehicles, customers, deals, expenses } = useApp();
+
+  const stats = useMemo(() => {
+    const available = vehicles.filter(v => v.status === 'available').length;
+    const pending = vehicles.filter(v => v.status === 'pending').length;
+    const sold = vehicles.filter(v => v.status === 'sold').length;
+    const inService = vehicles.filter(v => v.status === 'in_service').length;
+    const totalInventoryValue = vehicles.filter(v => v.status === 'available').reduce((s, v) => s + (parseFloat(v.listingPrice) || 0), 0);
+    const totalRevenue = vehicles.filter(v => v.status === 'sold').reduce((s, v) => s + (parseFloat(v.salePrice) || 0), 0);
+    const totalCost = vehicles.filter(v => v.status === 'sold').reduce((s, v) => s + (parseFloat(v.purchasePrice) || 0), 0);
+    const totalExpenses = expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+    const grossProfit = totalRevenue - totalCost;
+    const netProfit = grossProfit - totalExpenses;
+    const activeDeals = deals.filter(d => !['closed','lost'].includes(d.stage)).length;
+    const closedDeals = deals.filter(d => d.stage === 'closed').length;
+
+    return { available, pending, sold, inService, totalInventoryValue, totalRevenue, grossProfit, netProfit, activeDeals, closedDeals, totalCustomers: customers.length, totalVehicles: vehicles.length };
+  }, [vehicles, customers, deals, expenses]);
+
+  const monthlyData = useMemo(() => {
+    const months = {};
+    vehicles.filter(v => v.status === 'sold' && v.saleDate).forEach(v => {
+      const m = v.saleDate.slice(0, 7);
+      if (!months[m]) months[m] = { month: m, revenue: 0, cost: 0, count: 0 };
+      months[m].revenue += parseFloat(v.salePrice) || 0;
+      months[m].cost += parseFloat(v.purchasePrice) || 0;
+      months[m].count++;
+    });
+    return Object.values(months).sort((a, b) => a.month.localeCompare(b.month)).slice(-6).map(m => ({
+      ...m, profit: m.revenue - m.cost, name: new Date(m.month + '-01').toLocaleDateString('en-US', { month: 'short' })
+    }));
+  }, [vehicles]);
+
+  const recentVehicles = useMemo(() =>
+    [...vehicles].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 5)
+  , [vehicles]);
+
+  const recentDeals = useMemo(() =>
+    [...deals].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 5)
+  , [deals]);
+
+  return (
+    <div className="fade-in">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <p className="text-slate-400 text-sm mt-1">Studio Vroom Dealer Management</p>
+        </div>
+        <p className="text-sm text-slate-500">{new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Total Inventory', value: stats.totalVehicles, sub: `${stats.available} available`, color: 'from-brand-500/20 to-brand-600/10', textColor: 'text-brand-400' },
+          { label: 'Inventory Value', value: fmt(stats.totalInventoryValue), sub: `${stats.available} vehicles`, color: 'from-emerald-500/20 to-emerald-600/10', textColor: 'text-emerald-400' },
+          { label: 'Total Revenue', value: fmt(stats.totalRevenue), sub: `${stats.sold} sold`, color: 'from-blue-500/20 to-blue-600/10', textColor: 'text-blue-400' },
+          { label: 'Net Profit', value: fmt(stats.netProfit), sub: `Gross: ${fmt(stats.grossProfit)}`, color: 'from-amber-500/20 to-amber-600/10', textColor: 'text-amber-400' },
+        ].map((s, i) => (
+          <div key={i} className={`rounded-xl p-4 bg-gradient-to-br ${s.color} border border-slate-700/50`}>
+            <p className="text-xs text-slate-400 mb-1">{s.label}</p>
+            <p className={`text-xl font-bold ${s.textColor}`}>{s.value}</p>
+            <p className="text-xs text-slate-500 mt-1">{s.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Secondary Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Customers', value: stats.totalCustomers, icon: Icons.users },
+          { label: 'Active Deals', value: stats.activeDeals, icon: Icons.deal },
+          { label: 'Closed Deals', value: stats.closedDeals, icon: Icons.deal },
+          { label: 'In Service', value: stats.inService, icon: Icons.car },
+        ].map((s, i) => (
+          <div key={i} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 flex items-center gap-3">
+            <div className="text-slate-500">{s.icon}</div>
+            <div>
+              <p className="text-lg font-semibold text-white">{s.value}</p>
+              <p className="text-xs text-slate-400">{s.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Monthly Chart */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Monthly Performance</h3>
+          {monthlyData.length > 0 ? (
+            <Recharts.ResponsiveContainer width="100%" height={220}>
+              <Recharts.BarChart data={monthlyData}>
+                <Recharts.CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <Recharts.XAxis dataKey="name" stroke="#64748b" fontSize={12} />
+                <Recharts.YAxis stroke="#64748b" fontSize={12} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+                <Recharts.Tooltip contentStyle={{ background:'#1e293b', border:'1px solid #334155', borderRadius:'8px', color:'#e2e8f0' }} formatter={(v) => fmt(v)} />
+                <Recharts.Bar dataKey="revenue" fill="#6366f1" radius={[4,4,0,0]} name="Revenue" />
+                <Recharts.Bar dataKey="profit" fill="#10b981" radius={[4,4,0,0]} name="Profit" />
+              </Recharts.BarChart>
+            </Recharts.ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[220px] text-slate-500 text-sm">No sales data yet</div>
+          )}
+        </div>
+
+        {/* Recent Vehicles */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-slate-300">Recent Inventory</h3>
+            <button onClick={() => onNavigate('inventory')} className="text-xs text-brand-400 hover:text-brand-300">View All</button>
+          </div>
+          {recentVehicles.length > 0 ? (
+            <div className="space-y-3">
+              {recentVehicles.map(v => (
+                <div key={v.id} className="flex items-center justify-between py-2 border-b border-slate-700/50 last:border-0">
+                  <div>
+                    <p className="text-sm font-medium text-white">{v.year} {v.make} {v.model}</p>
+                    <p className="text-xs text-slate-500">{v.vin || 'No VIN'}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-brand-400">{fmt(v.listingPrice)}</p>
+                    <Badge status={v.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-[180px] text-slate-500 text-sm">No vehicles yet</div>
+          )}
+        </div>
+      </div>
+
+      {/* Recent Deals */}
+      {recentDeals.length > 0 && (
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-slate-300">Recent Deals</h3>
+            <button onClick={() => onNavigate('deals')} className="text-xs text-brand-400 hover:text-brand-300">View All</button>
+          </div>
+          <div className="space-y-3">
+            {recentDeals.map(d => {
+              const v = vehicles.find(v => v.id === d.vehicleId);
+              const c = customers.find(c => c.id === d.customerId);
+              return (
+                <div key={d.id} className="flex items-center justify-between py-2 border-b border-slate-700/50 last:border-0">
+                  <div>
+                    <p className="text-sm font-medium text-white">{v ? `${v.year} ${v.make} ${v.model}` : 'Unknown Vehicle'}</p>
+                    <p className="text-xs text-slate-500">{c ? `${c.firstName} ${c.lastName}` : 'Unknown Customer'}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-brand-400">{fmt(d.salePrice)}</p>
+                    <Badge status={d.stage} labels={dealStageLabels} colors={dealStageColors} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== INVENTORY ====================
+function VehicleForm({ vehicle, onSave, onClose }) {
+  const [form, setForm] = useState(vehicle || {
+    year: '', make: '', model: '', trim: '', vin: '', mileage: '', color: '', interiorColor: '',
+    fuelType: 'Gasoline', transmission: 'Automatic', drivetrain: '', bodyType: '',
+    purchasePrice: '', listingPrice: '', purchaseDate: '', status: 'available',
+    description: '', photos: [], salePrice: '', saleDate: '',
+  });
+
+  const handlePhoto = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setForm(prev => ({ ...prev, photos: [...(prev.photos || []), ev.target.result] }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removePhoto = (idx) => {
+    setForm(prev => ({ ...prev, photos: prev.photos.filter((_, i) => i !== idx) }));
+  };
+
+  const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
+
+  return (
+    <div>
+      {/* Photos */}
+      <div className="mb-4">
+        <label className="block text-sm text-slate-400 mb-2">Photos</label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {(form.photos || []).map((p, i) => (
+            <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden group">
+              <img src={p} className="w-full h-full object-cover" />
+              <button onClick={() => removePhoto(i)} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-red-400">{Icons.trash}</button>
+            </div>
+          ))}
+          <label className="w-20 h-20 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center cursor-pointer hover:border-brand-400 transition text-slate-500 hover:text-brand-400">
+            {Icons.camera}
+            <input type="file" accept="image/*" multiple onChange={handlePhoto} />
+          </label>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="Year" type="number" value={form.year} onChange={e => set('year', e.target.value)} placeholder="2024" />
+        <Input label="Make" value={form.make} onChange={e => set('make', e.target.value)} placeholder="BMW" />
+        <Input label="Model" value={form.model} onChange={e => set('model', e.target.value)} placeholder="M4" />
+        <Input label="Trim" value={form.trim} onChange={e => set('trim', e.target.value)} placeholder="Competition" />
+        <div className="col-span-2"><Input label="VIN" value={form.vin} onChange={e => set('vin', e.target.value)} placeholder="Vehicle Identification Number" /></div>
+        <Input label="Mileage" type="number" value={form.mileage} onChange={e => set('mileage', e.target.value)} placeholder="0" />
+        <Input label="Exterior Color" value={form.color} onChange={e => set('color', e.target.value)} placeholder="Black Sapphire" />
+        <Input label="Interior Color" value={form.interiorColor} onChange={e => set('interiorColor', e.target.value)} placeholder="Cognac" />
+        <Select label="Fuel Type" value={form.fuelType} onChange={e => set('fuelType', e.target.value)} options={[{value:'Gasoline',label:'Gasoline'},{value:'Diesel',label:'Diesel'},{value:'Electric',label:'Electric'},{value:'Hybrid',label:'Hybrid'}]} />
+        <Select label="Transmission" value={form.transmission} onChange={e => set('transmission', e.target.value)} options={[{value:'Automatic',label:'Automatic'},{value:'Manual',label:'Manual'},{value:'CVT',label:'CVT'}]} />
+        <Input label="Drivetrain" value={form.drivetrain} onChange={e => set('drivetrain', e.target.value)} placeholder="AWD / RWD / FWD" />
+        <Select label="Body Type" value={form.bodyType || ''} onChange={e => set('bodyType', e.target.value)} options={[{value:'',label:'Select...'},{value:'Sedan',label:'Sedan'},{value:'SUV',label:'SUV'},{value:'Coupe',label:'Coupe'},{value:'Truck',label:'Truck'},{value:'Van',label:'Van'},{value:'Convertible',label:'Convertible'},{value:'Hatchback',label:'Hatchback'},{value:'Wagon',label:'Wagon'}]} />
+        <Input label="Purchase Price ($)" type="number" value={form.purchasePrice} onChange={e => set('purchasePrice', e.target.value)} placeholder="0" />
+        <Input label="Listing Price ($)" type="number" value={form.listingPrice} onChange={e => set('listingPrice', e.target.value)} placeholder="0" />
+        <Input label="Purchase Date" type="date" value={form.purchaseDate} onChange={e => set('purchaseDate', e.target.value)} />
+        <Select label="Status" value={form.status} onChange={e => set('status', e.target.value)} options={[{value:'available',label:'Available'},{value:'pending',label:'Pending'},{value:'sold',label:'Sold'},{value:'in_service',label:'In Service'}]} />
+        {form.status === 'sold' && <>
+          <Input label="Sale Price ($)" type="number" value={form.salePrice} onChange={e => set('salePrice', e.target.value)} placeholder="0" />
+          <Input label="Sale Date" type="date" value={form.saleDate} onChange={e => set('saleDate', e.target.value)} />
+        </>}
+      </div>
+      <Textarea label="Description / Notes" value={form.description} onChange={e => set('description', e.target.value)} placeholder="Vehicle description, features, condition notes..." />
+      <div className="flex justify-end gap-3 mt-4">
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn onClick={() => onSave(form)}>{vehicle?.id ? 'Update Vehicle' : 'Add Vehicle'}</Btn>
+      </div>
+    </div>
+  );
+}
+
+function VehicleDetail({ vehicle, onClose, onEdit }) {
+  const { expenses, saveExpense, deleteExpense } = useApp();
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expForm, setExpForm] = useState({ category: 'repair', description: '', amount: '', date: new Date().toISOString().slice(0,10) });
+  const vExpenses = expenses.filter(e => e.vehicleId === vehicle.id);
+  const totalExpenses = vExpenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+  const profit = (parseFloat(vehicle.salePrice) || parseFloat(vehicle.listingPrice) || 0) - (parseFloat(vehicle.purchasePrice) || 0) - totalExpenses;
+
+  return (
+    <div>
+      {/* Photos */}
+      {vehicle.photos?.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
+          {vehicle.photos.map((p, i) => (
+            <img key={i} src={p} className="h-40 rounded-lg object-cover flex-shrink-0" />
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div><p className="text-xs text-slate-500">Year / Make / Model</p><p className="text-white font-medium">{vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}</p></div>
+        <div><p className="text-xs text-slate-500">VIN</p><p className="text-white font-mono text-sm">{vehicle.vin || '-'}</p></div>
+        <div><p className="text-xs text-slate-500">Mileage</p><p className="text-white">{vehicle.mileage ? `${parseInt(vehicle.mileage).toLocaleString()} mi` : '-'}</p></div>
+        <div><p className="text-xs text-slate-500">Color</p><p className="text-white">{vehicle.color || '-'} / {vehicle.interiorColor || '-'}</p></div>
+        <div><p className="text-xs text-slate-500">Drivetrain</p><p className="text-white">{vehicle.transmission} · {vehicle.drivetrain || '-'} · {vehicle.fuelType}</p></div>
+        <div><p className="text-xs text-slate-500">Status</p><Badge status={vehicle.status} /></div>
+      </div>
+
+      {/* Financial Summary */}
+      <div className="bg-slate-900/50 rounded-xl p-4 mb-4">
+        <h4 className="text-sm font-medium text-slate-300 mb-3">Financial Summary</h4>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div><p className="text-xs text-slate-500">Purchase</p><p className="text-white font-medium">{fmt(vehicle.purchasePrice)}</p></div>
+          <div><p className="text-xs text-slate-500">Listing</p><p className="text-white font-medium">{fmt(vehicle.listingPrice)}</p></div>
+          <div><p className="text-xs text-slate-500">Expenses</p><p className="text-red-400 font-medium">{fmt(totalExpenses)}</p></div>
+          <div><p className="text-xs text-slate-500">Est. Profit</p><p className={`font-bold ${profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{fmt(profit)}</p></div>
+        </div>
+        {vehicle.status === 'sold' && <div className="mt-2"><p className="text-xs text-slate-500">Sale Price</p><p className="text-blue-400 font-bold">{fmt(vehicle.salePrice)}</p></div>}
+      </div>
+
+      {/* Expenses */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-medium text-slate-300">Expenses / Repairs</h4>
+          <Btn variant="ghost" onClick={() => setShowExpenseForm(true)}>{Icons.plus} Add</Btn>
+        </div>
+        {vExpenses.length > 0 ? (
+          <div className="space-y-2">
+            {vExpenses.map(e => (
+              <div key={e.id} className="flex items-center justify-between bg-slate-900/30 rounded-lg px-3 py-2">
+                <div>
+                  <p className="text-sm text-white">{e.description}</p>
+                  <p className="text-xs text-slate-500">{e.category} · {fmtDate(e.date)}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-red-400">{fmt(e.amount)}</span>
+                  <button onClick={() => deleteExpense(e.id)} className="text-slate-500 hover:text-red-400">{Icons.trash}</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : <p className="text-sm text-slate-500">No expenses recorded</p>}
+
+        {showExpenseForm && (
+          <div className="bg-slate-900/50 rounded-lg p-3 mt-2">
+            <div className="grid grid-cols-2 gap-2">
+              <Select label="Category" value={expForm.category} onChange={e => setExpForm(p => ({...p, category: e.target.value}))} options={[{value:'repair',label:'Repair'},{value:'parts',label:'Parts'},{value:'detailing',label:'Detailing'},{value:'inspection',label:'Inspection'},{value:'transport',label:'Transport'},{value:'other',label:'Other'}]} />
+              <Input label="Amount ($)" type="number" value={expForm.amount} onChange={e => setExpForm(p => ({...p, amount: e.target.value}))} />
+              <Input label="Description" value={expForm.description} onChange={e => setExpForm(p => ({...p, description: e.target.value}))} />
+              <Input label="Date" type="date" value={expForm.date} onChange={e => setExpForm(p => ({...p, date: e.target.value}))} />
+            </div>
+            <div className="flex justify-end gap-2 mt-2">
+              <Btn variant="secondary" onClick={() => setShowExpenseForm(false)}>Cancel</Btn>
+              <Btn onClick={async () => { await saveExpense({ ...expForm, vehicleId: vehicle.id }); setShowExpenseForm(false); setExpForm({ category:'repair', description:'', amount:'', date: new Date().toISOString().slice(0,10) }); }}>Save</Btn>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {vehicle.description && (
+        <div className="mb-4"><p className="text-xs text-slate-500 mb-1">Notes</p><p className="text-sm text-slate-300">{vehicle.description}</p></div>
+      )}
+
+      <div className="flex justify-end gap-3">
+        <Btn variant="secondary" onClick={onClose}>Close</Btn>
+        <Btn onClick={onEdit}>{Icons.edit} Edit</Btn>
+      </div>
+    </div>
+  );
+}
+
+function Inventory() {
+  const { vehicles, saveVehicle, deleteVehicle } = useApp();
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editVehicle, setEditVehicle] = useState(null);
+  const [viewVehicle, setViewVehicle] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const filtered = useMemo(() => {
+    let list = [...vehicles];
+    if (filter !== 'all') list = list.filter(v => v.status === filter);
+    if (search) {
+      const s = search.toLowerCase();
+      list = list.filter(v => `${v.year} ${v.make} ${v.model} ${v.trim} ${v.vin} ${v.color}`.toLowerCase().includes(s));
+    }
+    return list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  }, [vehicles, search, filter]);
+
+  const handleSave = async (form) => {
+    await saveVehicle(form);
+    setShowForm(false); setEditVehicle(null);
+  };
+
+  return (
+    <div className="fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Inventory</h1>
+          <p className="text-slate-400 text-sm">{vehicles.length} vehicles total</p>
+        </div>
+        <Btn onClick={() => { setEditVehicle(null); setShowForm(true); }}>{Icons.plus} Add Vehicle</Btn>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">{Icons.search}</span>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search vehicles..." className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-white text-sm focus:outline-none focus:border-brand-400" />
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {[{v:'all',l:'All'},{v:'available',l:'Available'},{v:'pending',l:'Pending'},{v:'sold',l:'Sold'},{v:'in_service',l:'In Service'}].map(f => (
+            <button key={f.v} onClick={() => setFilter(f.v)} className={`px-3 py-1.5 rounded-lg text-sm transition ${filter === f.v ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>{f.l}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Vehicle List */}
+      {filtered.length > 0 ? (
+        <div className="grid gap-4">
+          {filtered.map(v => (
+            <div key={v.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition cursor-pointer" onClick={() => setViewVehicle(v)}>
+              <div className="flex gap-4">
+                {v.photos?.[0] ? (
+                  <img src={v.photos[0]} className="w-24 h-20 rounded-lg object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-24 h-20 rounded-lg bg-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0">{Icons.car}</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-white font-medium">{v.year} {v.make} {v.model} {v.trim}</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">{v.vin || 'No VIN'} · {v.mileage ? `${parseInt(v.mileage).toLocaleString()} mi` : '-'} · {v.color || '-'}</p>
+                    </div>
+                    <Badge status={v.status} />
+                  </div>
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="text-sm text-slate-400">Buy: {fmt(v.purchasePrice)}</span>
+                    <span className="text-sm font-medium text-brand-400">List: {fmt(v.listingPrice)}</span>
+                    {v.status === 'sold' && <span className="text-sm font-medium text-emerald-400">Sold: {fmt(v.salePrice)}</span>}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button onClick={(e) => { e.stopPropagation(); setEditVehicle(v); setShowForm(true); }} className="p-2 text-slate-500 hover:text-brand-400 transition">{Icons.edit}</button>
+                  <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(v); }} className="p-2 text-slate-500 hover:text-red-400 transition">{Icons.trash}</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState icon={Icons.car} title="No vehicles found" desc={search || filter !== 'all' ? 'Try adjusting your search or filters' : 'Add your first vehicle to get started'} action={!search && filter === 'all' && <Btn onClick={() => setShowForm(true)}>{Icons.plus} Add Vehicle</Btn>} />
+      )}
+
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditVehicle(null); }} title={editVehicle ? 'Edit Vehicle' : 'Add Vehicle'} wide>
+        <VehicleForm vehicle={editVehicle} onSave={handleSave} onClose={() => { setShowForm(false); setEditVehicle(null); }} />
+      </Modal>
+
+      <Modal open={!!viewVehicle} onClose={() => setViewVehicle(null)} title={viewVehicle ? `${viewVehicle.year} ${viewVehicle.make} ${viewVehicle.model}` : ''} wide>
+        {viewVehicle && <VehicleDetail vehicle={viewVehicle} onClose={() => setViewVehicle(null)} onEdit={() => { setEditVehicle(viewVehicle); setViewVehicle(null); setShowForm(true); }} />}
+      </Modal>
+
+      <ConfirmDialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={() => deleteVehicle(deleteConfirm.id)} title="Delete Vehicle" message={`Are you sure you want to delete ${deleteConfirm?.year} ${deleteConfirm?.make} ${deleteConfirm?.model}? This cannot be undone.`} />
+    </div>
+  );
+}
+
+// ==================== CUSTOMERS ====================
+function CustomerForm({ customer, onSave, onClose }) {
+  const [form, setForm] = useState(customer || { firstName:'', lastName:'', phone:'', email:'', address:'', notes:'', source:'' });
+  const set = (k, v) => setForm(p => ({...p, [k]:v}));
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="First Name" value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="John" />
+        <Input label="Last Name" value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Doe" />
+        <Input label="Phone" type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(555) 123-4567" />
+        <Input label="Email" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="john@example.com" />
+        <div className="col-span-2"><Input label="Address" value={form.address} onChange={e => set('address', e.target.value)} placeholder="Full address" /></div>
+        <div className="col-span-2">
+          <Select label="Source" value={form.source || ''} onChange={e => set('source', e.target.value)} options={[{value:'',label:'Select...'},{value:'walk_in',label:'Walk-in'},{value:'website',label:'Website'},{value:'referral',label:'Referral'},{value:'social_media',label:'Social Media'},{value:'marketplace',label:'Marketplace (FB/CL)'},{value:'other',label:'Other'}]} />
+        </div>
+      </div>
+      <Textarea label="Notes" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Customer notes, preferences, budget..." />
+      <div className="flex justify-end gap-3 mt-4">
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn onClick={() => onSave(form)}>{customer?.id ? 'Update' : 'Add Customer'}</Btn>
+      </div>
+    </div>
+  );
+}
+
+function Customers() {
+  const { customers, saveCustomer, deleteCustomer, deals, vehicles } = useApp();
+  const [search, setSearch] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [editCustomer, setEditCustomer] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const filtered = useMemo(() => {
+    let list = [...customers];
+    if (search) {
+      const s = search.toLowerCase();
+      list = list.filter(c => `${c.firstName} ${c.lastName} ${c.phone} ${c.email}`.toLowerCase().includes(s));
+    }
+    return list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  }, [customers, search]);
+
+  const handleSave = async (form) => {
+    await saveCustomer(form);
+    setShowForm(false); setEditCustomer(null);
+  };
+
+  const getCustomerDeals = (customerId) => deals.filter(d => d.customerId === customerId);
+
+  return (
+    <div className="fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Customers</h1>
+          <p className="text-slate-400 text-sm">{customers.length} total</p>
+        </div>
+        <Btn onClick={() => { setEditCustomer(null); setShowForm(true); }}>{Icons.plus} Add Customer</Btn>
+      </div>
+
+      <div className="relative mb-6">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">{Icons.search}</span>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customers..." className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-white text-sm focus:outline-none focus:border-brand-400" />
+      </div>
+
+      {filtered.length > 0 ? (
+        <div className="grid gap-3">
+          {filtered.map(c => {
+            const cDeals = getCustomerDeals(c.id);
+            return (
+              <div key={c.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-white font-medium">{c.firstName} {c.lastName}</h3>
+                    <div className="flex flex-wrap items-center gap-3 mt-1">
+                      {c.phone && <span className="flex items-center gap-1 text-xs text-slate-400">{Icons.phone} {c.phone}</span>}
+                      {c.email && <span className="flex items-center gap-1 text-xs text-slate-400">{Icons.mail} {c.email}</span>}
+                    </div>
+                    {c.source && <span className="text-xs text-slate-500 mt-1 inline-block">Source: {c.source.replace('_', ' ')}</span>}
+                    {cDeals.length > 0 && <p className="text-xs text-brand-400 mt-1">{cDeals.length} deal{cDeals.length > 1 ? 's' : ''}</p>}
+                    {c.notes && <p className="text-xs text-slate-500 mt-2 line-clamp-2">{c.notes}</p>}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => { setEditCustomer(c); setShowForm(true); }} className="p-2 text-slate-500 hover:text-brand-400 transition">{Icons.edit}</button>
+                    <button onClick={() => setDeleteConfirm(c)} className="p-2 text-slate-500 hover:text-red-400 transition">{Icons.trash}</button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <EmptyState icon={Icons.users} title="No customers found" desc={search ? 'Try a different search' : 'Add your first customer'} action={!search && <Btn onClick={() => setShowForm(true)}>{Icons.plus} Add Customer</Btn>} />
+      )}
+
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditCustomer(null); }} title={editCustomer ? 'Edit Customer' : 'Add Customer'}>
+        <CustomerForm customer={editCustomer} onSave={handleSave} onClose={() => { setShowForm(false); setEditCustomer(null); }} />
+      </Modal>
+
+      <ConfirmDialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={() => deleteCustomer(deleteConfirm.id)} title="Delete Customer" message={`Delete ${deleteConfirm?.firstName} ${deleteConfirm?.lastName}? This cannot be undone.`} />
+    </div>
+  );
+}
+
+// ==================== DEALS ====================
+function DealForm({ deal, onSave, onClose }) {
+  const { vehicles, customers } = useApp();
+  const availableVehicles = vehicles.filter(v => v.status !== 'sold' || v.id === deal?.vehicleId);
+  const [form, setForm] = useState(deal || { vehicleId:'', customerId:'', stage:'inquiry', salePrice:'', downPayment:'', financingAmount:'', financingRate:'', financingTerm:'', notes:'' });
+  const set = (k, v) => setForm(p => ({...p, [k]:v}));
+
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="col-span-2">
+          <Select label="Vehicle" value={form.vehicleId} onChange={e => set('vehicleId', e.target.value)} options={[{value:'', label:'Select vehicle...'}, ...availableVehicles.map(v => ({value:v.id, label:`${v.year} ${v.make} ${v.model} ${v.trim} - ${fmt(v.listingPrice)}`}))]} />
+        </div>
+        <div className="col-span-2">
+          <Select label="Customer" value={form.customerId} onChange={e => set('customerId', e.target.value)} options={[{value:'', label:'Select customer...'}, ...customers.map(c => ({value:c.id, label:`${c.firstName} ${c.lastName}`}))]} />
+        </div>
+        <Select label="Stage" value={form.stage} onChange={e => set('stage', e.target.value)} options={Object.entries(dealStageLabels).map(([v,l]) => ({value:v, label:l}))} />
+        <Input label="Sale Price ($)" type="number" value={form.salePrice} onChange={e => set('salePrice', e.target.value)} />
+        <Input label="Down Payment ($)" type="number" value={form.downPayment} onChange={e => set('downPayment', e.target.value)} />
+        <Input label="Finance Amount ($)" type="number" value={form.financingAmount} onChange={e => set('financingAmount', e.target.value)} />
+        <Input label="Rate (%)" type="number" step="0.1" value={form.financingRate} onChange={e => set('financingRate', e.target.value)} />
+        <Input label="Term (months)" type="number" value={form.financingTerm} onChange={e => set('financingTerm', e.target.value)} />
+      </div>
+      <Textarea label="Notes" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Deal notes..." />
+      <div className="flex justify-end gap-3 mt-4">
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn onClick={() => onSave(form)}>{deal?.id ? 'Update Deal' : 'Create Deal'}</Btn>
+      </div>
+    </div>
+  );
+}
+
+function Deals() {
+  const { deals, saveDeal, deleteDeal, vehicles, customers, saveVehicle } = useApp();
+  const [showForm, setShowForm] = useState(false);
+  const [editDeal, setEditDeal] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [filter, setFilter] = useState('all');
+
+  const filtered = useMemo(() => {
+    let list = [...deals];
+    if (filter !== 'all') list = list.filter(d => d.stage === filter);
+    return list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  }, [deals, filter]);
+
+  const handleSave = async (form) => {
+    const saved = await saveDeal(form);
+    // If deal is closed, mark vehicle as sold
+    if (form.stage === 'closed' && form.vehicleId) {
+      const v = vehicles.find(v => v.id === form.vehicleId);
+      if (v && v.status !== 'sold') {
+        await saveVehicle({ ...v, status: 'sold', salePrice: form.salePrice, saleDate: new Date().toISOString().slice(0,10) });
+      }
+    }
+    setShowForm(false); setEditDeal(null);
+  };
+
+  return (
+    <div className="fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Deals</h1>
+          <p className="text-slate-400 text-sm">{deals.length} total</p>
+        </div>
+        <Btn onClick={() => { setEditDeal(null); setShowForm(true); }}>{Icons.plus} New Deal</Btn>
+      </div>
+
+      <div className="flex gap-2 flex-wrap mb-6">
+        {[{v:'all',l:'All'}, ...Object.entries(dealStageLabels).map(([v,l]) => ({v,l}))].map(f => (
+          <button key={f.v} onClick={() => setFilter(f.v)} className={`px-3 py-1.5 rounded-lg text-sm transition ${filter === f.v ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>{f.l}</button>
+        ))}
+      </div>
+
+      {filtered.length > 0 ? (
+        <div className="grid gap-3">
+          {filtered.map(d => {
+            const v = vehicles.find(v => v.id === d.vehicleId);
+            const c = customers.find(c => c.id === d.customerId);
+            return (
+              <div key={d.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-white font-medium">{v ? `${v.year} ${v.make} ${v.model}` : 'Unknown Vehicle'}</h3>
+                    <p className="text-sm text-slate-400 mt-0.5">{c ? `${c.firstName} ${c.lastName}` : 'Unknown Customer'} {c?.phone && `· ${c.phone}`}</p>
+                    <div className="flex items-center gap-3 mt-2">
+                      <Badge status={d.stage} labels={dealStageLabels} colors={dealStageColors} />
+                      {d.salePrice && <span className="text-sm font-medium text-brand-400">{fmt(d.salePrice)}</span>}
+                      {d.downPayment && <span className="text-xs text-slate-500">Down: {fmt(d.downPayment)}</span>}
+                    </div>
+                    {d.notes && <p className="text-xs text-slate-500 mt-2">{d.notes}</p>}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => { setEditDeal(d); setShowForm(true); }} className="p-2 text-slate-500 hover:text-brand-400 transition">{Icons.edit}</button>
+                    <button onClick={() => setDeleteConfirm(d)} className="p-2 text-slate-500 hover:text-red-400 transition">{Icons.trash}</button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <EmptyState icon={Icons.deal} title="No deals found" desc="Create your first deal to start tracking" action={<Btn onClick={() => setShowForm(true)}>{Icons.plus} New Deal</Btn>} />
+      )}
+
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditDeal(null); }} title={editDeal ? 'Edit Deal' : 'New Deal'} wide>
+        <DealForm deal={editDeal} onSave={handleSave} onClose={() => { setShowForm(false); setEditDeal(null); }} />
+      </Modal>
+
+      <ConfirmDialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={() => deleteDeal(deleteConfirm.id)} title="Delete Deal" message="Delete this deal? This cannot be undone." />
+    </div>
+  );
+}
+
+// ==================== FINANCE ====================
+function Finance() {
+  const { vehicles, expenses } = useApp();
+
+  const data = useMemo(() => {
+    const soldVehicles = vehicles.filter(v => v.status === 'sold');
+    const totalRevenue = soldVehicles.reduce((s, v) => s + (parseFloat(v.salePrice) || 0), 0);
+    const totalCost = soldVehicles.reduce((s, v) => s + (parseFloat(v.purchasePrice) || 0), 0);
+    const totalExpenses = expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+    const grossProfit = totalRevenue - totalCost;
+    const netProfit = grossProfit - totalExpenses;
+    const avgMargin = soldVehicles.length > 0 ? grossProfit / soldVehicles.length : 0;
+
+    const inventoryValue = vehicles.filter(v => v.status === 'available').reduce((s, v) => s + (parseFloat(v.listingPrice) || 0), 0);
+    const inventoryCost = vehicles.filter(v => v.status === 'available').reduce((s, v) => s + (parseFloat(v.purchasePrice) || 0), 0);
+
+    // Per-vehicle profit analysis
+    const vehicleProfit = soldVehicles.map(v => {
+      const vExp = expenses.filter(e => e.vehicleId === v.id).reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+      const profit = (parseFloat(v.salePrice) || 0) - (parseFloat(v.purchasePrice) || 0) - vExp;
+      return { ...v, totalExpenses: vExp, profit };
+    }).sort((a, b) => b.profit - a.profit);
+
+    // Monthly data
+    const months = {};
+    soldVehicles.forEach(v => {
+      const m = (v.saleDate || v.updatedAt || '').slice(0, 7);
+      if (!m) return;
+      if (!months[m]) months[m] = { month: m, revenue: 0, cost: 0, expenses: 0, count: 0 };
+      months[m].revenue += parseFloat(v.salePrice) || 0;
+      months[m].cost += parseFloat(v.purchasePrice) || 0;
+      months[m].count++;
+    });
+    expenses.forEach(e => {
+      const m = (e.date || '').slice(0, 7);
+      if (!m || !months[m]) return;
+      months[m].expenses += parseFloat(e.amount) || 0;
+    });
+    const monthlyData = Object.values(months).sort((a, b) => a.month.localeCompare(b.month)).map(m => ({
+      ...m, profit: m.revenue - m.cost - m.expenses, name: new Date(m.month + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+    }));
+
+    // Expense breakdown
+    const expByCategory = {};
+    expenses.forEach(e => {
+      const cat = e.category || 'other';
+      expByCategory[cat] = (expByCategory[cat] || 0) + (parseFloat(e.amount) || 0);
+    });
+
+    return { totalRevenue, totalCost, totalExpenses, grossProfit, netProfit, avgMargin, inventoryValue, inventoryCost, vehicleProfit, monthlyData, expByCategory, soldCount: soldVehicles.length };
+  }, [vehicles, expenses]);
+
+  const expColors = { repair:'#ef4444', parts:'#f59e0b', detailing:'#6366f1', inspection:'#10b981', transport:'#3b82f6', other:'#64748b' };
+
+  return (
+    <div className="fade-in">
+      <h1 className="text-2xl font-bold text-white mb-2">Financial Overview</h1>
+      <p className="text-slate-400 text-sm mb-8">Complete financial analysis of your dealership</p>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Total Revenue', value: fmt(data.totalRevenue), color: 'text-blue-400' },
+          { label: 'Gross Profit', value: fmt(data.grossProfit), color: 'text-emerald-400' },
+          { label: 'Total Expenses', value: fmt(data.totalExpenses), color: 'text-red-400' },
+          { label: 'Net Profit', value: fmt(data.netProfit), color: data.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400' },
+        ].map((s, i) => (
+          <div key={i} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+            <p className="text-xs text-slate-500">{s.label}</p>
+            <p className={`text-xl font-bold ${s.color} mt-1`}>{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* More Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+          <p className="text-xs text-slate-500">Vehicles Sold</p>
+          <p className="text-xl font-bold text-white mt-1">{data.soldCount}</p>
+        </div>
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+          <p className="text-xs text-slate-500">Avg Margin / Vehicle</p>
+          <p className="text-xl font-bold text-brand-400 mt-1">{fmt(data.avgMargin)}</p>
+        </div>
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+          <p className="text-xs text-slate-500">Inventory Value (List)</p>
+          <p className="text-xl font-bold text-white mt-1">{fmt(data.inventoryValue)}</p>
+        </div>
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+          <p className="text-xs text-slate-500">Inventory Cost</p>
+          <p className="text-xl font-bold text-amber-400 mt-1">{fmt(data.inventoryCost)}</p>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        {/* Monthly Chart */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Monthly Revenue & Profit</h3>
+          {data.monthlyData.length > 0 ? (
+            <Recharts.ResponsiveContainer width="100%" height={250}>
+              <Recharts.BarChart data={data.monthlyData}>
+                <Recharts.CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <Recharts.XAxis dataKey="name" stroke="#64748b" fontSize={12} />
+                <Recharts.YAxis stroke="#64748b" fontSize={12} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+                <Recharts.Tooltip contentStyle={{ background:'#1e293b', border:'1px solid #334155', borderRadius:'8px', color:'#e2e8f0' }} formatter={v => fmt(v)} />
+                <Recharts.Legend />
+                <Recharts.Bar dataKey="revenue" fill="#3b82f6" name="Revenue" radius={[4,4,0,0]} />
+                <Recharts.Bar dataKey="profit" fill="#10b981" name="Net Profit" radius={[4,4,0,0]} />
+              </Recharts.BarChart>
+            </Recharts.ResponsiveContainer>
+          ) : <div className="h-[250px] flex items-center justify-center text-slate-500 text-sm">No data yet</div>}
+        </div>
+
+        {/* Expense Breakdown */}
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Expense Breakdown</h3>
+          {Object.keys(data.expByCategory).length > 0 ? (
+            <div className="space-y-3">
+              {Object.entries(data.expByCategory).sort((a,b) => b[1] - a[1]).map(([cat, amount]) => {
+                const pct = data.totalExpenses > 0 ? (amount / data.totalExpenses * 100) : 0;
+                return (
+                  <div key={cat}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-slate-300 capitalize">{cat}</span>
+                      <span className="text-slate-400">{fmt(amount)} ({pct.toFixed(0)}%)</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-2">
+                      <div className="h-2 rounded-full transition-all" style={{ width: `${pct}%`, background: expColors[cat] || '#64748b' }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : <div className="h-[200px] flex items-center justify-center text-slate-500 text-sm">No expenses recorded</div>}
+        </div>
+      </div>
+
+      {/* Per-Vehicle Profit Table */}
+      {data.vehicleProfit.length > 0 && (
+        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Profit by Vehicle (Sold)</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700">
+                  <th className="text-left text-slate-500 py-2 pr-4 font-medium">Vehicle</th>
+                  <th className="text-right text-slate-500 py-2 px-2 font-medium">Purchase</th>
+                  <th className="text-right text-slate-500 py-2 px-2 font-medium">Sale</th>
+                  <th className="text-right text-slate-500 py-2 px-2 font-medium">Expenses</th>
+                  <th className="text-right text-slate-500 py-2 pl-2 font-medium">Profit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.vehicleProfit.map(v => (
+                  <tr key={v.id} className="border-b border-slate-700/50">
+                    <td className="py-2 pr-4 text-white">{v.year} {v.make} {v.model}</td>
+                    <td className="py-2 px-2 text-right text-slate-400">{fmt(v.purchasePrice)}</td>
+                    <td className="py-2 px-2 text-right text-blue-400">{fmt(v.salePrice)}</td>
+                    <td className="py-2 px-2 text-right text-red-400">{fmt(v.totalExpenses)}</td>
+                    <td className={`py-2 pl-2 text-right font-bold ${v.profit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>{fmt(v.profit)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== PROSPECT LIST ====================
+const PRICE_RANGES = [
+  { value: 'all', label: 'All', min: 0, max: Infinity },
+  { value: '0-5', label: 'Under $5K', min: 0, max: 5000 },
+  { value: '5-10', label: '$5K - $10K', min: 5000, max: 10000 },
+  { value: '10-15', label: '$10K - $15K', min: 10000, max: 15000 },
+  { value: '15-20', label: '$15K - $20K', min: 15000, max: 20000 },
+  { value: '20-25', label: '$20K - $25K', min: 20000, max: 25000 },
+  { value: '25-30', label: '$25K - $30K', min: 25000, max: 30000 },
+  { value: '30+', label: '$30K+', min: 30000, max: Infinity },
+];
+
+function generateSharePageHtml(filteredProspects, rangeLabel) {
+  var shareData = filteredProspects.map(function(p) {
+    return { y: p.year, mk: p.make, md: p.model, tr: p.trim, pr: p.expectedPrice, mi: p.mileage, cl: p.color, co: p.condition, no: p.notes, url: p.listingUrl, ph: (p.photos || []).slice(0, 2), pi: p.priority };
+  });
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(shareData))));
+  var dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var parts = [];
+  parts.push('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">');
+  parts.push('<title>Studio Vroom - Curated Picks</title>');
+  parts.push('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">');
+  parts.push('<style>*{margin:0;padding:0;box-sizing:border-box;font-family:"Inter",sans-serif}body{background:#0f172a;color:#e2e8f0;min-height:100vh;padding:20px}');
+  parts.push('.container{max-width:800px;margin:0 auto}.header{text-align:center;padding:30px 0}.logo{color:#818cf8;font-size:28px;font-weight:700}.sub{color:#94a3b8;font-size:14px;margin-top:4px}');
+  parts.push('.date{color:#64748b;font-size:12px;margin-top:8px}.card{background:#1e293b;border:1px solid #334155;border-radius:16px;overflow:hidden;margin-bottom:16px}');
+  parts.push('.card-photos{display:flex;gap:4px;overflow-x:auto}.card-photos img{height:200px;object-fit:cover;flex-shrink:0}');
+  parts.push('.card-body{padding:16px}.card-title{color:#fff;font-size:18px;font-weight:600}.card-meta{color:#94a3b8;font-size:13px;margin-top:4px}');
+  parts.push('.card-price{color:#818cf8;font-size:22px;font-weight:700}.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500}');
+  parts.push('.hot{background:rgba(239,68,68,.15);color:#f87171}.warm{background:rgba(245,158,11,.15);color:#fbbf24}.cool{background:rgba(59,130,246,.15);color:#60a5fa}');
+  parts.push('.condition{background:#0f172a;border-radius:8px;padding:8px 12px;margin-top:10px;font-size:13px;color:#cbd5e1}.notes{color:#94a3b8;font-size:13px;margin-top:8px}');
+  parts.push('.link{color:#818cf8;font-size:13px;margin-top:8px;display:inline-block;text-decoration:none}.link:hover{color:#a5b4fc}');
+  parts.push('.footer{text-align:center;color:#475569;font-size:12px;padding:30px 0}');
+  parts.push('.flex-between{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}');
+  parts.push('@media(max-width:640px){.card-photos img{height:160px}}</style></head>');
+  parts.push('<body><div class="container"><div class="header"><div class="logo">Studio Vroom</div>');
+  parts.push('<div class="sub">Curated Vehicle Picks - ' + rangeLabel + '</div>');
+  parts.push('<div class="date">' + dateStr + '</div></div>');
+  parts.push('<div id="cards"></div><div class="footer">Studio Vroom - Finding the Right Cars for You<br>Contact us for any of these vehicles</div></div>');
+  parts.push('<script>');
+  parts.push('var data=JSON.parse(decodeURIComponent(escape(atob("' + encoded + '"))));');
+  parts.push('var fmt=function(n){return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0)};');
+  parts.push('var pLabels={hot:"Hot Pick",warm:"Warm",cool:"Cool"};');
+  parts.push('var el=document.getElementById("cards");');
+  parts.push('data.forEach(function(p){var photos=(p.ph||[]).map(function(s){return \'<img src="\'+s+\'">\';}).join("");');
+  parts.push('var html="<div class=\\"card\\">";');
+  parts.push('if(photos)html+="<div class=\\"card-photos\\">"+photos+"</div>";');
+  parts.push('html+="<div class=\\"card-body\\"><div class=\\"flex-between\\"><div><div class=\\"card-title\\">"+p.y+" "+p.mk+" "+p.md+" "+(p.tr||"")+"</div>";');
+  parts.push('html+="<div class=\\"card-meta\\">"+(p.mi?parseInt(p.mi).toLocaleString()+" mi":"")+(p.mi&&p.cl?" . ":"")+(p.cl||"")+"</div></div>";');
+  parts.push('html+="<div style=\\"text-align:right\\"><div class=\\"card-price\\">"+fmt(p.pr)+"</div><span class=\\"badge "+p.pi+"\\">"+((pLabels[p.pi])||"")+"</span></div></div>";');
+  parts.push('if(p.co)html+="<div class=\\"condition\\">"+p.co+"</div>";');
+  parts.push('if(p.no)html+="<div class=\\"notes\\">"+p.no+"</div>";');
+  parts.push('if(p.url)html+="<a href=\\""+p.url+"\\" target=\\"_blank\\" class=\\"link\\">View Full Listing</a>";');
+  parts.push('html+="</div></div>";el.innerHTML+=html;});');
+  parts.push('<\/script></body></html>');
+  return parts.join('\n');
+}
+
+const priorityColors = { hot: 'bg-red-500/20 text-red-400', warm: 'bg-amber-500/20 text-amber-400', cool: 'bg-blue-500/20 text-blue-400' };
+const priorityLabels = { hot: 'Hot Pick', warm: 'Warm', cool: 'Cool' };
+
+function ProspectForm({ prospect, onSave, onClose }) {
+  const [form, setForm] = useState(prospect || {
+    year: '', make: '', model: '', trim: '', expectedPrice: '', mileage: '',
+    color: '', listingUrl: '', source: '', priority: 'warm',
+    photos: [], notes: '', condition: '',
+  });
+  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+  const handlePhoto = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setForm(prev => ({ ...prev, photos: [...(prev.photos || []), ev.target.result] }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removePhoto = (idx) => {
+    setForm(prev => ({ ...prev, photos: prev.photos.filter((_, i) => i !== idx) }));
+  };
+
+  return (
+    <div>
+      {/* Photos */}
+      <div className="mb-4">
+        <label className="block text-sm text-slate-400 mb-2">Photos</label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {(form.photos || []).map((p, i) => (
+            <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden group">
+              <img src={p} className="w-full h-full object-cover" />
+              <button onClick={() => removePhoto(i)} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-red-400">{Icons.trash}</button>
+            </div>
+          ))}
+          <label className="w-20 h-20 rounded-lg border-2 border-dashed border-slate-600 flex items-center justify-center cursor-pointer hover:border-brand-400 transition text-slate-500 hover:text-brand-400">
+            {Icons.camera}
+            <input type="file" accept="image/*" multiple onChange={handlePhoto} />
+          </label>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="Year" type="number" value={form.year} onChange={e => set('year', e.target.value)} placeholder="2024" />
+        <Input label="Make" value={form.make} onChange={e => set('make', e.target.value)} placeholder="BMW" />
+        <Input label="Model" value={form.model} onChange={e => set('model', e.target.value)} placeholder="M4" />
+        <Input label="Trim" value={form.trim} onChange={e => set('trim', e.target.value)} placeholder="Competition" />
+        <Input label="Expected Price ($)" type="number" value={form.expectedPrice} onChange={e => set('expectedPrice', e.target.value)} placeholder="15000" />
+        <Input label="Mileage" type="number" value={form.mileage} onChange={e => set('mileage', e.target.value)} placeholder="50000" />
+        <Input label="Exterior Color" value={form.color} onChange={e => set('color', e.target.value)} placeholder="Black" />
+        <Select label="Priority" value={form.priority} onChange={e => set('priority', e.target.value)} options={[{value:'hot',label:'Hot Pick'},{value:'warm',label:'Warm'},{value:'cool',label:'Cool'}]} />
+        <div className="col-span-2"><Input label="Listing URL (Autotrader, Carfax, etc.)" value={form.listingUrl} onChange={e => set('listingUrl', e.target.value)} placeholder="https://..." /></div>
+        <div className="col-span-2">
+          <Select label="Source" value={form.source || ''} onChange={e => set('source', e.target.value)} options={[{value:'',label:'Select...'},{value:'autotrader',label:'Autotrader'},{value:'carfax',label:'Carfax'},{value:'cargurus',label:'CarGurus'},{value:'facebook',label:'Facebook Marketplace'},{value:'craigslist',label:'Craigslist'},{value:'auction',label:'Auction'},{value:'trade_in',label:'Trade-in'},{value:'other',label:'Other'}]} />
+        </div>
+      </div>
+      <Input label="Condition Summary" value={form.condition} onChange={e => set('condition', e.target.value)} placeholder="Clean title, no accidents, well maintained..." />
+      <Textarea label="Notes / Recommendation" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Why this is a good pick, features, things to note for the customer..." />
+      <div className="flex justify-end gap-3 mt-4">
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn onClick={() => onSave(form)}>{prospect?.id ? 'Update' : 'Add Prospect'}</Btn>
+      </div>
+    </div>
+  );
+}
+
+function ProspectShareView({ prospects, priceRange }) {
+  const rangeLabel = PRICE_RANGES.find(r => r.value === priceRange)?.label || 'All';
+  return (
+    <div className="bg-slate-900 p-6 rounded-xl">
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className="text-brand-400">{Icons.crown}</span>
+          <h1 className="text-2xl font-bold text-white">Studio Vroom</h1>
+        </div>
+        <p className="text-slate-400">Curated Vehicle Picks — {rangeLabel}</p>
+        <p className="text-xs text-slate-500 mt-1">{new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })}</p>
+      </div>
+
+      {prospects.length === 0 ? (
+        <p className="text-center text-slate-500 py-8">No vehicles in this price range</p>
+      ) : (
+        <div className="grid gap-4">
+          {prospects.map(p => (
+            <div key={p.id} className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+              {p.photos?.length > 0 && (
+                <div className="flex gap-1 overflow-x-auto">
+                  {p.photos.slice(0, 3).map((photo, i) => (
+                    <img key={i} src={photo} className="h-48 w-auto object-cover flex-shrink-0" />
+                  ))}
+                </div>
+              )}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="text-white text-lg font-semibold">{p.year} {p.make} {p.model} {p.trim}</h3>
+                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-400">
+                      {p.mileage && <span>{parseInt(p.mileage).toLocaleString()} mi</span>}
+                      {p.color && <span>{p.color}</span>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-brand-400">{fmt(p.expectedPrice)}</p>
+                    <Badge status={p.priority} labels={priorityLabels} colors={priorityColors} />
+                  </div>
+                </div>
+                {p.condition && <p className="text-sm text-slate-300 mt-3 bg-slate-900/50 rounded-lg px-3 py-2">{p.condition}</p>}
+                {p.notes && <p className="text-sm text-slate-400 mt-2">{p.notes}</p>}
+                {p.listingUrl && <a href={p.listingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-brand-400 hover:text-brand-300 mt-2">{Icons.link} View Listing</a>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="text-center text-xs text-slate-600 mt-8">Studio Vroom — Finding the Right Cars for You</p>
+    </div>
+  );
+}
+
+function Prospects() {
+  const { prospects, saveProspect, deleteProspect } = useApp();
+  const [search, setSearch] = useState('');
+  const [priceFilter, setPriceFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editProspect, setEditProspect] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [showShareView, setShowShareView] = useState(false);
+
+  const filtered = useMemo(() => {
+    let list = [...prospects];
+    if (priceFilter !== 'all') {
+      const range = PRICE_RANGES.find(r => r.value === priceFilter);
+      if (range) {
+        list = list.filter(p => {
+          const price = parseFloat(p.expectedPrice) || 0;
+          return price >= range.min && price < range.max;
+        });
+      }
+    }
+    if (search) {
+      const s = search.toLowerCase();
+      list = list.filter(p => `${p.year} ${p.make} ${p.model} ${p.trim} ${p.color}`.toLowerCase().includes(s));
+    }
+    return list.sort((a, b) => {
+      const priorityOrder = { hot: 0, warm: 1, cool: 2 };
+      const pa = priorityOrder[a.priority] ?? 1;
+      const pb = priorityOrder[b.priority] ?? 1;
+      if (pa !== pb) return pa - pb;
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
+    });
+  }, [prospects, search, priceFilter]);
+
+  const handleSave = async (form) => {
+    await saveProspect(form);
+    setShowForm(false); setEditProspect(null);
+  };
+
+  const priceRangeCounts = useMemo(() => {
+    const counts = {};
+    PRICE_RANGES.forEach(r => {
+      if (r.value === 'all') { counts[r.value] = prospects.length; return; }
+      counts[r.value] = prospects.filter(p => {
+        const price = parseFloat(p.expectedPrice) || 0;
+        return price >= r.min && price < r.max;
+      }).length;
+    });
+    return counts;
+  }, [prospects]);
+
+  return (
+    <div className="fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Prospect List</h1>
+          <p className="text-slate-400 text-sm">{prospects.length} candidate vehicles for customers</p>
+        </div>
+        <div className="flex gap-2">
+          {filtered.length > 0 && (
+            <Btn variant="secondary" onClick={() => setShowShareView(true)}>{Icons.share} Customer View</Btn>
+          )}
+          <Btn onClick={() => { setEditProspect(null); setShowForm(true); }}>{Icons.plus} Add Prospect</Btn>
+        </div>
+      </div>
+
+      {/* Price Range Filters */}
+      <div className="mb-4">
+        <p className="text-xs text-slate-500 mb-2">Filter by Price Range</p>
+        <div className="flex gap-2 flex-wrap">
+          {PRICE_RANGES.map(r => (
+            <button key={r.value} onClick={() => setPriceFilter(r.value)} className={`px-3 py-1.5 rounded-lg text-sm transition ${priceFilter === r.value ? 'bg-brand-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}>
+              {r.label} {priceRangeCounts[r.value] > 0 && <span className="ml-1 text-xs opacity-70">({priceRangeCounts[r.value]})</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-6">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">{Icons.search}</span>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search prospects..." className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-white text-sm focus:outline-none focus:border-brand-400" />
+      </div>
+
+      {/* Prospect Cards */}
+      {filtered.length > 0 ? (
+        <div className="grid gap-4">
+          {filtered.map(p => (
+            <div key={p.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600 transition">
+              <div className="flex gap-4">
+                {p.photos?.[0] ? (
+                  <img src={p.photos[0]} className="w-28 h-24 rounded-lg object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-28 h-24 rounded-lg bg-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0">{Icons.car}</div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="text-white font-medium">{p.year} {p.make} {p.model} {p.trim}</h3>
+                      <div className="flex items-center gap-3 mt-0.5 text-xs text-slate-500">
+                        {p.mileage && <span>{parseInt(p.mileage).toLocaleString()} mi</span>}
+                        {p.color && <span>{p.color}</span>}
+                        {p.source && <span className="capitalize">{p.source.replace('_',' ')}</span>}
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-lg font-bold text-brand-400">{fmt(p.expectedPrice)}</p>
+                      <Badge status={p.priority} labels={priorityLabels} colors={priorityColors} />
+                    </div>
+                  </div>
+                  {p.condition && <p className="text-xs text-slate-400 mt-1">{p.condition}</p>}
+                  {p.notes && <p className="text-xs text-slate-500 mt-1 line-clamp-2">{p.notes}</p>}
+                  <div className="flex items-center gap-3 mt-2">
+                    {p.listingUrl && <a href={p.listingUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300" onClick={e => e.stopPropagation()}>{Icons.link} Listing</a>}
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                  <button onClick={() => { setEditProspect(p); setShowForm(true); }} className="p-2 text-slate-500 hover:text-brand-400 transition">{Icons.edit}</button>
+                  <button onClick={() => setDeleteConfirm(p)} className="p-2 text-slate-500 hover:text-red-400 transition">{Icons.trash}</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState icon={Icons.list} title="No prospects found" desc={search || priceFilter !== 'all' ? 'Try adjusting your search or price range' : 'Add candidate vehicles to share with customers'} action={!search && priceFilter === 'all' && <Btn onClick={() => setShowForm(true)}>{Icons.plus} Add Prospect</Btn>} />
+      )}
+
+      {/* Add/Edit Modal */}
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditProspect(null); }} title={editProspect ? 'Edit Prospect' : 'Add Prospect'} wide>
+        <ProspectForm prospect={editProspect} onSave={handleSave} onClose={() => { setShowForm(false); setEditProspect(null); }} />
+      </Modal>
+
+      {/* Customer Share View Modal */}
+      <Modal open={showShareView} onClose={() => setShowShareView(false)} title="Customer View Preview" wide>
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-sm text-slate-400">This is how your customer will see the list.</p>
+          <Btn variant="secondary" onClick={() => {
+            var rangeLabel = PRICE_RANGES.find(function(r) { return r.value === priceFilter; });
+            rangeLabel = rangeLabel ? rangeLabel.label : 'All';
+            var pageHtml = generateSharePageHtml(filtered, rangeLabel);
+            var blob = new Blob([pageHtml], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a'); a.href = url;
+            var suffix = priceFilter === 'all' ? 'all' : priceFilter.replace('+', 'plus') + 'k';
+            a.download = 'studio-vroom-picks-' + suffix + '.html';
+            a.click(); URL.revokeObjectURL(url);
+          }}>{Icons.download} Download as Share Page</Btn>
+        </div>
+        <ProspectShareView prospects={filtered} priceRange={priceFilter} />
+      </Modal>
+
+      <ConfirmDialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={() => deleteProspect(deleteConfirm.id)} title="Delete Prospect" message={`Remove ${deleteConfirm?.year} ${deleteConfirm?.make} ${deleteConfirm?.model} from the prospect list?`} />
+    </div>
+  );
+}
+
+// ==================== SETTINGS ====================
+function Settings() {
+  const { exportData, importData, vehicles, customers, deals, expenses, prospects } = useApp();
+  const fileRef = useRef();
+  const [importing, setImporting] = useState(false);
+
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImporting(true);
+    try {
+      await importData(file);
+      alert('Data imported successfully!');
+    } catch(err) {
+      alert('Import failed: ' + err.message);
+    }
+    setImporting(false);
+  };
+
+  return (
+    <div className="fade-in max-w-2xl">
+      <h1 className="text-2xl font-bold text-white mb-2">Settings</h1>
+      <p className="text-slate-400 text-sm mb-8">Manage your data and preferences</p>
+
+      {/* Data Summary */}
+      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-6">
+        <h3 className="text-sm font-medium text-slate-300 mb-4">Data Summary</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div><p className="text-xs text-slate-500">Vehicles</p><p className="text-white font-medium">{vehicles.length}</p></div>
+          <div><p className="text-xs text-slate-500">Customers</p><p className="text-white font-medium">{customers.length}</p></div>
+          <div><p className="text-xs text-slate-500">Deals</p><p className="text-white font-medium">{deals.length}</p></div>
+          <div><p className="text-xs text-slate-500">Prospects</p><p className="text-white font-medium">{prospects.length}</p></div>
+          <div><p className="text-xs text-slate-500">Expenses</p><p className="text-white font-medium">{expenses.length}</p></div>
+        </div>
+      </div>
+
+      {/* Backup & Restore */}
+      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-6">
+        <h3 className="text-sm font-medium text-slate-300 mb-4">Backup & Restore</h3>
+        <p className="text-sm text-slate-400 mb-4">Your data is stored locally in this browser. Export regularly to keep backups safe.</p>
+        <div className="flex gap-3">
+          <Btn onClick={exportData}>{Icons.download} Export Backup</Btn>
+          <Btn variant="secondary" onClick={() => fileRef.current?.click()} disabled={importing}>{Icons.upload} {importing ? 'Importing...' : 'Import Backup'}</Btn>
+          <input ref={fileRef} type="file" accept=".json" onChange={handleImport} style={{display:'none'}} />
+        </div>
+      </div>
+
+      {/* About */}
+      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+        <h3 className="text-sm font-medium text-slate-300 mb-2">About</h3>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-brand-400">{Icons.crown}</span>
+          <div>
+            <p className="text-white font-semibold">Studio Vroom DMS</p>
+            <p className="text-xs text-slate-500">Dealer Management System v1.0</p>
+          </div>
+        </div>
+        <p className="text-xs text-slate-500">Built for Studio Vroom. All data stored locally in your browser using IndexedDB. No data is sent to external servers.</p>
+      </div>
+    </div>
+  );
+}
+
+// ==================== MAIN APP ====================
+function App() {
+  const [page, setPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Icons.dashboard },
+    { id: 'inventory', label: 'Inventory', icon: Icons.car },
+    { id: 'prospects', label: 'Prospect List', icon: Icons.list },
+    { id: 'customers', label: 'Customers', icon: Icons.users },
+    { id: 'deals', label: 'Deals', icon: Icons.deal },
+    { id: 'finance', label: 'Finance', icon: Icons.finance },
+    { id: 'settings', label: 'Settings', icon: Icons.settings },
+  ];
+
+  const navigate = (p) => { setPage(p); setSidebarOpen(false); };
+
+  return (
+    <AppProvider>
+      <div className="flex h-screen overflow-hidden">
+        {/* Mobile Header */}
+        <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-slate-900 border-b border-slate-800 flex items-center px-4 z-40 no-print">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-slate-400 hover:text-white mr-3">{Icons.menu}</button>
+          <span className="text-brand-400 mr-2">{Icons.crown}</span>
+          <span className="text-white font-semibold">Studio Vroom DMS</span>
+        </div>
+
+        {/* Sidebar Overlay */}
+        {sidebarOpen && <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setSidebarOpen(false)} />}
+
+        {/* Sidebar */}
+        <aside className={`fixed lg:relative z-50 h-full w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform lg:translate-x-0 no-print ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="p-5 flex items-center gap-3 border-b border-slate-800">
+            <span className="text-brand-400">{Icons.crown}</span>
+            <div>
+              <h1 className="text-white font-bold text-lg leading-tight">Studio Vroom</h1>
+              <p className="text-xs text-slate-500">Dealer Management</p>
+            </div>
+          </div>
+
+          <nav className="flex-1 py-4">
+            {navItems.map(item => (
+              <button key={item.id} onClick={() => navigate(item.id)} className={`w-full flex items-center gap-3 px-5 py-2.5 text-sm transition ${page === item.id ? 'sidebar-active text-white font-medium' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}>
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t border-slate-800">
+            <p className="text-xs text-slate-600 text-center">v1.0 · Data stored locally</p>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
+          <div className="p-4 lg:p-8 max-w-6xl mx-auto">
+            {page === 'dashboard' && <Dashboard onNavigate={navigate} />}
+            {page === 'inventory' && <Inventory />}
+            {page === 'prospects' && <Prospects />}
+            {page === 'customers' && <Customers />}
+            {page === 'deals' && <Deals />}
+            {page === 'finance' && <Finance />}
+            {page === 'settings' && <Settings />}
+          </div>
+        </main>
+      </div>
+    </AppProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

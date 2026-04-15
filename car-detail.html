@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet Sunny | Studio Vroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky: #C8E8F4;
+      --sky-dark: #9fd0e8;
+      --cream: #FDFAF5;
+      --navy: #2C3E6B;
+      --navy-light: #4a5f8a;
+      --orange: #F4A261;
+      --orange-dark: #e08c48;
+      --white: #ffffff;
+      --text: #333344;
+      --text-light: #666677;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; color: var(--text); background: var(--cream); }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,232,244,0.5);
+    }
+    .nav-logo img { height: 34px; object-fit: contain; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; color: var(--navy); text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--orange); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 8px 20px; border-radius: 24px; }
+    .nav-cta:hover { background: var(--orange-dark) !important; }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      padding: 14px 48px;
+      font-size: 13px; color: var(--text-light);
+      background: white; border-bottom: 1px solid #eef0f5;
+    }
+    .breadcrumb a { color: var(--navy); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { color: var(--orange); }
+    .breadcrumb span { margin: 0 8px; opacity: 0.4; }
+
+    /* ── PROFILE LAYOUT ── */
+    .profile-layout {
+      max-width: 1100px; margin: 0 auto;
+      padding: 48px 48px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* ── LEFT: PHOTOS ── */
+    .photo-main {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 4px 32px rgba(44,62,107,0.12);
+      margin-bottom: 12px;
+    }
+    .photo-main img {
+      width: 100%; height: 440px;
+      object-fit: cover; display: block;
+    }
+
+    .photo-thumbs {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    }
+    .photo-thumb {
+      border-radius: 10px; overflow: hidden;
+      border: 2px solid transparent; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .photo-thumb.active { border-color: var(--orange); }
+    .photo-thumb img {
+      width: 100%; height: 80px; object-fit: cover; display: block;
+      transition: opacity 0.2s;
+    }
+    .photo-thumb:hover img { opacity: 0.85; }
+
+    /* Car story card */
+    .story-card {
+      background: var(--sky);
+      border-radius: 16px; padding: 28px;
+      margin-top: 20px;
+    }
+    .story-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; color: var(--navy);
+      margin-bottom: 12px; font-style: italic;
+    }
+    .story-card p {
+      font-size: 15px; line-height: 1.7;
+      color: var(--navy); opacity: 0.8;
+    }
+
+    /* ── RIGHT: DETAIL PANEL ── */
+    .detail-panel {
+      position: sticky; top: 80px;
+    }
+
+    .detail-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(200,232,244,0.6); color: var(--navy);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      padding: 6px 14px; border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4CAF82;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .detail-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 44px; font-weight: 600;
+      color: var(--navy); line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .detail-model {
+      font-size: 16px; color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    .traits-wrap {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .trait-pill {
+      font-size: 13px; font-weight: 600;
+      background: white; color: var(--text);
+      border: 1.5px solid #e8eaf0;
+      padding: 6px 14px; border-radius: 14px;
+    }
+
+    /* Health & Background */
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 12px; margin-top: 24px;
+    }
+
+    .specs-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 24px;
+    }
+    .spec-box {
+      background: white; border-radius: 12px; padding: 14px 16px;
+      border: 1px solid #eef0f7;
+    }
+    .spec-box-label {
+      font-size: 10px; color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .spec-box-value {
+      font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 3px;
+    }
+
+    /* Features list */
+    .features-list {
+      list-style: none; margin-bottom: 28px;
+    }
+    .features-list li {
+      font-size: 14px; color: var(--text);
+      padding: 7px 0; border-bottom: 1px solid #f0f2f7;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .features-list li::before {
+      content: '✓';
+      color: var(--orange); font-weight: 700; font-size: 13px;
+    }
+
+    /* Fee + CTA */
+    .fee-box {
+      background: var(--navy); border-radius: 20px;
+      padding: 28px; color: white;
+    }
+    .fee-label {
+      font-size: 11px; opacity: 0.6;
+      text-transform: uppercase; letter-spacing: 0.12em;
+    }
+    .fee-amount {
+      font-size: 38px; font-weight: 700; margin: 4px 0 20px;
+    }
+    .btn-adopt {
+      display: block; width: 100%;
+      padding: 16px; border-radius: 16px;
+      background: var(--orange); color: white;
+      font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 700;
+      text-align: center; text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.2s; letter-spacing: 0.02em;
+      box-shadow: 0 4px 20px rgba(244,162,97,0.35);
+    }
+    .btn-adopt:hover {
+      background: var(--orange-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(244,162,97,0.45);
+    }
+    .fee-note {
+      font-size: 12px; opacity: 0.55;
+      text-align: center; margin-top: 12px; line-height: 1.5;
+    }
+    .contact-line {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 13px; opacity: 0.7;
+    }
+    .contact-line a { color: var(--sky); text-decoration: none; }
+    .contact-line a:hover { color: var(--orange); }
+
+    /* ── BACK SECTION ── */
+    .back-section {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 48px 64px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px; font-weight: 600;
+      color: var(--navy); margin-bottom: 24px;
+    }
+    .mini-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .mini-card {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(44,62,107,0.07);
+      text-decoration: none; color: var(--text);
+      transition: transform 0.25s, box-shadow 0.25s;
+      display: block;
+    }
+    .mini-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 28px rgba(44,62,107,0.13);
+    }
+    .mini-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .mini-card-body { padding: 16px; }
+    .mini-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 600; color: var(--navy);
+    }
+    .mini-sub { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+    .mini-fee { font-size: 15px; font-weight: 700; color: var(--orange); margin-top: 8px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy); color: white;
+      padding: 48px; text-align: center;
+    }
+    .footer-logo img { height: 36px; filter: brightness(0) invert(1); margin-bottom: 12px; }
+    footer p { font-size: 14px; opacity: 0.5; }
+    .footer-links { margin: 12px 0 20px; }
+    .footer-links a { color: var(--sky); text-decoration: none; font-size: 14px; margin: 0 12px; }
+    .footer-links a:hover { color: var(--orange); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .detail-panel { position: static; }
+      nav, .breadcrumb, .profile-layout, .back-section { padding-left: 24px; padding-right: 24px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .mini-grid { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: 1fr 1fr; }
+      .photo-main img { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="images/watermark.png" alt="Studio Vroom" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="family.html">Studio Vroom Family</a></li>
+      <li><a href="index.html#work">Our Work</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span>/</span>
+    <a href="family.html">Studio Vroom Family</a>
+    <span>/</span>
+    Sunny
+  </div>
+
+  <div class="profile-layout">
+
+    <!-- LEFT -->
+    <div>
+      <div class="photo-main">
+        <img id="mainPhoto"
+          src="images/car-sunny.jpg"
+          alt="Sunny" / onerror="this.src='images/placeholder-car.svg'">
+      </div>
+      <div class="photo-thumbs">
+        <div class="photo-thumb active" onclick="switchPhoto(this, 'images/car-sunny.jpg')">
+          <img src="images/car-sunny.jpg" alt="" / onerror="this.src='images/placeholder-car.svg'">
+        </div>
+        <div class="photo-thumb" onclick="switchPhoto(this, 'images/car-gray.jpg')">
+          <img src="images/car-gray.jpg" alt="" / onerror="this.src='images/placeholder-car.svg'">
+        </div>
+        <div class="photo-thumb" onclick="switchPhoto(this, 'images/car-luna.jpg')">
+          <img src="images/car-luna.jpg" alt="" / onerror="this.src='images/placeholder-car.svg'">
+        </div>
+        <div class="photo-thumb" onclick="switchPhoto(this, 'images/car-rosie.jpg')">
+          <img src="images/car-rosie.jpg" alt="" / onerror="this.src='images/placeholder-car.svg'">
+        </div>
+      </div>
+
+      <div class="story-card">
+        <h3>"Hi, I'm Sunny — and I'm ready for my forever home."</h3>
+        <p>I've been well taken care of my whole life. I'm clean, reliable, and I never give you trouble on a cold morning. I love long highway drives and quick grocery runs alike. If you're looking for someone calm, dependable, and always there for you — I think we'd make a great match.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="detail-panel">
+      <div class="detail-status">
+        <span class="status-dot"></span>
+        Looking for a Forever Family
+      </div>
+
+      <p class="detail-name">Sunny</p>
+      <p class="detail-model">2019 Toyota Camry LE · Silver · 4-Door Sedan</p>
+
+      <div class="traits-wrap">
+        <span class="trait-pill">😌 Calm &amp; Reliable</span>
+        <span class="trait-pill">🌟 Low Mileage</span>
+        <span class="trait-pill">⛽ Fuel Efficient</span>
+        <span class="trait-pill">🛡️ Safety Rated</span>
+      </div>
+
+      <p class="section-label">Health &amp; Background</p>
+      <div class="specs-grid">
+        <div class="spec-box">
+          <div class="spec-box-label">Year</div>
+          <div class="spec-box-value">2019</div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-box-label">Mileage</div>
+          <div class="spec-box-value">38,200 mi</div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-box-label">Engine</div>
+          <div class="spec-box-value">2.5L 4-cyl</div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-box-label">Transmission</div>
+          <div class="spec-box-value">Automatic</div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-box-label">Exterior</div>
+          <div class="spec-box-value">Silver</div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-box-label">Interior</div>
+          <div class="spec-box-value">Black Cloth</div>
+        </div>
+      </div>
+
+      <p class="section-label">Personality Traits</p>
+      <ul class="features-list">
+        <li>Apple CarPlay &amp; Android Auto</li>
+        <li>Toyota Safety Sense (pre-collision, lane assist)</li>
+        <li>Backup camera</li>
+        <li>Keyless entry &amp; push-button start</li>
+        <li>Dual-zone automatic climate control</li>
+        <li>No accidents — clean Carfax</li>
+      </ul>
+
+      <div class="fee-box">
+        <div class="fee-label">Adoption Fee</div>
+        <div class="fee-amount">$17,900</div>
+        <a href="index.html#contact" class="btn-adopt">Start Adoption Process 🩵</a>
+        <p class="fee-note">By appointment only · No pressure, just a conversation</p>
+        <div class="contact-line">
+          📧 <a href="mailto:info@studio-vroom.com">info@studio-vroom.com</a>
+          &nbsp;·&nbsp; Bensenville, IL
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MORE CARS -->
+  <div class="back-section">
+    <h2 class="section-title">More looking for a forever family</h2>
+    <div class="mini-grid">
+      <a href="car-detail.html" class="mini-card">
+        <img src="images/car-gray.jpg" alt="Blu" / onerror="this.src='images/placeholder-car.svg'">
+        <div class="mini-card-body">
+          <p class="mini-name">Blu</p>
+          <p class="mini-sub">2020 Honda Accord Sport</p>
+          <p class="mini-fee">$21,500</p>
+        </div>
+      </a>
+      <a href="car-detail.html" class="mini-card">
+        <img src="images/car-luna.jpg" alt="Luna" / onerror="this.src='images/placeholder-car.svg'">
+        <div class="mini-card-body">
+          <p class="mini-name">Luna</p>
+          <p class="mini-sub">2018 Nissan Rogue SV</p>
+          <p class="mini-fee">$16,400</p>
+        </div>
+      </a>
+      <a href="car-detail.html" class="mini-card">
+        <img src="images/car-rosie.jpg" alt="Max" / onerror="this.src='images/placeholder-car.svg'">
+        <div class="mini-card-body">
+          <p class="mini-name">Max</p>
+          <p class="mini-sub">2021 Jeep Compass Latitude</p>
+          <p class="mini-fee">$24,800</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="images/watermark.png" alt="Studio Vroom" />
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="family.html">Family</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <p>© 2024 Studio Vroom · The World's First Car Adoption Agency 🩵</p>
+  </footer>
+
+  <script>
+    function switchPhoto(thumb, src) {
+      document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      document.getElementById('mainPhoto').src = src;
+    }
+  </script>
+</body>
+</html>

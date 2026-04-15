@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Map pin shape -->
+  <path d="M24 8 C17 8 12 13.5 12 20 C12 28 24 40 24 40 C24 40 36 28 36 20 C36 13.5 31 8 24 8 Z" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- Inner circle -->
+  <circle cx="24" cy="20" r="5.5" stroke="#e8704a" stroke-width="2.2"/>
+  <circle cx="24" cy="20" r="2" fill="#e8704a"/>
+</svg>
