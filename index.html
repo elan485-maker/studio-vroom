@@ -3,2660 +3,1022 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Vroom | Car Adoption Agency</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <title>Studio Vroom | The World's First Car Adoption Agency</title>
+  <meta name="description" content="Studio Vroom is the world's first car adoption agency. Every car deserves a forever family. Bensenville, IL." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --sky: #C8E8F4;
-      --sky-light: #eaf5fa;
-      --navy: #2C3E6B;
-      --navy-light: #4a5f8a;
-      --orange: #e8704a;
-      --orange-light: #f4a261;
-      --cream: #FDFAF5;
-      --text: #2e2418;
-      --text-light: #8899a8;
-      --green: #4aaa82;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      color: var(--text);
-      background: var(--cream);
-    }
-
-    /* ══════════════════════════════════════
-       NAV
-    ══════════════════════════════════════ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      height: 68px;
-      background: rgba(0,0,0,0.0);
-      backdrop-filter: blur(0px);
-      border-bottom: 1px solid rgba(255,255,255,0.0);
-      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
-    }
-
-    nav.scrolled {
-      background: rgba(10,10,10,0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .nav-logo img {
-      height: 38px;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 0;
-      list-style: none;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      font-family: 'Nunito', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      color: rgba(255,255,255,0.88);
-      text-transform: uppercase;
-      padding: 8px 18px;
-      border-radius: 8px;
-      transition: color 0.2s, background 0.2s;
-    }
-
-    .nav-links a:hover { color: white; background: rgba(255,255,255,0.1); }
-    .nav-links a.active { color: var(--orange); }
-
-    .nav-cta {
-      background: var(--orange) !important;
-      color: white !important;
-      border-radius: 24px !important;
-      padding: 9px 22px !important;
-      margin-left: 8px;
-    }
-    .nav-cta:hover { background: #d4603a !important; color: white !important; }
-
-    /* ══════════════════════════════════════
-       HERO
-    ══════════════════════════════════════ */
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 640px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center center;
-      filter: brightness(0.92);
-      transition: opacity 1.8s ease-in-out;
-    }
-
-    .hero-bg-1 {
-      background-image: url('cars/panamera/interior.jpg');
-      background-position: center 40%;
-      opacity: 1;
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(0,0,0,0.55) 0%,
-        rgba(0,0,0,0.05) 40%,
-        rgba(0,0,0,0.0) 60%,
-        rgba(0,0,0,0.45) 100%
-      );
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      color: white;
-      padding: 110px 24px 0;
-      max-width: 720px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      backdrop-filter: blur(8px);
-      padding: 8px 20px;
-      border-radius: 32px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-    }
-
-    .hero-logo {
-      height: 64px;
-      margin-bottom: 20px;
-      filter: brightness(0) invert(1);
-      opacity: 0.95;
-    }
-
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 8vw, 96px);
-      font-weight: 400;
-      font-style: italic;
-      line-height: 1.05;
-      margin-bottom: 18px;
-      text-shadow: 0 2px 24px rgba(0,0,0,0.3);
-    }
-
-    .hero-subtitle {
-      font-family: 'Nunito', sans-serif;
-      font-size: 17px;
-      font-weight: 300;
-      opacity: 0.88;
-      max-width: 440px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
-      letter-spacing: 0.01em;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      border-radius: 32px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      transition: all 0.22s;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-primary {
-      background: var(--orange);
-      color: white;
-      box-shadow: 0 4px 20px rgba(232,112,74,0.4);
-    }
-    .btn-primary:hover {
-      background: #d4603a;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(232,112,74,0.5);
-    }
-
-    .btn-ghost {
-      background: rgba(255,255,255,0.12);
-      color: white;
-      border: 1.5px solid rgba(255,255,255,0.55);
-      backdrop-filter: blur(4px);
-    }
-    .btn-ghost:hover {
-      background: rgba(255,255,255,0.22);
-      border-color: white;
-    }
-
-    .btn-navy {
-      background: var(--navy);
-      color: white;
-      box-shadow: 0 4px 16px rgba(44,62,107,0.25);
-    }
-    .btn-navy:hover { background: var(--navy-light); transform: translateY(-2px); }
-
-    .hero-scroll-hint {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.6);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .hero-scroll-hint::after {
-      content: '';
-      width: 1px;
-      height: 44px;
-      background: rgba(255,255,255,0.45);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%,100% { opacity: 0.4; transform: scaleY(1); }
-      50% { opacity: 1; transform: scaleY(1.15); }
-    }
-
-    /* ══════════════════════════════════════
-       SHARED SECTION STYLES
-    ══════════════════════════════════════ */
-    section { padding: 96px 48px; }
-
-    .section-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--orange);
-      margin-bottom: 10px;
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(34px, 4vw, 52px);
-      font-weight: 600;
-      color: var(--navy);
-      line-height: 1.15;
-      margin-bottom: 14px;
-    }
-
-    .section-sub {
-      font-size: 16px;
-      color: var(--text-light);
-      line-height: 1.75;
-      max-width: 520px;
-    }
-
-    /* ══════════════════════════════════════
-       INVENTORY SECTION
-    ══════════════════════════════════════ */
-    #inventory {
-      background: var(--cream);
-    }
-
-    .inventory-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 52px;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-
-    .cars-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 28px;
-    }
-
-    .car-card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 2px 24px rgba(44,62,107,0.08);
-      transition: transform 0.25s, box-shadow 0.25s;
-      text-decoration: none;
-      color: var(--text);
-      display: block;
-    }
-
-    .car-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 36px rgba(44,62,107,0.15);
-    }
-
-    .car-card-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .car-card-body { padding: 20px 22px 22px; }
-
-    .car-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(200,232,244,0.5);
-      color: var(--navy);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      padding: 4px 12px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-
-    .car-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 600;
-      font-style: italic;
-      color: var(--navy);
-      margin-bottom: 3px;
-    }
-
-    .car-model {
-      font-size: 13px;
-      color: var(--text-light);
-      margin-bottom: 14px;
-    }
-
-    .car-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid #f0f2f6;
-      padding-top: 14px;
-    }
-
-    .car-fee {
-      font-size: 12px;
-      color: var(--text-light);
-    }
-
-    .car-fee strong {
-      display: block;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--navy);
-      font-family: 'Cormorant Garamond', serif;
-      line-height: 1.2;
-    }
-
-    .btn-sm {
-      padding: 8px 18px;
-      font-size: 12px;
-      font-weight: 700;
-      font-family: 'Nunito', sans-serif;
-      border-radius: 20px;
-      background: var(--navy);
-      color: white;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-      letter-spacing: 0.04em;
-    }
-    .btn-sm:hover { background: var(--navy-light); transform: translateY(-1px); }
-
-    /* Featured card (Maestro) */
-    .car-card.featured {
-      border: 2px solid #1a1e2e;
-      background: #1a1e2e;
-    }
-    .car-card.featured .car-name { color: #e8c97a; }
-    .car-card.featured .car-model { color: rgba(255,255,255,0.5); }
-    .car-card.featured .car-body { background: #1a1e2e; }
-    .car-card.featured .car-footer { border-color: rgba(255,255,255,0.08); }
-    .car-card.featured .car-fee { color: rgba(255,255,255,0.45); }
-    .car-card.featured .car-fee strong { color: #e8c97a; }
-    .car-card.featured .car-status {
-      background: rgba(201,168,76,0.15);
-      color: #e8c97a;
-      border: 1px solid rgba(201,168,76,0.3);
-    }
-    .car-card.featured .btn-sm { background: #C9A84C; color: #1a1e2e; }
-    .car-card.featured .btn-sm:hover { background: #e8c97a; }
-    .car-card.featured .car-card-body { background: #1a1e2e; color: white; }
-
-    /* ══════════════════════════════════════
-       HOW TO PROCESS SECTION
-    ══════════════════════════════════════ */
-    #process {
-      background: linear-gradient(180deg, var(--sky-light) 0%, var(--sky) 100%);
-      padding: 96px 48px 112px;
-    }
-
-    .process-header {
-      text-align: center;
-      margin-bottom: 72px;
-    }
-
-    .process-header .section-title {
-      font-size: clamp(36px, 4.5vw, 56px);
-    }
-
-    .process-header .section-sub {
-      margin: 0 auto;
-      text-align: center;
-      max-width: 480px;
-    }
-
-    /* ── Top row: Steps 1 & 2 ── */
-    .steps-top {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      max-width: 520px;
-      margin: 0 auto 12px;
-      position: relative;
-    }
-    .steps-top::after {
-      content: '';
-      position: absolute;
-      top: 44px;
-      left: calc(25% + 20px);
-      right: calc(25% + 20px);
-      height: 2px;
-      background: linear-gradient(90deg, rgba(44,62,107,0.2), rgba(44,62,107,0.4), rgba(44,62,107,0.2));
-    }
-
-    /* ── Down arrow ── */
-    .step-arrow {
-      text-align: center;
-      color: var(--navy);
-      opacity: 0.35;
-      font-size: 28px;
-      margin: 4px 0;
-      line-height: 1;
-    }
-
-    /* ── A/B choice rows (steps 3 & 4) ── */
-    .step-choice-row {
-      display: grid;
-      grid-template-columns: 1fr 72px 1fr;
-      gap: 0;
-      align-items: center;
-      max-width: 680px;
-      margin: 0 auto 12px;
-    }
-
-    .step-choice-or {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 700;
-      font-style: italic;
-      color: var(--orange);
-      letter-spacing: 0.04em;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .step-choice-or::before,
-    .step-choice-or::after {
-      content: '';
-      display: block;
-      width: 1px;
-      height: 36px;
-      background: linear-gradient(180deg, transparent, rgba(44,62,107,0.2), transparent);
-    }
-
-    .step-option {
-      background: white;
-      border-radius: 20px;
-      padding: 28px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 4px 24px rgba(44,62,107,0.10);
-      border: 2px solid rgba(44,62,107,0.06);
-      transition: transform 0.25s, box-shadow 0.25s;
-      cursor: default;
-    }
-    .step-option:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 36px rgba(44,62,107,0.17);
-    }
-
-    .step-option-badge {
-      font-family: 'Nunito', sans-serif;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: white;
-      background: var(--orange);
-      border-radius: 20px;
-      padding: 3px 12px;
-      margin-bottom: 14px;
-    }
-
-    .step-option-icon {
-      width: 52px;
-      height: 52px;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    .step-option-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 21px;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 8px;
-      line-height: 1.2;
-    }
-
-    .step-option-desc {
-      font-size: 13px;
-      color: var(--text-light);
-      line-height: 1.65;
-    }
-
-    /* ── Step label above each choice row ── */
-    .step-choice-label {
-      text-align: center;
-      max-width: 680px;
-      margin: 0 auto 14px;
-    }
-    .step-choice-label-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--orange);
-    }
-    .step-choice-label-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--navy);
-      opacity: 0.5;
-    }
-
-    /* ── Bottom row: Step 5 ── */
-    .steps-bottom {
-      max-width: 200px;
-      margin: 8px auto 0;
-    }
-
-    /* Shared small step styles (1, 2, 5) */
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 0 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .step-number-wrap {
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 4px 24px rgba(44,62,107,0.14);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      border: 2px solid rgba(44,62,107,0.08);
-      transition: transform 0.25s, box-shadow 0.25s;
-      cursor: default;
-    }
-
-    .step:hover .step-number-wrap {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 10px 32px rgba(44,62,107,0.2);
-    }
-
-    .step-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--orange);
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-
-    .step-icon {
-      width: 40px;
-      height: 40px;
-      display: block;
-    }
-
-    .step-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 19px;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 8px;
-      line-height: 1.2;
-    }
-
-    .step-desc {
-      font-size: 13px;
-      color: var(--text-light);
-      line-height: 1.65;
-    }
-
-    /* Last step — Home — special */
-    .step-home .step-number-wrap {
-      background: var(--navy);
-      border-color: var(--navy);
-    }
-    .step-home .step-icon { filter: brightness(0) invert(1); }
-    .step-home .step-num { color: rgba(200,232,244,0.9); }
-    .step-home .step-title { color: var(--navy); }
-
-    /* ══════════════════════════════════════
-       ANTHEM SECTION
-    ══════════════════════════════════════ */
-    #anthem {
-      background: var(--navy);
-      padding: 96px 48px 112px;
-      text-align: center;
-    }
-
-    #anthem .section-label { color: rgba(200,232,244,0.6); }
-    #anthem .section-title { color: white; }
-    #anthem .section-sub   { color: rgba(255,255,255,0.55); margin: 0 auto; max-width: 440px; }
-
-    /* ── Custom audio player ── */
-    .anthem-player {
-      margin: 52px auto 0;
-      max-width: 480px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(200,232,244,0.15);
-      border-radius: 28px;
-      padding: 36px 40px 32px;
-      backdrop-filter: blur(8px);
-    }
-
-    .anthem-track-info {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .anthem-album-art {
-      width: 72px;
-      height: 72px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--orange) 0%, #2C3E6B 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 8px 24px rgba(232,112,74,0.3);
-    }
-
-    .anthem-album-art img {
-      width: 44px;
-      height: 44px;
-      filter: brightness(0) invert(1);
-      opacity: 0.9;
-    }
-
-    .anthem-track-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-style: italic;
-      font-weight: 600;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    .anthem-track-artist {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(200,232,244,0.5);
-    }
-
-    /* Progress bar */
-    .anthem-progress-wrap {
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    .anthem-progress-bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(255,255,255,0.12);
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .anthem-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--orange), var(--sky));
-      border-radius: 4px;
-      transition: width 0.1s linear;
-    }
-
-    .anthem-time-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      margin-top: 6px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    /* Controls */
-    .anthem-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 24px;
-    }
-
-    .anthem-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      color: rgba(255,255,255,0.5);
-      transition: color 0.2s, transform 0.2s;
-      display: flex;
-      align-items: center;
-    }
-
-    .anthem-btn:hover { color: white; transform: scale(1.1); }
-
-    .anthem-play-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: var(--orange);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 24px rgba(232,112,74,0.4);
-      transition: transform 0.2s, box-shadow 0.2s;
-      color: white;
-    }
-
-    .anthem-play-btn:hover {
-      transform: scale(1.06);
-      box-shadow: 0 10px 32px rgba(232,112,74,0.5);
-    }
-
-    .anthem-play-btn svg { margin-left: 3px; }
-    .anthem-play-btn.playing svg.play-icon { display: none; }
-    .anthem-play-btn:not(.playing) svg.pause-icon { display: none; }
-
-    /* Volume */
-    .anthem-volume-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      justify-content: center;
-    }
-
-    .anthem-volume-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: rgba(255,255,255,0.35);
-      display: flex;
-      align-items: center;
-    }
-
-    .anthem-volume-slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 80px;
-      height: 3px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 3px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .anthem-volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.6);
-      cursor: pointer;
-    }
-
-    /* ══════════════════════════════════════
-       FLOATING MUSIC PILL
-    ══════════════════════════════════════ */
-    #musicPill {
-      position: fixed;
-      bottom: 28px;
-      left: 28px;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(44,62,107,0.82);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(200,232,244,0.18);
-      border-radius: 32px;
-      padding: 9px 18px 9px 10px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
-      cursor: default;
-      transition: opacity 0.3s, transform 0.3s;
-      opacity: 0.7;
-    }
-    #musicPill:hover { opacity: 1; transform: translateY(-2px); }
-
-    #musicToggle {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--orange);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-    #musicToggle:hover { background: #d4603a; }
-
-    /* Equalizer bars — show when playing */
-    .eq-bars {
-      display: none;
-      align-items: flex-end;
-      gap: 2.5px;
-      height: 14px;
-    }
-    #musicPill.playing .eq-bars { display: flex; }
-    #musicPill.playing .pause-ico { display: none; }
-    #musicPill:not(.playing) .eq-bars { display: none; }
-    #musicPill:not(.playing) .pause-ico { display: block; }
-
-    .bar {
-      width: 3px;
-      border-radius: 2px;
-      background: white;
-      animation: eq 0.8s ease-in-out infinite alternate;
-    }
-    .b1 { height: 6px;  animation-delay: 0s;    animation-duration: 0.7s; }
-    .b2 { height: 12px; animation-delay: 0.15s; animation-duration: 0.9s; }
-    .b3 { height: 8px;  animation-delay: 0.05s; animation-duration: 0.6s; }
-    .b4 { height: 10px; animation-delay: 0.25s; animation-duration: 1.0s; }
-
-    @keyframes eq {
-      from { transform: scaleY(0.3); }
-      to   { transform: scaleY(1); }
-    }
-
-    .pill-label {
-      font-family: 'Nunito', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: rgba(200,232,244,0.85);
-      white-space: nowrap;
-    }
-
-    /* ══════════════════════════════════════
-       OUR WORK SECTION
-    ══════════════════════════════════════ */
-    #work {
-      background: var(--navy);
-      color: white;
-    }
-
-    #work .section-label { color: var(--sky); }
-    #work .section-title { color: white; }
-    #work .section-sub { color: rgba(255,255,255,0.6); }
-
-    .work-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 52px;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-
-    .work-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .work-card {
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .work-card-img {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      display: block;
-      filter: brightness(0.65);
-      transition: filter 0.35s, transform 0.35s;
-    }
-
-    .work-card:hover .work-card-img {
-      filter: brightness(0.8);
-      transform: scale(1.04);
-    }
-
-    .work-card-overlay {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 56px 22px 22px;
-      background: linear-gradient(to top, rgba(0,0,0,0.72), transparent);
-    }
-
-    .work-card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      font-weight: 600;
-      color: white;
-      margin-bottom: 4px;
-    }
-
-    .work-card-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.75);
-      line-height: 1.5;
-    }
-
-    /* Detailing special card */
-    .work-card-feature {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(200,232,244,0.12);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 260px;
-      padding: 36px;
-      text-align: center;
-      transition: background 0.25s;
-    }
-
-    .work-card-feature:hover { background: rgba(255,255,255,0.09); }
-
-    .work-feature-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .work-feature-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      font-weight: 600;
-      color: white;
-      margin-bottom: 8px;
-    }
-
-    .work-feature-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.65;
-    }
-
-    /* ══════════════════════════════════════
-       ABOUT SECTION
-    ══════════════════════════════════════ */
-    #about {
-      background: var(--sky-light);
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 72px;
-      align-items: center;
-    }
-
-    .about-img {
-      width: 100%;
-      height: 460px;
-      object-fit: cover;
-      border-radius: 24px;
-      box-shadow: 0 12px 48px rgba(44,62,107,0.18);
-    }
-
-    .about-text .section-title { margin-bottom: 20px; }
-
-    .about-text p {
-      font-size: 15.5px;
-      line-height: 1.85;
-      color: #4a5068;
-      margin-bottom: 16px;
-    }
-
-    blockquote {
-      border-left: 3px solid var(--orange);
-      padding: 14px 0 14px 22px;
-      margin: 24px 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-style: italic;
-      color: var(--navy);
-      line-height: 1.5;
-    }
-
-    /* ══════════════════════════════════════
-       ADOPTED SECTION
-    ══════════════════════════════════════ */
-    #adopted {
-      background: var(--cream);
-    }
-
-    .adopted-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 24px;
-    }
-
-    .adopted-card {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 2px 16px rgba(44,62,107,0.06);
-    }
-
-    .adopted-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      filter: grayscale(0.7);
-    }
-
-    .adopted-badge {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: rgba(74,170,130,0.9);
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      padding: 5px 12px;
-      border-radius: 12px;
-      backdrop-filter: blur(4px);
-    }
-
-    .adopted-body {
-      padding: 16px 18px;
-    }
-
-    .adopted-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      font-style: italic;
-      color: var(--navy);
-      margin-bottom: 3px;
-      opacity: 0.7;
-    }
-
-    .adopted-model {
-      font-size: 12px;
-      color: var(--text-light);
-    }
-
-    /* ══════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════ */
-    footer {
-      background: #1a1510;
-      color: white;
-      padding: 72px 48px 36px;
-    }
-
-    .footer-inner { max-width: 1120px; margin: 0 auto; }
-
-    .footer-top {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 56px;
-      margin-bottom: 56px;
-    }
-
-    .footer-logo img {
-      height: 40px;
-      filter: brightness(0) invert(1);
-      margin-bottom: 16px;
-      opacity: 0.85;
-    }
-
-    .footer-tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 16px;
-      font-style: italic;
-      color: rgba(253,237,210,0.55);
-      line-height: 1.8;
-      max-width: 280px;
-      margin-bottom: 24px;
-    }
-
-    .footer-col h4 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #c8a96e;
-      margin-bottom: 20px;
-    }
-
-    .footer-col a, .footer-col p {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 17px;
-      color: rgba(253,237,210,0.62);
-      line-height: 2.1;
-      text-decoration: none;
-      display: block;
-      transition: color 0.2s;
-    }
-
-    .footer-col a:hover { color: #c8a96e; }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(200,169,110,0.15);
-      padding-top: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      font-style: italic;
-      color: rgba(253,237,210,0.28);
-    }
-
-    /* ══════════════════════════════════════
-       HAMBURGER MENU
-    ══════════════════════════════════════ */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 8px;
-      background: none;
-      border: none;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--navy);
-      border-radius: 2px;
-      transition: all 0.25s;
-    }
-
-    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-
-    .mobile-menu {
-      display: none;
-      position: fixed;
-      top: 68px; left: 0; right: 0;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(16px);
-      z-index: 99;
-      padding: 16px 0 24px;
-      border-bottom: 1px solid rgba(200,232,244,0.5);
-      box-shadow: 0 8px 32px rgba(44,62,107,0.1);
-    }
-
-    .mobile-menu.open { display: block; }
-
-    .mobile-menu a {
-      display: block;
-      padding: 14px 28px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--navy);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(200,232,244,0.3);
-      transition: color 0.2s, background 0.2s;
-    }
-
-    .mobile-menu a:hover { color: var(--orange); background: rgba(232,112,74,0.04); }
-
-    .mobile-menu .mobile-cta {
-      margin: 16px 28px 0;
-      display: block;
-      text-align: center;
-      background: var(--orange);
-      color: white !important;
-      border-radius: 24px;
-      padding: 14px 24px;
-      border: none;
-    }
-
-    /* ══════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════ */
-    @media (max-width: 960px) {
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      section { padding: 64px 20px; }
-      #process { padding: 64px 20px 80px; }
-
-      .steps-top { grid-template-columns: 1fr 1fr; max-width: 100%; }
-      .step-choice-row { grid-template-columns: 1fr 48px 1fr; max-width: 100%; }
-      .step-choice-or { font-size: 16px; }
-      .step-option { padding: 20px 14px 18px; }
-
-      .work-grid { grid-template-columns: 1fr; }
-      .about-grid { grid-template-columns: 1fr; }
-      .about-img { height: 300px; }
-      .footer-top { grid-template-columns: 1fr; gap: 36px; }
-      footer { padding: 48px 20px 28px; }
-      .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
-    }
-
-    @media (max-width: 600px) {
-      .cars-grid { grid-template-columns: 1fr; }
-      .step-choice-row { grid-template-columns: 1fr 36px 1fr; }
-      .step-choice-or { font-size: 13px; gap: 3px; }
-      .step-choice-or::before, .step-choice-or::after { height: 20px; }
-      .step-option-title { font-size: 17px; }
-      .steps-top { padding: 0 8px; }
-      .inventory-header { flex-direction: column; align-items: flex-start; }
-      .work-header { flex-direction: column; align-items: flex-start; }
-      .hero-title { font-size: 52px; }
-      #perks { padding: 0 20px 60px; }
-      #perks .section-inner > div { grid-template-columns: 1fr !important; gap: 20px !important; }
-    }
-
-    /* ══════════════════════════════════════
-       LIGHTBOX
-    ══════════════════════════════════════ */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,0.92);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      cursor: zoom-out;
-    }
-    .lightbox.open {
-      display: flex;
-    }
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 8px 60px rgba(0,0,0,0.6);
-      cursor: default;
-      animation: lbFadeIn 0.25s ease;
-    }
-    @keyframes lbFadeIn {
-      from { opacity: 0; transform: scale(0.93); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .lightbox-close {
-      position: fixed;
-      top: 20px;
-      right: 28px;
-      font-size: 36px;
-      color: white;
-      cursor: pointer;
-      line-height: 1;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-      user-select: none;
-    }
-    .lightbox-close:hover { opacity: 1; }
-    .lightbox-nav {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 48px;
-      color: white;
-      cursor: pointer;
-      opacity: 0.6;
-      transition: opacity 0.2s;
-      user-select: none;
-      padding: 0 16px;
-    }
-    .lightbox-nav:hover { opacity: 1; }
-    .lightbox-prev { left: 12px; }
-    .lightbox-next { right: 12px; }
-    .lightbox-counter {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,0.6);
-      font-size: 13px;
-      font-family: 'Nunito', sans-serif;
-      letter-spacing: 0.05em;
-    }
-    .adopted-card {
-      cursor: pointer;
-    }
-    .adopted-card img {
-      transition: transform 0.3s ease;
-    }
-    .adopted-card:hover img {
-      transform: scale(1.04);
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --sky:#C8E8F4; --sky-deep:#a9d9ec; --sky-soft:#eaf6fb;
+      --cream:#FDF8F2; --cream-2:#f7efe4;
+      --orange:#F4A261; --orange-deep:#e8814a;
+      --brown:#3A3028; --brown-soft:#6b5d50;
+      --white:#ffffff;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Nunito',sans-serif;color:var(--brown);background:var(--cream);line-height:1.6;overflow-x:hidden}
+    h1,h2,h3,.serif{font-family:'Playfair Display',serif;font-weight:600;line-height:1.12;color:var(--brown)}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+    .eyebrow{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--orange-deep);margin-bottom:14px}
+    .sec-title{font-size:clamp(30px,4.4vw,48px);margin-bottom:14px}
+    .sec-sub{font-size:17px;color:var(--brown-soft);max-width:560px}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+      padding:14px 32px;transition:background .35s,box-shadow .35s,padding .35s;background:rgba(253,248,242,0)}
+    nav.scrolled{background:rgba(253,248,242,.92);backdrop-filter:blur(14px);box-shadow:0 4px 24px rgba(58,48,40,.08);padding:10px 32px}
+    .nav-logo img{height:42px;object-fit:contain;transition:filter .35s}
+    nav:not(.scrolled) .nav-logo img{filter:brightness(0) invert(1)}
+    .nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+    .nav-links a{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:9px 15px;border-radius:10px;color:#fff;transition:color .2s,background .2s}
+    nav.scrolled .nav-links a{color:var(--brown)}
+    .nav-links a:hover{background:rgba(244,162,97,.18);color:var(--orange-deep)}
+    .nav-cta{background:var(--orange)!important;color:#fff!important;border-radius:24px;padding:10px 20px!important;box-shadow:0 6px 16px rgba(232,129,74,.32)}
+    .nav-cta:hover{background:var(--orange-deep)!important;color:#fff!important}
+    .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+    .hamburger span{width:26px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+    nav.scrolled .hamburger span{background:var(--brown)}
+    .mobile-menu{position:fixed;inset:0 0 0 auto;width:78%;max-width:320px;background:var(--cream);z-index:300;transform:translateX(100%);transition:transform .35s;box-shadow:-10px 0 40px rgba(0,0,0,.15);padding:90px 28px;display:flex;flex-direction:column;gap:6px}
+    .mobile-menu.open{transform:translateX(0)}
+    .mobile-menu a{font-size:18px;font-weight:700;padding:14px 10px;border-bottom:1px solid var(--cream-2)}
+    .mm-close{position:absolute;top:24px;right:24px;font-size:30px;background:none;border:0;cursor:pointer;color:var(--brown)}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+    .hero-bg{position:absolute;inset:0;background:url('cars/panamera/interior.jpg') center 38%/cover no-repeat;transform:scale(1.05)}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,60,80,.55) 0%,rgba(60,90,110,.30) 45%,rgba(200,232,244,.55) 100%)}
+    .hero-inner{position:relative;z-index:3;color:#fff;padding:120px 24px 80px;max-width:760px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(8px);
+      padding:9px 22px;border-radius:30px;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:26px}
+    .hero h1{color:#fff;font-size:clamp(50px,9vw,104px);font-weight:500;font-style:italic;margin-bottom:20px;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+    .hero p{font-size:clamp(17px,2.2vw,21px);font-weight:400;opacity:.95;margin-bottom:38px;text-shadow:0 2px 14px rgba(0,0,0,.3)}
+    .hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15px;padding:15px 30px;border-radius:30px;cursor:pointer;border:0;transition:transform .2s,box-shadow .2s,background .2s}
+    .btn-primary{background:var(--orange);color:#fff;box-shadow:0 10px 26px rgba(232,129,74,.4)}
+    .btn-primary:hover{background:var(--orange-deep);transform:translateY(-3px)}
+    .btn-ghost{background:rgba(255,255,255,.16);color:#fff;border:1.5px solid rgba(255,255,255,.6);backdrop-filter:blur(6px)}
+    .btn-ghost:hover{background:rgba(255,255,255,.28);transform:translateY(-3px)}
+    .scroll-cue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:3;color:#fff;font-size:11px;letter-spacing:.25em;text-transform:uppercase;opacity:.85;animation:bob 2s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+    #family{padding:100px 0;background:linear-gradient(180deg,var(--cream) 0%,var(--sky-soft) 100%)}
+    .fam-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:46px;flex-wrap:wrap}
+    .cars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+    .car-card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 8px 30px rgba(58,48,40,.09);transition:transform .28s,box-shadow .28s;display:flex;flex-direction:column}
+    .car-card:hover{transform:translateY(-8px);box-shadow:0 18px 44px rgba(58,48,40,.16)}
+    .car-card.featured{outline:2px solid var(--orange);outline-offset:-2px}
+    .car-img-wrap{aspect-ratio:4/3;overflow:hidden;background:var(--sky)}
+    .car-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .car-card:hover .car-img-wrap img{transform:scale(1.07)}
+    .car-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .car-status{font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--orange-deep)}
+    .car-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:600}
+    .car-model{font-size:13.5px;color:var(--brown-soft)}
+    .car-foot{margin-top:auto;padding-top:16px;display:flex;align-items:flex-end;justify-content:space-between}
+    .car-fee span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--brown-soft)}
+    .car-fee strong{font-family:'Playfair Display',serif;font-size:22px;color:var(--orange-deep)}
+    .btn-sm{background:var(--sky);color:var(--brown);font-weight:800;font-size:12.5px;padding:9px 16px;border-radius:20px;transition:background .2s,color .2s}
+    .car-card:hover .btn-sm{background:var(--orange);color:#fff}
+    .car-foot{flex-wrap:wrap;gap:10px}
+    .car-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .carfax-link{display:inline-flex;align-items:center;gap:4px;background:#eaf6fb;color:#2C3E6B;font-weight:800;font-size:11.5px;padding:8px 12px;border-radius:20px;border:1px solid #cfe8f4;transition:background .2s,color .2s}
+    .carfax-link:hover{background:#2C3E6B;color:#fff}
+    .at-link{display:inline-flex;align-items:center;gap:4px;background:#fdf1e2;color:#b45f2b;font-weight:800;font-size:11.5px;padding:8px 12px;border-radius:20px;border:1px solid #f4d9bd;transition:background .2s,color .2s}
+    .at-link:hover{background:#e8814a;color:#fff}
+
+    .promo-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:56px}
+    .promo{border-radius:22px;overflow:hidden;box-shadow:0 8px 30px rgba(58,48,40,.1);transition:transform .25s}
+    .promo:hover{transform:translateY(-6px)}
+    .promo img{width:100%}
+
+    #process{padding:100px 0;background:var(--cream)}
+    .proc-head{text-align:center;margin-bottom:56px;display:flex;flex-direction:column;align-items:center}
+    .steps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:760px;margin:0 auto}
+    .step{background:var(--white);border-radius:20px;padding:30px 26px;box-shadow:0 6px 22px rgba(58,48,40,.07);display:flex;gap:18px;align-items:flex-start}
+    .step.full{grid-column:1/-1;flex-direction:column;align-items:stretch;background:var(--sky-soft)}
+    .step-num{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--orange-deep);text-transform:uppercase;margin-bottom:6px}
+    .step-ico{width:54px;height:54px;flex:none;background:var(--sky);border-radius:14px;display:flex;align-items:center;justify-content:center;padding:11px}
+    .step-ico img{width:100%;height:100%;object-fit:contain}
+    .step h3{font-size:21px;margin-bottom:6px}
+    .step p{font-size:14.5px;color:var(--brown-soft)}
+    .step-pair{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-top:16px}
+    .step-or{font-weight:800;color:var(--orange-deep);font-size:13px}
+    .mini{display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:14px;padding:18px}
+    .proc-cta{text-align:center;margin-top:44px}
+    #rehome{padding:100px 0;background:var(--sky)}
+    .rehome-paths{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:22px auto 0}
+    .path-card{background:#fff;border-radius:20px;padding:30px 26px;box-shadow:0 8px 26px rgba(58,48,40,.1);display:flex;flex-direction:column;gap:8px;transition:transform .25s}
+    .path-card:hover{transform:translateY(-6px)}
+    .path-card .step-ico{margin-bottom:6px}
+    .path-tag{font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--orange-deep);text-transform:uppercase}
+    .path-card h3{font-size:22px}
+    .path-card p{font-size:14.5px;color:var(--brown-soft)}
+    @media(max-width:680px){.rehome-paths{grid-template-columns:1fr}}
+
+    #work{padding:100px 0;background:linear-gradient(180deg,var(--sky-soft),var(--cream))}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+    .gallery-item{border-radius:16px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 6px 20px rgba(58,48,40,.08)}
+    .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .gallery-item:hover img{transform:scale(1.08)}
+    .sub-h{font-size:26px;margin:54px 0 6px}
+
+    #about{padding:110px 0;background:var(--sky);text-align:center}
+    .about-inner{max-width:760px;margin:0 auto}
+    .about-inner h2{font-size:clamp(30px,4.4vw,46px);margin:14px 0 26px}
+    .about-inner p{font-size:17.5px;color:var(--brown);margin-bottom:18px}
+    .pull-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(22px,3vw,30px);color:var(--orange-deep);margin:30px auto;max-width:600px;line-height:1.4}
+
+    #adopted{padding:100px 0;background:var(--cream)}
+    .adopt-head{text-align:center;margin-bottom:48px;display:flex;flex-direction:column;align-items:center}
+    .adopt-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+    .adopt-card{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1;box-shadow:0 4px 16px rgba(58,48,40,.08);cursor:zoom-in}
+    .adopt-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .adopt-card:hover img{transform:scale(1.1)}
+    .adopt-card figcaption{position:absolute;inset:auto 0 0 0;background:linear-gradient(0deg,rgba(58,48,40,.82),transparent);padding:24px 10px 10px;display:flex;flex-direction:column;gap:2px;pointer-events:none}
+    .adopt-badge{font-size:10px;font-weight:800;color:#cfeefb}
+    .adopt-name{font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-weight:600}
+
+    footer{background:var(--brown);color:#efe7dc;padding:80px 0 36px}
+    .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:40px;margin-bottom:50px}
+    .foot-logo img{height:54px;filter:brightness(0) invert(1);opacity:.95;margin-bottom:18px}
+    .foot-grid p{font-size:14.5px;color:#c9beb1;line-height:1.7}
+    .foot-grid h4{font-family:'Playfair Display',serif;font-size:17px;color:#fff;margin-bottom:16px}
+    .foot-grid a{display:block;font-size:14.5px;color:#c9beb1;padding:4px 0;transition:color .2s}
+    .foot-grid a:hover{color:var(--orange)}
+    .creds{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+    .creds a{background:rgba(255,255,255,.08);padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700}
+    .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:24px;text-align:center;font-size:13px;color:#9a8f82}
+    .foot-bottom .tag{font-family:'Playfair Display',serif;font-style:italic;color:var(--sky);font-size:15px;margin-bottom:6px}
+
+    .chat-fab{position:fixed;right:22px;bottom:22px;z-index:190;display:inline-flex;align-items:center;gap:10px;background:var(--orange);color:#fff;padding:13px 22px 13px 16px;border-radius:34px;box-shadow:0 12px 30px rgba(232,129,74,.42);font-weight:800;font-size:14px;transition:transform .2s,box-shadow .2s,background .2s}
+    .chat-fab:hover{background:var(--orange-deep);transform:translateY(-3px);box-shadow:0 16px 38px rgba(232,129,74,.5)}
+    .chat-fab svg{width:23px;height:23px;fill:#fff;flex:none}
+    @media(max-width:680px){.chat-fab{right:14px;bottom:14px;padding:13px 16px 13px 13px}.chat-fab .chat-txt{display:none}}
+    .music-pill{position:fixed;left:22px;bottom:22px;z-index:180;display:flex;align-items:center;gap:12px;background:rgba(58,48,40,.92);backdrop-filter:blur(10px);color:#fff;padding:11px 18px 11px 12px;border-radius:34px;box-shadow:0 12px 32px rgba(58,48,40,.34);cursor:pointer;border:1px solid rgba(255,255,255,.12);transition:transform .2s,background .2s}
+    .music-pill:hover{transform:translateY(-3px);background:rgba(58,48,40,.98)}
+    .music-ico{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;flex:none}
+    .music-ico svg{width:15px;height:15px;fill:#fff}
+    .music-txt{display:flex;flex-direction:column;line-height:1.18}
+    .music-txt b{font-family:'Playfair Display',serif;font-size:13.5px;font-weight:600}
+    .music-txt span{font-size:10.5px;color:#cbbfb0;letter-spacing:.03em}
+    .eq{display:none;align-items:flex-end;gap:2.5px;height:16px;padding-right:2px}
+    .music-pill.playing .eq{display:flex}
+    .music-pill.playing .ic-play{display:none}
+    .music-pill:not(.playing) .ic-pause{display:none}
+    .eq i{width:3px;background:var(--sky);border-radius:2px;animation:eq .9s ease-in-out infinite}
+    .eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.15s}
+    @keyframes eq{0%,100%{height:5px}50%{height:16px}}
+    @media(max-width:680px){.music-pill{left:14px;bottom:14px;padding:10px 14px 10px 10px}.music-txt span{display:none}}
+
+    .lightbox{position:fixed;inset:0;background:rgba(30,24,20,.94);z-index:400;display:none;align-items:center;justify-content:center}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:90vw;max-height:84vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .lb-close{position:absolute;top:24px;right:30px;font-size:34px;color:#fff;cursor:pointer}
+    .lb-cap{position:absolute;bottom:34px;left:0;right:0;text-align:center;color:#fff;font-family:'Playfair Display',serif;font-size:20px}
+
+    #webtoon{padding:100px 0;background:linear-gradient(180deg,var(--cream),#fdf1e2)}
+    .wt-feature{display:grid;grid-template-columns:.92fr 1.08fr;gap:48px;align-items:center;margin-top:44px}
+    .wt-art{border-radius:24px;overflow:hidden;box-shadow:0 18px 54px rgba(58,48,40,.20);background:#fff;cursor:zoom-in}
+    .wt-art img{width:100%;display:block;transition:transform .5s}
+    .wt-art:hover img{transform:scale(1.03)}
+    .wt-body h3{font-size:clamp(28px,3.6vw,40px);margin-bottom:8px}
+    .wt-tagline{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--orange-deep);margin-bottom:20px}
+    .wt-body p{font-size:16px;color:var(--brown-soft);margin-bottom:16px}
+    .wt-traits{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 26px}
+    .wt-trait{background:var(--sky);color:var(--brown);font-weight:700;font-size:13px;padding:8px 15px;border-radius:20px}
+    .wt-soon{display:inline-flex;align-items:center;gap:11px;background:var(--brown);color:#fff;padding:13px 24px;border-radius:30px;font-weight:800;font-size:14px;letter-spacing:.04em}
+    .wt-soon .dot{width:9px;height:9px;border-radius:50%;background:var(--orange);animation:pulse 1.8s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(244,162,97,.55)}70%{box-shadow:0 0 0 12px rgba(244,162,97,0)}100%{box-shadow:0 0 0 0 rgba(244,162,97,0)}}
+    .wt-sheets{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:54px}
+    .wt-sheet{border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 26px rgba(58,48,40,.1);cursor:zoom-in;transition:transform .25s}
+    .wt-sheet:hover{transform:translateY(-6px)}
+    .wt-sheet img{width:100%;display:block}
+    .wt-sheet figcaption{padding:12px 16px;font-weight:700;font-size:13.5px;color:var(--brown)}
+    @media(max-width:880px){.wt-feature{grid-template-columns:1fr}.wt-sheets{grid-template-columns:1fr;max-width:460px;margin-left:auto;margin-right:auto}}
+
+    @media(max-width:980px){
+      .cars-grid{grid-template-columns:repeat(2,1fr)}
+      .foot-grid{grid-template-columns:1fr 1fr}
+      .adopt-grid{grid-template-columns:repeat(4,1fr)}
+      .gallery{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:680px){
+      .nav-links{display:none} .hamburger{display:flex}
+      .promo-grid{grid-template-columns:1fr} .steps{grid-template-columns:1fr}
+      .step-pair{grid-template-columns:1fr} .step-or{text-align:center}
+      .cars-grid{grid-template-columns:1fr 1fr;gap:16px}
+      .adopt-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+      .foot-grid{grid-template-columns:1fr} .car-name{font-size:22px}
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ LIGHTBOX ═══ -->
-  <div class="lightbox" id="lightbox">
-    <span class="lightbox-close" id="lbClose">✕</span>
-    <span class="lightbox-nav lightbox-prev" id="lbPrev">‹</span>
-    <img id="lbImg" src="" alt="" />
-    <span class="lightbox-nav lightbox-next" id="lbNext">›</span>
-    <div class="lightbox-counter" id="lbCounter"></div>
-  </div>
-
-  <!-- ═══ NAV ═══ -->
-  <nav>
-    <a class="nav-logo" href="index.html">
-      <img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" />
-    </a>
+  <nav id="nav">
+    <a class="nav-logo" href="#top"><img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" /></a>
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="family.html">Looking for a Family</a></li>
+      <li><a href="#family">Our Family</a></li>
+      <li><a href="#process">How to Adopt</a></li>
+      <li><a href="#rehome">Rehome</a></li>
       <li><a href="#work">Our Work</a></li>
-      <li><a href="#work">Detailing</a></li>
+      <li><a href="#webtoon">Webtoon</a></li>
       <li><a href="#adopted">Adopted</a></li>
-      <li><a href="#contact" class="nav-cta">Contact</a></li>
+      <li><a href="#contact" class="nav-cta">Contact Us</a></li>
     </ul>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" id="hb" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html" onclick="closeMobileMenu()">Home</a>
-    <a href="family.html" onclick="closeMobileMenu()">Looking for a Family</a>
-    <a href="#work" onclick="closeMobileMenu()">Our Work</a>
-    <a href="#work" onclick="closeMobileMenu()">Detailing</a>
-    <a href="#adopted" onclick="closeMobileMenu()">Adopted</a>
-    <a href="#contact" class="mobile-cta" onclick="closeMobileMenu()">Contact Us</a>
+  <div class="mobile-menu" id="mm">
+    <button class="mm-close" id="mmClose" aria-label="Close">&times;</button>
+    <a href="#family">Our Family</a>
+    <a href="#process">How to Adopt</a>
+    <a href="#rehome">Rehome Your Car</a>
+    <a href="#work">Our Work</a>
+    <a href="#webtoon">Webtoon</a>
+    <a href="#about">About</a>
+    <a href="#adopted">Adopted</a>
+    <a href="#contact">Contact Us</a>
   </div>
 
-  <!-- ═══ HERO ═══ -->
-  <section class="hero">
-    <div class="hero-bg hero-bg-1"></div>
+  <header class="hero" id="top">
+    <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="hero-badge">🩵 Car Adoption Agency</div>
-      <h1 class="hero-title">Welcome Home</h1>
-      <p class="hero-subtitle">Every car deserves a forever family. Come meet ours.</p>
-      <div class="hero-buttons">
-        <a href="family.html" class="btn btn-primary">🩵 Meet the Family</a>
-        <a href="#process" class="btn btn-ghost">How to Adopt →</a>
+    <div class="hero-inner">
+      <span class="hero-badge">🩵 Car Adoption Agency</span>
+      <h1>Welcome Home</h1>
+      <p>Every car deserves a forever family. Come meet ours.</p>
+      <div class="hero-btns">
+        <a href="#family" class="btn btn-primary">🩵 Meet the Family</a>
+        <a href="#process" class="btn btn-ghost">How to Adopt &rarr;</a>
+        <a href="#webtoon" class="btn btn-ghost">📖 Meet Motor Shepherd</a>
       </div>
     </div>
-    <div class="hero-scroll-hint">Scroll</div>
-  </section>
+    <div class="scroll-cue">Scroll</div>
+  </header>
 
-  <!-- ═══ INVENTORY ═══ -->
-  <section id="inventory">
-    <div class="section-inner">
-      <div class="inventory-header">
+  <section id="family">
+    <div class="wrap">
+      <div class="fam-head">
         <div>
-          <p class="section-label">Looking for a Forever Family</p>
-          <h2 class="section-title">Our Family</h2>
-          <p class="section-sub">Each car has a name, a story, and a personality. Find the one that fits yours.</p>
+          <p class="eyebrow">Looking for a Forever Family</p>
+          <h2 class="sec-title">Our Family</h2>
+          <p class="sec-sub">Each car has a name, a story, and a personality. Find the one that fits yours.</p>
         </div>
-        <a href="family.html" class="btn btn-navy">See All →</a>
       </div>
-
-      <div class="cars-grid">
-
-        <!-- Maestro — Featured -->
+      <div class="cars-grid" id="carsGrid">
         <a href="maestro.html" class="car-card featured">
-          <img class="car-card-img" src="cars/panamera/front.jpg" alt="Maestro" />
-          <div class="car-card-body">
+          <div class="car-img-wrap"><img src="cars/panamera/front.jpg" alt="Maestro" /></div>
+          <div class="car-body">
             <span class="car-status">⭐ Featured</span>
             <p class="car-name">Maestro</p>
-            <p class="car-model">2012 Porsche Panamera S · V8 4.8L</p>
-            <div class="car-footer">
-              <div class="car-fee">
-                <span>Adoption Fee</span>
-                <strong>$34,900</strong>
-              </div>
-              <span class="btn-sm">Meet Me</span>
-            </div>
+            <p class="car-model">2012 Porsche Panamera S &middot; V8 4.8L</p>
+            <div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>$34,900</strong></div><span class="btn-sm">Meet Me</span></div>
           </div>
         </a>
-
-        <!-- Gray -->
         <a href="gray.html" class="car-card">
-          <img class="car-card-img"
-            src="images/car-gray.jpg"
-            onerror="this.src='images/placeholder-car.svg'"
-            alt="Gray" />
-          <div class="car-card-body">
+          <div class="car-img-wrap"><img src="images/car-gray.jpg" onerror="this.onerror=null;this.src='Homepage%20Pics/adpoted%20pics/2012%20Accord%20SE%2001.jpg'" alt="Gray" /></div>
+          <div class="car-body">
             <span class="car-status">💙 Available</span>
             <p class="car-name">Gray</p>
-            <p class="car-model">2022 Honda Accord EX · 32,000 mi</p>
-            <div class="car-footer">
-              <div class="car-fee">
-                <span>Adoption Fee</span>
-                <strong>$21,900</strong>
-              </div>
-              <span class="btn-sm">Meet Me</span>
-            </div>
+            <p class="car-model">2022 Honda Accord EX &middot; 32,000 mi</p>
+            <div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>$21,900</strong></div><span class="btn-sm">Meet Me</span></div>
           </div>
         </a>
-
-        <!-- Sunny -->
         <a href="car-detail.html" class="car-card">
-          <img class="car-card-img"
-            src="images/car-sunny.jpg"
-            onerror="this.src='images/placeholder-car.svg'"
-            alt="Sunny" />
-          <div class="car-card-body">
+          <div class="car-img-wrap"><img src="images/car-sunny.jpg" onerror="this.onerror=null;this.src='images/placeholder-car.svg'" alt="Sunny" /></div>
+          <div class="car-body">
             <span class="car-status">💙 Available</span>
             <p class="car-name">Sunny</p>
-            <p class="car-model">2019 Toyota Camry LE · 48,000 mi</p>
-            <div class="car-footer">
-              <div class="car-fee">
-                <span>Adoption Fee</span>
-                <strong>$17,900</strong>
-              </div>
-              <span class="btn-sm">Meet Me</span>
-            </div>
+            <p class="car-model">2019 Toyota Camry LE &middot; 48,000 mi</p>
+            <div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>$17,900</strong></div><span class="btn-sm">Meet Me</span></div>
           </div>
         </a>
-
-        <!-- Luna -->
         <a href="car-detail.html" class="car-card">
-          <img class="car-card-img"
-            src="images/car-luna.jpg"
-            onerror="this.src='images/placeholder-car.svg'"
-            alt="Luna" />
-          <div class="car-card-body">
+          <div class="car-img-wrap"><img src="images/car-luna.jpg" onerror="this.onerror=null;this.src='images/placeholder-car.svg'" alt="Luna" /></div>
+          <div class="car-body">
             <span class="car-status">💙 Available</span>
             <p class="car-name">Luna</p>
-            <p class="car-model">2018 Nissan Rogue SV · 61,000 mi</p>
-            <div class="car-footer">
-              <div class="car-fee">
-                <span>Adoption Fee</span>
-                <strong>$16,400</strong>
-              </div>
-              <span class="btn-sm">Meet Me</span>
-            </div>
+            <p class="car-model">2018 Nissan Rogue SV &middot; 61,000 mi</p>
+            <div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>$16,400</strong></div><span class="btn-sm">Meet Me</span></div>
           </div>
         </a>
+      </div>
 
+      <div class="promo-grid">
+        <a class="promo" href="#contact"><img src="Logo/25 copy 2.png" alt="We Ship Nationwide" /></a>
+        <a class="promo" href="#work"><img src="Logo/26 copy 2.png" alt="Ask About Ceramic Coat" /></a>
       </div>
     </div>
   </section>
 
-  <!-- ═══ PROMO BANNERS ═══ -->
-  <section id="perks" style="padding: 0 48px 80px; background: var(--cream);">
-    <div class="section-inner">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
-        <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 4px 28px rgba(44,62,107,0.1); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='translateY(0)'">
-          <img src="Logo/25 copy 2.png" alt="We Ship Nationwide" style="width:100%; display:block;" />
-        </div>
-        <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 4px 28px rgba(44,62,107,0.1); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='translateY(0)'">
-          <img src="Logo/26 copy 2.png" alt="Ask About Ceramic Coat" style="width:100%; display:block;" />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ HOW TO PROCESS ═══ -->
   <section id="process">
-    <div class="section-inner">
-      <div class="process-header">
-        <p class="section-label">Simple &amp; Transparent</p>
-        <h2 class="section-title">How the Adoption Process Works</h2>
-        <p class="section-sub">Bringing home your car should be joyful. Here's how we make it easy.</p>
+    <div class="wrap">
+      <div class="proc-head">
+        <p class="eyebrow">Simple &amp; Transparent</p>
+        <h2 class="sec-title">How the Adoption Process Works</h2>
+        <p class="sec-sub" style="text-align:center">Bringing home your car should be joyful. Here's how we make it easy.</p>
       </div>
-
-      <!-- Steps 1 & 2 -->
-      <div class="steps-top">
+      <div class="steps">
         <div class="step">
-          <div class="step-number-wrap">
-            <span class="step-num">Step 01</span>
-            <img class="step-icon" src="icons/step1-car.svg" alt="Check the Car">
-          </div>
-          <p class="step-title">Check the Car</p>
-          <p class="step-desc">Browse our inventory online. Each car has a full profile — name, personality, history, and photos.</p>
+          <div class="step-ico"><img src="icons/step1-car.svg" alt="" /></div>
+          <div><p class="step-num">Step 01</p><h3>Think Your Budget &amp; Ask the Road Shepherd</h3><p>Tell our Road Shepherd what you're looking for and your budget. We'll listen and help you find the family member that fits you best.</p></div>
         </div>
-
         <div class="step">
-          <div class="step-number-wrap">
-            <span class="step-num">Step 02</span>
-            <img class="step-icon" src="icons/step2-contact.svg" alt="Contact Us">
+          <div class="step-ico"><img src="icons/step2-contact.svg" alt="" /></div>
+          <div><p class="step-num">Step 02</p><h3>Contact Us</h3><p>Reach out by phone, text, or email. We'll confirm availability and answer any questions you have.</p></div>
+        </div>
+        <div class="step full" style="flex-direction:row;align-items:flex-start;background:#fff">
+          <div class="step-ico"><img src="icons/step3a-video.svg" alt="" /></div>
+          <div style="flex:1">
+            <p class="step-num">Step 03</p><h3>We Suggest</h3>
+            <p>We send everything you need to decide with confidence &mdash; no guesswork.</p>
+            <div class="wt-traits" style="margin:14px 0 0">
+              <span class="wt-trait">📸 Photos</span>
+              <span class="wt-trait">📄 CARFAX Report</span>
+              <span class="wt-trait">🔧 Condition Report</span>
+            </div>
           </div>
-          <p class="step-title">Contact Us</p>
-          <p class="step-desc">Found your match? Reach out by email or phone. We'll confirm availability and answer any questions.</p>
         </div>
-      </div>
-
-      <!-- Arrow -->
-      <div class="step-arrow">↓</div>
-
-      <!-- Step 3: A or B -->
-      <div class="step-choice-label">
-        <p class="step-choice-label-num">Step 03 — Choose what works for you</p>
-      </div>
-      <div class="step-choice-row">
-        <div class="step-option">
-          <span class="step-option-badge">Option A</span>
-          <img class="step-option-icon" src="icons/step3a-video.svg" alt="Video Chat">
-          <p class="step-option-title">Video Chat</p>
-          <p class="step-option-desc">We take you on a live tour of the car from wherever you are — no travel needed.</p>
+        <div class="step">
+          <div class="step-ico"><svg viewBox="0 0 48 48" fill="none" style="width:100%;height:100%"><circle cx="21" cy="21" r="11" stroke="#2C3E6B" stroke-width="2.2"/><path d="M29 29 L40 40" stroke="#2C3E6B" stroke-width="2.6" stroke-linecap="round"/><path d="M16 21 l4 4 l8 -9" stroke="#e8704a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><p class="step-num">Step 04</p><h3>Car Inspection</h3><p>Our team goes over the car inside and out &mdash; mechanical, cosmetic, and safety &mdash; so every family member is healthy before it goes home.</p></div>
         </div>
-
-        <div class="step-choice-or">OR</div>
-
-        <div class="step-option">
-          <span class="step-option-badge">Option B</span>
-          <img class="step-option-icon" src="icons/step3b-visit.svg" alt="Visit in Person">
-          <p class="step-option-title">Visit in Person</p>
-          <p class="step-option-desc">Come see the car yourself at our Bensenville location. We love meeting you in person.</p>
+        <div class="step">
+          <div class="step-ico"><svg viewBox="0 0 48 48" fill="none" style="width:100%;height:100%"><path d="M14 7 L28 7 L36 15 L36 41 L14 41 Z" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/><path d="M28 7 L28 15 L36 15" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 23 L31 23 M19 29 L31 29 M19 35 L26 35" stroke="#e8704a" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div><p class="step-num">Step 05</p><h3>Documentation</h3><p>We handle the paperwork &mdash; title, bill of sale, and registration support &mdash; and walk you through every document.</p></div>
         </div>
-      </div>
-
-      <!-- Arrow -->
-      <div class="step-arrow">↓</div>
-
-      <!-- Step 4: A or B -->
-      <div class="step-choice-label">
-        <p class="step-choice-label-num">Step 04 — Choose how you get the car</p>
-      </div>
-      <div class="step-choice-row">
-        <div class="step-option">
-          <span class="step-option-badge">Option A</span>
-          <img class="step-option-icon" src="icons/step4a-delivery.svg" alt="We Deliver">
-          <p class="step-option-title">We Deliver</p>
-          <p class="step-option-desc">Sit back — we ship your car straight to your door, anywhere in the country.</p>
-        </div>
-
-        <div class="step-choice-or">OR</div>
-
-        <div class="step-option">
-          <span class="step-option-badge">Option B</span>
-          <img class="step-option-icon" src="icons/step4b-pickup.svg" alt="Pick Up">
-          <p class="step-option-title">Pick Up</p>
-          <p class="step-option-desc">Swing by and drive your car home yourself. Nothing beats that first drive feeling.</p>
-        </div>
-      </div>
-
-      <!-- Arrow -->
-      <div class="step-arrow">↓</div>
-
-      <!-- Step 5: Home -->
-      <div class="steps-bottom">
-        <div class="step step-home">
-          <div class="step-number-wrap">
-            <span class="step-num">Step 05</span>
-            <img class="step-icon" src="icons/step5-home.svg" alt="Home">
+        <div class="step full">
+          <p class="step-num">Step 06 &mdash; Bring your new family member home</p>
+          <div class="step-pair">
+            <div class="mini"><div class="step-ico"><img src="icons/step4b-pickup.svg" alt="" /></div><div><h3 style="font-size:18px">Pick Up</h3><p>Swing by our Bensenville location and drive your car home yourself.</p></div></div>
+            <span class="step-or">OR</span>
+            <div class="mini"><div class="step-ico"><img src="icons/step4a-delivery.svg" alt="" /></div><div><h3 style="font-size:18px">Delivery</h3><p>Sit back &mdash; we ship your car straight to your door, anywhere in the country.</p></div></div>
           </div>
-          <p class="step-title">Home</p>
-          <p class="step-desc">Welcome to the family! Your car found its forever home. Time to make memories together.</p>
+        </div>
+      </div>
+      <div class="proc-cta"><a href="#contact" class="btn btn-primary">Start the Adoption Process 🩵</a></div>
+    </div>
+  </section>
+
+  <section id="rehome">
+    <div class="wrap">
+      <div class="proc-head">
+        <p class="eyebrow">For Current Owners</p>
+        <h2 class="sec-title">Rehome Your Car</h2>
+        <p class="sec-sub" style="text-align:center">Every car deserves a loving next chapter. Whether we buy it from you or find its next family, we make saying goodbye simple and warm.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-ico"><img src="icons/step1-car.svg" alt="" /></div>
+          <div><p class="step-num">Step 01</p><h3>Tell Us About Your Car</h3><p>Share the details and a few photos. Our Road Shepherd gets to know your car &mdash; its story, its condition, everything.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-ico"><svg viewBox="0 0 48 48" fill="none" style="width:100%;height:100%"><circle cx="21" cy="21" r="11" stroke="#2C3E6B" stroke-width="2.2"/><path d="M29 29 L40 40" stroke="#2C3E6B" stroke-width="2.6" stroke-linecap="round"/><path d="M16 21 l4 4 l8 -9" stroke="#e8704a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><p class="step-num">Step 02</p><h3>Free Appraisal</h3><p>We inspect the car and check the market &mdash; CARFAX, condition, and value &mdash; then give you an honest, no-pressure quote.</p></div>
+        </div>
+        <div class="step full">
+          <p class="step-num">Step 03 &mdash; Choose how you want to rehome</p>
+          <div class="rehome-paths">
+            <div class="path-card">
+              <div class="step-ico"><svg viewBox="0 0 48 48" fill="none" style="width:100%;height:100%"><circle cx="24" cy="24" r="15" stroke="#2C3E6B" stroke-width="2.2"/><path d="M24 14 L24 34 M28.5 18 Q28.5 16 24 16 Q18.5 16 18.5 20 Q18.5 24 24 24 Q29.5 24 29.5 28 Q29.5 32 24 32 Q19.5 32 19.5 30" stroke="#e8704a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="path-tag">Fast &amp; Simple</span>
+              <h3>Sell to Us</h3>
+              <p>We adopt your car directly with an instant offer. Get paid fast &mdash; no listings, no waiting, no strangers.</p>
+            </div>
+            <div class="path-card">
+              <div class="step-ico"><svg viewBox="0 0 48 48" fill="none" style="width:100%;height:100%"><path d="M9 22 L24 9 L39 22" stroke="#2C3E6B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 20 L13 39 L35 39 L35 20" stroke="#2C3E6B" stroke-width="2.2" stroke-linejoin="round"/><path d="M24 34 C24 34 18 30 18 26.5 C18 24.6 19.6 23.6 21 23.6 C22.4 23.6 24 25 24 25 C24 25 25.6 23.6 27 23.6 C28.4 23.6 30 24.6 30 26.5 C30 30 24 34 24 34 Z" fill="#e8704a"/></svg></div>
+              <span class="path-tag">Best Value</span>
+              <h3>We Sell for You</h3>
+              <p>On consignment, we find the perfect new family &mdash; photos, listings, showings, and paperwork all handled by us.</p>
+            </div>
+          </div>
+        </div>
+        <div class="step full" style="flex-direction:row;align-items:center;background:#fff">
+          <div class="step-ico"><img src="icons/step4b-pickup.svg" alt="" /></div>
+          <div><p class="step-num">Step 04</p><h3>Handover &amp; Get Paid</h3><p>We take care of the title and paperwork, hand things over smoothly, and your car heads off to its next forever home. 🩵</p></div>
+        </div>
+      </div>
+      <div class="proc-cta"><a href="#contact" class="btn btn-primary">Get Your Free Appraisal 🩵</a></div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <p class="eyebrow">Studio Vroom</p>
+      <h2 class="sec-title">Our Work</h2>
+      <p class="sec-sub">Finding the right cars for you &middot; Detailing &middot; Repairing</p>
+      <div class="gallery">
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/2007%20Mazda%203%20iTouring%20%286%29.JPG" alt="Mazda 3" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/DSC_8783.JPG" alt="Nissan 350Z" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/2010_BMW_M3%20%286%29.JPG" alt="BMW M3" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/07%20Right%20side.JPG" alt="On the road" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/DSC_8785.JPG" alt="Studio Vroom" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/background%20pics/DSC_8799.JPG" alt="Studio Vroom" /></figure>
+      </div>
+      <h3 class="sub-h">Detailing</h3>
+      <p class="sec-sub">Showroom-level care, inside and out.</p>
+      <div class="gallery">
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/detail%20pics/DSC_9287_PSv.jpg" alt="AMG Detailing" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/detail%20pics/G80_01_02.jpg" alt="Genesis G80" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/detail%20pics/04%20BMW%20X6.JPG" alt="BMW X6" /></figure>
+        <figure class="gallery-item"><img loading="lazy" src="Homepage%20Pics/detail%20pics/06%20Porsche%20Cayenne.JPG" alt="Porsche Cayenne" /></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="webtoon">
+    <div class="wrap">
+      <p class="eyebrow">Studio Vroom Originals</p>
+      <h2 class="sec-title">Meet Motor Shepherd</h2>
+      <p class="sec-sub">Our very own mascot &mdash; the shepherd who watches over every journey. A webtoon series is on the way.</p>
+
+      <div class="wt-feature">
+        <figure class="wt-art"><img loading="lazy" src="webtoon/Road%20Shephered%20main%20cha.png" alt="Motor Shepherd — Guide on the Road" /></figure>
+        <div class="wt-body">
+          <h3>Guide on the Road</h3>
+          <p class="wt-tagline">&ldquo;길 위의 양치기 &mdash; We guide your journey. Every mile, every memory.&rdquo;</p>
+          <p>Motor Shepherd is the heart of Studio Vroom &mdash; a calm, road-wise guardian who helps every car find its forever family and every family travel safely. Riding shotgun is <strong>Road Pup</strong>, the cheerful sidekick who's curious, loyal, and always up for the next adventure.</p>
+          <div class="wt-traits">
+            <span class="wt-trait">🧭 Guide on the Road</span>
+            <span class="wt-trait">🐑 Slow is Smooth, Smooth is Safe</span>
+            <span class="wt-trait">🛡️ Safe Travels</span>
+            <span class="wt-trait">🐶 Road Pup &middot; Loyal Sidekick</span>
+          </div>
+          <span class="wt-soon"><span class="dot"></span>Webtoon Coming Soon</span>
         </div>
       </div>
 
-      <div style="text-align:center; margin-top:64px;">
-        <a href="#contact" class="btn btn-primary" style="font-size:15px; padding:16px 40px;">Start the Adoption Process 🩵</a>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══ BACKGROUND MUSIC ═══ -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="Music/Step inside, the road is waiting,.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Floating music pill -->
-  <div id="musicPill" title="Studio Vroom Theme">
-    <button id="musicToggle" aria-label="Toggle music">
-      <!-- Equalizer bars (playing state) -->
-      <span class="eq-bars">
-        <span class="bar b1"></span>
-        <span class="bar b2"></span>
-        <span class="bar b3"></span>
-        <span class="bar b4"></span>
-      </span>
-      <!-- Pause icon -->
-      <svg class="pause-ico" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-        <rect x="5" y="3" width="5" height="18" rx="1.5"/>
-        <rect x="14" y="3" width="5" height="18" rx="1.5"/>
-      </svg>
-    </button>
-    <span class="pill-label">Studio Vroom</span>
-  </div>
-
-  <script>
-  (function () {
-    const audio  = document.getElementById('bgMusic');
-    const pill   = document.getElementById('musicPill');
-    const toggle = document.getElementById('musicToggle');
-
-    audio.volume = 0.18;   // 낮은 배경음 볼륨
-
-    /* Fade helper */
-    function fadeTo(target, ms) {
-      const step = (target - audio.volume) / (ms / 50);
-      const t = setInterval(() => {
-        audio.volume = Math.min(1, Math.max(0, audio.volume + step));
-        if (Math.abs(audio.volume - target) < 0.01) {
-          audio.volume = target;
-          clearInterval(t);
-        }
-      }, 50);
-    }
-
-    function setPlaying(on) {
-      pill.classList.toggle('playing', on);
-    }
-
-    /* Try autoplay immediately */
-    audio.play().then(() => setPlaying(true)).catch(() => {
-      /* Blocked — wait for first user gesture */
-      const startOnce = () => {
-        audio.play().then(() => {
-          setPlaying(true);
-          document.removeEventListener('click', startOnce);
-          document.removeEventListener('touchstart', startOnce);
-        });
-      };
-      document.addEventListener('click', startOnce);
-      document.addEventListener('touchstart', startOnce);
-    });
-
-    /* Pill toggle */
-    toggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (audio.paused) {
-        audio.play().then(() => { fadeTo(0.18, 600); setPlaying(true); });
-      } else {
-        fadeTo(0, 600);
-        setTimeout(() => { audio.pause(); setPlaying(false); }, 650);
-      }
-    });
-  })();
-  </script>
-
-  <!-- ═══ OUR WORK ═══ -->
-  <section id="work" style="background:#fff; padding: 80px 0 0;">
-    <div style="text-align:center; margin-bottom:48px; padding:0 24px;">
-      <h2 style="font-family:'Cormorant Garamond',serif; font-size:clamp(28px,4vw,42px); font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:#2e2418; margin-bottom:10px;">Our Work</h2>
-      <div style="width:40px; height:2px; background:#2e2418; margin:0 auto 18px;"></div>
-      <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#666; letter-spacing:0.04em;">Finding the Right Cars for You / Detailing / Repairing</p>
-    </div>
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0;">
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/background%20pics/2007%20Mazda%203%20iTouring%20%286%29.JPG" style="width:100%;height:100%;object-fit:cover;" alt="Mazda" />
-      </div>
-      <div style="aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; background:#fff;">
-        <img src="Logo/01 Pics 850 Grayscale on Transparent.png" style="width:60%; filter:none; opacity:0.85;" alt="Studio Vroom" />
-      </div>
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/background%20pics/DSC_8783.JPG" style="width:100%;height:100%;object-fit:cover;" alt="350Z" />
-      </div>
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/background%20pics/2010_BMW_M3%20%286%29.JPG" style="width:100%;height:100%;object-fit:cover;" alt="BMW M3" />
-      </div>
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/background%20pics/07%20Right%20side.JPG" style="width:100%;height:100%;object-fit:cover;" alt="Street" />
-      </div>
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/background%20pics/DSC_8785.JPG" style="width:100%;height:100%;object-fit:cover;" alt="Car" />
+      <div class="wt-sheets">
+        <figure class="wt-sheet"><img loading="lazy" src="webtoon/Road%20Shephered%20cartoon%20char.png" alt="Motor Shepherd & Road Pup — Character Design" /><figcaption>Character Design</figcaption></figure>
+        <figure class="wt-sheet"><img loading="lazy" src="webtoon/Road%20Shephered%20main%20cha.png" alt="Motor Shepherd — Brand Guide" /><figcaption>Brand Guide</figcaption></figure>
+        <figure class="wt-sheet"><img loading="lazy" src="webtoon/Road%20Shephered%20Sticker.png" alt="Motor Shepherd — Sticker Series" /><figcaption>Sticker Series</figcaption></figure>
       </div>
     </div>
   </section>
 
-  <!-- ═══ DETAILING ═══ -->
-  <section id="detailing" style="background:#000; padding:72px 0 0;">
-    <div style="text-align:center; margin-bottom:48px; padding:0 24px;">
-      <h2 style="font-family:'Great Vibes',cursive; font-size:clamp(52px,8vw,88px); color:#fff; font-weight:400; margin:0;">Detailing</h2>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px;">
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/detail%20pics/DSC_9287_PSv.jpg" style="width:100%;height:100%;object-fit:cover;" alt="AMG Detailing" />
-      </div>
-      <div style="aspect-ratio:4/3; overflow:hidden;">
-        <img src="Homepage%20Pics/detail%20pics/G80_01_02.jpg" style="width:100%;height:100%;object-fit:cover;" alt="Genesis G80" />
-      </div>
-    </div>
-    <div style="width:100%; aspect-ratio:16/7; overflow:hidden;">
-      <img src="Homepage%20Pics/detail%20pics/04%20BMW%20X6.JPG" style="width:100%;height:100%;object-fit:cover; object-position:center 40%;" alt="BMW X6 Detail" />
-    </div>
-  </section>
-
-  <!-- ═══ ABOUT ═══ -->
   <section id="about">
-    <div class="section-inner">
-      <div class="about-grid">
-        <img class="about-img"
-          src="Homepage%20Pics/background%20pics/DSC_8799.JPG"
-          alt="Studio Vroom" />
-        <div class="about-text">
-          <p class="section-label">About Us</p>
-          <h2 class="section-title">The World's First Car Adoption Agency</h2>
-          <p>Here at Studio Vroom, we love cars — and everything car-related. And we want to share that same joy and appreciation with you.</p>
-          <blockquote>"To us, cars aren't just transportation — they're like family."</blockquote>
-          <p>We take care of them and make sure they're clean and healthy. We recognize that they each have their own unique backgrounds and personalities — which is why we give them their own names.</p>
-          <p>Our expert staff will listen to you to help you identify, locate, and take home the car that will be the best fit — for you.</p>
-          <a href="family.html" class="btn btn-primary" style="margin-top:8px;">Meet the Family →</a>
-        </div>
+    <div class="wrap about-inner">
+      <p class="eyebrow">About Us</p>
+      <h2>The World's First Car Adoption Agency</h2>
+      <p>Here at Studio Vroom, we love cars &mdash; and everything car-related. And we want to share that same joy and appreciation with you.</p>
+      <p class="pull-quote">&ldquo;To us, cars aren't just transportation &mdash; they're like family.&rdquo;</p>
+      <p>We take care of them and make sure they're clean and healthy. We recognize that they each have their own unique backgrounds and personalities &mdash; which is why we give them their own names.</p>
+      <p>Our expert staff will listen to you to help you identify, locate, and take home the car that will be the best fit &mdash; for you.</p>
+      <div style="margin-top:30px"><a href="#family" class="btn btn-primary">Meet the Family &rarr;</a></div>
+    </div>
+  </section>
+
+  <section id="adopted">
+    <div class="wrap">
+      <div class="adopt-head">
+        <p class="eyebrow">Happy Endings</p>
+        <h2 class="sec-title">Already Adopted</h2>
+        <p class="sec-sub" style="text-align:center">96 cars found their forever families. Each one has a happy new home.</p>
+      </div>
+      <div class="adopt-grid" id="adoptGrid">
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/00%20%281%29.JPG" alt="Ace" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ace</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/00%20%282%29.JPG" alt="Addie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Addie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/00%20%283%29.JPG" alt="Alfie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Alfie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/00%20copy.JPG" alt="Amber" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Amber</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/00.JPG" alt="Apollo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Apollo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%281%29.JPG" alt="Archie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Archie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2810%29.jpg" alt="Aria" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Aria</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2811%29.jpg" alt="Ash" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ash</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2812%29.jpg" alt="Atlas" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Atlas</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2813%29.JPG" alt="Atticus" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Atticus</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2814%29.JPG" alt="Aurora" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Aurora</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2815%29.JPG" alt="Axel" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Axel</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2816%29.JPG" alt="Beau" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Beau</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2817%29.JPG" alt="Biscuit" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Biscuit</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2818%29.JPG" alt="Bolt" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Bolt</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%2819%29.JPG" alt="Bonnie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Bonnie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%282%29.JPG" alt="Breezy" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Breezy</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%283%29.JPG" alt="Briar" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Briar</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%284%29.JPG" alt="Bruno" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Bruno</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%285%29.JPG" alt="Bucky" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Bucky</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%286%29.JPG" alt="Callie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Callie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%287%29.JPG" alt="Canyon" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Canyon</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%288%29.JPG" alt="Captain" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Captain</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20%289%29.JPG" alt="Carly" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Carly</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20.JPG" alt="Cedar" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cedar</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20Main.jpg" alt="Chase" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Chase</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20copy.jpg" alt="Chester" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Chester</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20front%2001%20.JPG" alt="Chip" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Chip</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20front.JPG" alt="Cleo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cleo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20main%20%281%29.JPG" alt="Clover" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Clover</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%20main%20new.JPG" alt="Cobalt" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cobalt</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01%2520010002_edited.jpg" alt="Coco" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Coco</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01-01.jpg" alt="Cole" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cole</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/01.JPG" alt="Cooper" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cooper</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/010-01%20%281%29.jpg" alt="Coral" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Coral</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/010-01.jpg" alt="Cosmo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cosmo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02%20%281%29.JPG" alt="Cotton" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cotton</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02%20%282%29.JPG" alt="Cricket" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Cricket</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02%20%283%29.JPG" alt="Crimson" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Crimson</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02%20Lucas.JPG" alt="Lucas" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Lucas</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02.JPG" alt="Dale" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dale</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/02_SEL.jpg" alt="Dapper" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dapper</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/03%20%281%29.JPG" alt="Dash" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dash</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/03%20%282%29.JPG" alt="Denim" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Denim</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/03%20%283%29.JPG" alt="Denver" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Denver</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/03.JPG" alt="Dexter" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dexter</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/03_Traverse.JPG" alt="Diego" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Diego</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/04%20front%20top.JPG" alt="Dino" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dino</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/04.JPG" alt="Domino" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Domino</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/05%20TB%2001.JPG" alt="Drake" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Drake</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/05-30.jpg" alt="Duke" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Duke</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/05.JPG" alt="Dusty" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dusty</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/06E03.JPG" alt="Echo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Echo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/07_SV.jpg" alt="Eddie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Eddie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/1.JPG" alt="Ellie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ellie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/10%20open%20doors%2001.JPG" alt="Ember" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ember</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/13.JPG" alt="Esme" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Esme</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/14%20Sienna%20000.JPG" alt="Evan" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Evan</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/15%20CRV%20001.JPG" alt="Fender" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Fender</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/15%20Subaru%20Outback.JPG" alt="Fern" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Fern</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/16%20XC90%20Rear%20License%20Plate.jpg" alt="Finn" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Finn</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/19%20Outback%20001.JPG" alt="Flash" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Flash</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/20%20epilogue%2002.JPG" alt="Flint" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Flint</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2006%20Scarlet.JPG" alt="Scarlet" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Scarlet</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2012%20Accord%20SE%2001.jpg" alt="Floyd" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Floyd</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2012%20Chevy%20Tahoe%20SSV.jpg" alt="Flynn" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Flynn</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2015%20Audi%20Q5%20.jpeg" alt="Frankie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Frankie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2019%20RR.JPG" alt="Freddie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Freddie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/2020%20Tiguan%20S%20AWD%2001.JPG" alt="Galaxy" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Galaxy</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/23%20front.JPG" alt="Garnet" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Garnet</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Benji.JPG" alt="Benji" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Benji</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/BigMama_01.JPG" alt="Big Mama" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Big Mama</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Bluey.JPG" alt="Bluey" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Bluey</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_2162.jpg" alt="Gemma" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Gemma</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_3434_copy.jpg" alt="Ghost" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ghost</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_4221%20copy.JPG" alt="Ginger" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ginger</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_4492%20copy%202.JPG" alt="Glory" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Glory</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_5218%20copy.JPG" alt="Goldie" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Goldie</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_5233%20copy.JPG" alt="Goose" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Goose</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_5823%20copy.JPG" alt="Gunner" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Gunner</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_5890%20copy.JPG" alt="Gus" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Gus</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_5907%20copy.JPG" alt="Hazel" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Hazel</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_6684%20copy.JPG" alt="Hero" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Hero</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_6746.jpg" alt="Honey" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Honey</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_7035_PS.jpg" alt="Hudson" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Hudson</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_8261%20copy%202.JPG" alt="Hugo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Hugo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/DSC_8347_PS.jpg" alt="Hunter" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Hunter</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Dan_VW_02.JPG" alt="Dan" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Dan</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/IMG_7294_SV.jpg" alt="Indigo" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Indigo</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Jenny.JPG" alt="Jenny" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Jenny</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Liam.JPG" alt="Liam" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Liam</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Midnight.jpg" alt="Midnight" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Midnight</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Ruby%2002.jpg" alt="Ruby" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Ruby</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Russell_02.jpg" alt="Russell" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Russell</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/Tacoma%2003.jpg" alt="Maya" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Maya</span></figcaption>
+        </figure>
+        <figure class="adopt-card">
+          <img loading="lazy" src="Homepage%20Pics/adpoted%20pics/XC60R_03.JPG" alt="Iris" />
+          <figcaption><span class="adopt-badge">🩵 Adopted</span><span class="adopt-name">Iris</span></figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <!-- ═══ ADOPTED ═══ -->
-  <section id="adopted">
-    <div class="section-inner">
-      <div style="margin-bottom:48px;">
-        <p class="section-label">Happy Endings</p>
-        <h2 class="section-title">Already Adopted</h2>
-        <p class="section-sub">These cars found their forever families. Each one has a happy new home.</p>
-      </div>
-      <div class="adopted-grid">
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/00%20%281%29.JPG" alt="Ace" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ace</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/00%20%282%29.JPG" alt="Addie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Addie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/00%20%283%29.JPG" alt="Alfie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Alfie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/00%20copy.JPG" alt="Amber" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Amber</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/00.JPG" alt="Apollo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Apollo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%281%29.JPG" alt="Archie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Archie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2810%29.jpg" alt="Aria" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Aria</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2811%29.jpg" alt="Ash" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ash</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2812%29.jpg" alt="Atlas" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Atlas</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2813%29.JPG" alt="Atticus" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Atticus</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2814%29.JPG" alt="Aurora" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Aurora</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2815%29.JPG" alt="Axel" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Axel</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2816%29.JPG" alt="Beau" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Beau</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2817%29.JPG" alt="Biscuit" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Biscuit</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2818%29.JPG" alt="Bolt" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Bolt</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%2819%29.JPG" alt="Bonnie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Bonnie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%282%29.JPG" alt="Breezy" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Breezy</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%283%29.JPG" alt="Briar" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Briar</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%284%29.JPG" alt="Bruno" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Bruno</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%285%29.JPG" alt="Bucky" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Bucky</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%286%29.JPG" alt="Callie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Callie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%287%29.JPG" alt="Canyon" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Canyon</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%288%29.JPG" alt="Captain" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Captain</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20%289%29.JPG" alt="Carly" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Carly</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20.JPG" alt="Cedar" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cedar</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20Main.jpg" alt="Chase" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Chase</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20copy.jpg" alt="Chester" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Chester</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20front%2001%20.JPG" alt="Chip" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Chip</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20front.JPG" alt="Cleo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cleo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20main%20%281%29.JPG" alt="Clover" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Clover</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%20main%20new.JPG" alt="Cobalt" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cobalt</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01%2520010002_edited.jpg" alt="Coco" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Coco</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01-01.jpg" alt="Cole" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cole</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/01.JPG" alt="Cooper" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cooper</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/010-01%20%281%29.jpg" alt="Coral" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Coral</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/010-01.jpg" alt="Cosmo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cosmo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02%20%281%29.JPG" alt="Cotton" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cotton</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02%20%282%29.JPG" alt="Cricket" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Cricket</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02%20%283%29.JPG" alt="Crimson" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Crimson</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02%20Lucas.JPG" alt="Lucas" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Lucas</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02.JPG" alt="Dale" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dale</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/02_SEL.jpg" alt="Dapper" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dapper</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/03%20%281%29.JPG" alt="Dash" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dash</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/03%20%282%29.JPG" alt="Denim" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Denim</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/03%20%283%29.JPG" alt="Denver" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Denver</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/03.JPG" alt="Dexter" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dexter</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/03_Traverse.JPG" alt="Diego" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Diego</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/04%20front%20top.JPG" alt="Dino" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dino</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/04.JPG" alt="Domino" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Domino</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/05%20TB%2001.JPG" alt="Drake" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Drake</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/05-30.jpg" alt="Duke" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Duke</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/05.JPG" alt="Dusty" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dusty</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/06E03.JPG" alt="Echo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Echo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/07_SV.jpg" alt="Eddie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Eddie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/1.JPG" alt="Ellie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ellie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/10%20open%20doors%2001.JPG" alt="Ember" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ember</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/13.JPG" alt="Esme" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Esme</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/14%20Sienna%20000.JPG" alt="Evan" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Evan</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/15%20CRV%20001.JPG" alt="Fender" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Fender</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/15%20Subaru%20Outback.JPG" alt="Fern" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Fern</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/16%20XC90%20Rear%20License%20Plate.jpg" alt="Finn" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Finn</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/19%20Outback%20001.JPG" alt="Flash" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Flash</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/20%20epilogue%2002.JPG" alt="Flint" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Flint</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2006%20Scarlet.JPG" alt="Scarlet" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Scarlet</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2012%20Accord%20SE%2001.jpg" alt="Floyd" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Floyd</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2012%20Chevy%20Tahoe%20SSV.jpg" alt="Flynn" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Flynn</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2015%20Audi%20Q5%20.jpeg" alt="Frankie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Frankie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2019%20RR.JPG" alt="Freddie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Freddie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/2020%20Tiguan%20S%20AWD%2001.JPG" alt="Galaxy" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Galaxy</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/23%20front.JPG" alt="Garnet" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Garnet</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Benji.JPG" alt="Benji" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Benji</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/BigMama_01.JPG" alt="Big Mama" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Big Mama</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Bluey.JPG" alt="Bluey" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Bluey</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_2162.jpg" alt="Gemma" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Gemma</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_3434_copy.jpg" alt="Ghost" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ghost</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_4221%20copy.JPG" alt="Ginger" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ginger</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_4492%20copy%202.JPG" alt="Glory" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Glory</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_5218%20copy.JPG" alt="Goldie" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Goldie</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_5233%20copy.JPG" alt="Goose" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Goose</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_5823%20copy.JPG" alt="Gunner" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Gunner</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_5890%20copy.JPG" alt="Gus" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Gus</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_5907%20copy.JPG" alt="Hazel" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Hazel</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_6684%20copy.JPG" alt="Hero" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Hero</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_6746.jpg" alt="Honey" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Honey</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_7035_PS.jpg" alt="Hudson" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Hudson</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_8261%20copy%202.JPG" alt="Hugo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Hugo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/DSC_8347_PS.jpg" alt="Hunter" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Hunter</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Dan_VW_02.JPG" alt="Dan" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Dan</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/IMG_7294_SV.jpg" alt="Indigo" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Indigo</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Jenny.JPG" alt="Jenny" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Jenny</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Liam.JPG" alt="Liam" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Liam</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Midnight.jpg" alt="Midnight" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Midnight</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Ruby%2002.jpg" alt="Ruby" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Ruby</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Russell_02.jpg" alt="Russell" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Russell</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/Tacoma%2003.jpg" alt="Maya" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Maya</p>
-          </div>
-        </div>
-        <div class="adopted-card">
-          <img src="Homepage%20Pics/adpoted%20pics/XC60R_03.JPG" alt="Iris" loading="lazy" />
-          <span class="adopted-badge">🩵 Adopted</span>
-          <div class="adopted-body">
-            <p class="adopted-name">Iris</p>
-          </div>
-        </div>
-      </div>
-      </div>
-  </section>
-
-  <!-- ═══ FOOTER ═══ -->
   <footer id="contact">
-    <div class="footer-inner">
-      <div class="footer-top">
+    <div class="wrap">
+      <div class="foot-grid">
         <div>
-          <div class="footer-logo">
-            <img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" />
-          </div>
-          <p class="footer-tagline">The world's first car adoption agency. Helping families find the perfect car — one adoption at a time.</p>
-          <div style="margin-top:4px;">
-            <a href="mailto:info@studio-vroom.com" style="color:var(--sky); font-size:14px; text-decoration:none; font-weight:600;">info@studio-vroom.com</a>
-          </div>
+          <div class="foot-logo"><img src="Logo/01 Pics 850 Grayscale on Transparent.png" alt="Studio Vroom" /></div>
+          <p>The world's first car adoption agency. Helping families find the perfect car &mdash; one adoption at a time.</p>
+          <p style="margin-top:10px"><a href="mailto:info@studio-vroom.com" style="display:inline;color:var(--sky)">info@studio-vroom.com</a></p>
         </div>
-
-        <div class="footer-col">
+        <div>
           <h4>Navigate</h4>
-          <a href="index.html">Home</a>
-          <a href="family.html">Looking for a Family</a>
+          <a href="#family">Our Family</a>
+          <a href="#process">How to Adopt</a>
           <a href="#work">Our Work</a>
-          <a href="#work">Detailing</a>
           <a href="#adopted">Adopted</a>
+          <a href="#about">About</a>
         </div>
-
-        <div class="footer-col">
+        <div>
           <h4>Contact</h4>
           <a href="mailto:info@studio-vroom.com">info@studio-vroom.com</a>
-          <a href="tel:2247162703" style="font-size:15px; font-weight:700; color:var(--sky); letter-spacing:0.03em;">📞 (224) 716-2703</a>
-          <a href="https://maps.app.goo.gl/WuVvDdQnndSTCDySA" target="_blank" rel="noopener" style="line-height:1.5; margin-top:4px;">
-            📍 860 Eagle Dr.<br>
-            <span style="padding-left:22px;">Bensenville, IL 60106</span>
-          </a>
-          <p style="margin-top:14px; color:rgba(255,255,255,0.3); font-size:11px; text-transform:uppercase; letter-spacing:0.12em;">Hours</p>
-          <p>Mon – Fri: 10am – 7pm</p>
-          <p>Sat: 10am – 3pm</p>
-          <p>By appointment only</p>
+          <a href="tel:2247162703">📞 (224) 716-2703</a>
+          <a href="https://maps.app.goo.gl/WuVvDdQnndSTCDySA" target="_blank">📍 860 Eagle Dr, Bensenville, IL 60106</a>
+          <p style="margin-top:14px"><strong style="color:#fff">Hours</strong><br>Mon&ndash;Fri: 10am&ndash;7pm<br>Sat: 10am&ndash;3pm<br>Sun: Closed &middot; By appointment</p>
+        </div>
+        <div>
+          <h4>Reviews &amp; Credentials</h4>
+          <div class="creds">
+            <a href="https://maps.app.goo.gl/WuVvDdQnndSTCDySA" target="_blank">Google Reviews</a>
+            <a href="https://www.yelp.com/biz/studio-vroom-bensenville" target="_blank">Yelp</a>
+            <a href="https://www.bbb.org/us/il/bensenville/profile/car-dealers/studio-vroom-0654-1000107195" target="_blank">BBB Accredited</a>
+            <a href="https://www.kbb.com/dealers/bensenville-il/72963655/studio-vroom/" target="_blank">Kelley Blue Book</a>
+          </div>
         </div>
       </div>
-
-      <!-- Reviews & Trust Badges -->
-      <div style="border-top:1px solid rgba(200,169,110,0.15); padding-top:36px; margin-bottom:36px;">
-        <p style="font-family:'Cormorant Garamond',serif; font-size:11px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#c8a96e; margin-bottom:20px;">Reviews & Credentials</p>
-        <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
-
-          <!-- Google Reviews -->
-          <a href="https://maps.app.goo.gl/WuVvDdQnndSTCDySA" target="_blank" rel="noopener"
-             style="display:flex; align-items:center; gap:10px; background:rgba(200,169,110,0.07); border:1px solid rgba(200,169,110,0.2); border-radius:10px; padding:10px 18px; text-decoration:none; transition:background 0.2s;"
-             onmouseover="this.style.background='rgba(200,169,110,0.15)'" onmouseout="this.style.background='rgba(200,169,110,0.07)'">
-            <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.3 9 3.4l6.7-6.7C35.6 2.5 30.1 0 24 0 14.6 0 6.6 5.5 2.6 13.5l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17z"/><path fill="#FBBC05" d="M10.4 28.4A14.3 14.3 0 0 1 9.5 24c0-1.5.3-3 .9-4.4l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6.3z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.4 2.2-6.3 0-11.6-4.2-13.6-10l-7.8 6.1C6.6 42.5 14.6 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-            <span style="font-family:'Cormorant Garamond',serif; color:rgba(253,237,210,0.85); font-size:16px; font-weight:600;">Google Reviews</span>
-          </a>
-
-          <!-- Yelp -->
-          <a href="https://www.yelp.com/biz/studio-vroom-bensenville?osq=Studio+Vroom&override_cta=Request+an+appointment" target="_blank" rel="noopener"
-             style="display:flex; align-items:center; gap:10px; background:rgba(200,169,110,0.07); border:1px solid rgba(200,169,110,0.2); border-radius:10px; padding:10px 18px; text-decoration:none; transition:background 0.2s;"
-             onmouseover="this.style.background='rgba(200,169,110,0.15)'" onmouseout="this.style.background='rgba(200,169,110,0.07)'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="#D32323"><path d="M20.16 12.73l-4.1 1.27c-.89.28-1.64-.69-1.19-1.51l2.17-3.88c.45-.81 1.6-.7 1.89.18l1.93 3.97c.13.27.13.58-.7.97zM12.84 8.12l.5-4.27C13.47 2.84 12.5 2 11.5 2c-1 0-1.97.84-1.84 1.85l.5 4.27c.1.87 1.08 1.27 1.68.75l1-.75zm-5.31 5.19l-4.1-1.27c-.89-.28-1.4-1.2-1.07-2.07.33-.87 1.3-1.3 2.18-1.01l3.97 1.27c.89.28 1.03 1.43.3 1.93l-.85.63c-.12.09-.27.14-.43.14zm.83 3.84l-2.16 3.88c-.44.81.06 1.8.97 1.97.91.17 1.78-.44 1.95-1.35l.79-4.26c.17-.91-.77-1.63-1.55-1.24zm9.62 3.88l-2.16-3.88c-.41-.73-1.38-.93-2.06-.44l-1.28.93c-.68.49-.56 1.53.2 1.86l4.1 1.51c.89.33 1.74-.26 1.89-1.07.05-.28 0-.57-.14-.81-.08-.15-.35-.1-.55-.1z"/></svg>
-            <span style="font-family:'Cormorant Garamond',serif; color:rgba(253,237,210,0.85); font-size:16px; font-weight:600;">Yelp</span>
-          </a>
-
-          <!-- BBB -->
-          <a href="https://www.bbb.org/us/il/bensenville/profile/car-dealers/studio-vroom-0654-1000107195" target="_blank" rel="noopener"
-             style="display:flex; align-items:center; gap:10px; background:rgba(200,169,110,0.07); border:1px solid rgba(200,169,110,0.2); border-radius:10px; padding:10px 18px; text-decoration:none; transition:background 0.2s;"
-             onmouseover="this.style.background='rgba(200,169,110,0.15)'" onmouseout="this.style.background='rgba(200,169,110,0.07)'">
-            <svg width="36" height="22" viewBox="0 0 90 55"><rect width="90" height="55" rx="4" fill="#003F87"/><text x="45" y="24" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="18" fill="#FFFFFF">BBB</text><text x="45" y="40" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" fill="#C8D8F0" letter-spacing="0.5">ACCREDITED BUSINESS</text><text x="45" y="50" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#FFD700">★★★★★</text></svg>
-            <span style="font-family:'Cormorant Garamond',serif; color:rgba(253,237,210,0.85); font-size:16px; font-weight:600;">BBB Accredited</span>
-          </a>
-
-          <!-- Carfax -->
-          <a href="https://www.kbb.com/dealers/bensenville-il/72963655/studio-vroom/" target="_blank" rel="noopener"
-             style="display:flex; align-items:center; gap:10px; background:rgba(200,169,110,0.07); border:1px solid rgba(200,169,110,0.2); border-radius:10px; padding:10px 18px; text-decoration:none; transition:background 0.2s;"
-             onmouseover="this.style.background='rgba(200,169,110,0.15)'" onmouseout="this.style.background='rgba(200,169,110,0.07)'">
-            <svg width="36" height="22" viewBox="0 0 100 55"><rect width="100" height="55" rx="4" fill="#2357A5"/><text x="50" y="28" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="20" fill="#FFFFFF">KBB</text><text x="50" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" fill="#A8C4E8" letter-spacing="0.3">KELLEY BLUE BOOK</text></svg>
-            <span style="font-family:'Cormorant Garamond',serif; color:rgba(253,237,210,0.85); font-size:16px; font-weight:600;">Kelley Blue Book</span>
-          </a>
-
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p>© 2025 Studio Vroom. All rights reserved.</p>
-        <p>The World's First Car Adoption Agency 🩵</p>
+      <div class="foot-bottom">
+        <p class="tag">The World's First Car Adoption Agency 🩵</p>
+        <p>&copy; 2026 Studio Vroom. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
+  <a class="chat-fab" href="https://m.me/100530205236545" target="_blank" rel="noopener" aria-label="Chat with us on Messenger">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17.16.15.26.35.27.57l.05 1.78c.03.57.62.94 1.14.71l1.99-.88c.17-.07.36-.09.54-.04 1 .27 2.06.42 3.13.42 5.64 0 10-4.13 10-9.7S17.64 2 12 2Zm6 7.46-2.94 4.66c-.47.74-1.47.93-2.17.4l-2.34-1.75a.6.6 0 0 0-.72 0l-3.16 2.4c-.42.32-.97-.18-.69-.63l2.94-4.66c.47-.74 1.47-.93 2.17-.4l2.34 1.75a.6.6 0 0 0 .72 0l3.16-2.4c.42-.32.97.18.69.63Z"/></svg>
+    <span class="chat-txt">Chat with us</span>
+  </a>
+
+  <audio id="themeAudio" loop preload="none" src="Music/Step%20inside%2C%20the%20road%20is%20waiting%2C.mp3"></audio>
+  <button class="music-pill" id="musicPill" aria-label="Play Studio Vroom theme song">
+    <span class="music-ico">
+      <svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="ic-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </span>
+    <span class="music-txt"><b>Studio Vroom Theme</b><span>Step inside, the road is waiting</span></span>
+    <span class="eq"><i></i><i></i><i></i><i></i></span>
+  </button>
+
+  <div class="lightbox" id="lb"><span class="lb-close" id="lbClose">&times;</span><img id="lbImg" src="" alt="" /><div class="lb-cap" id="lbCap"></div></div>
+
   <script>
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
+    var nav=document.getElementById('nav');
+    addEventListener('scroll',function(){nav.classList.toggle('scrolled',scrollY>40)});
+    var mm=document.getElementById('mm');
+    document.getElementById('hb').onclick=function(){mm.classList.add('open')};
+    document.getElementById('mmClose').onclick=function(){mm.classList.remove('open')};
+    mm.querySelectorAll('a').forEach(function(a){a.onclick=function(){mm.classList.remove('open')}});
+    var lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbCap=document.getElementById('lbCap');
+    document.querySelectorAll('#adoptGrid img,.gallery-item img,.wt-sheet img,.wt-art img').forEach(function(img){
+      img.style.cursor='zoom-in';
+      img.onclick=function(){lbImg.src=img.src;lbCap.textContent=img.alt||'';lb.classList.add('open')};
     });
+    var audio=document.getElementById('themeAudio'),pill=document.getElementById('musicPill');
+    pill.onclick=function(){
+      if(audio.paused){audio.play().then(function(){pill.classList.add('playing')}).catch(function(){});}
+      else{audio.pause();pill.classList.remove('playing');}
+    };
+    audio.addEventListener('pause',function(){pill.classList.remove('playing')});
+    audio.addEventListener('play',function(){pill.classList.add('playing')});
+    function closeLb(){lb.classList.remove('open')}
+    document.getElementById('lbClose').onclick=closeLb;
+    lb.onclick=function(e){if(e.target===lb)closeLb()};
+    addEventListener('keydown',function(e){if(e.key==='Escape')closeLb()});
 
-    function closeMobileMenu() {
-      hamburger.classList.remove('open');
-      mobileMenu.classList.remove('open');
-    }
+    /* ============================================================
+       OUR FAMILY — Google Sheet auto-loader
+       1) Google Sheet columns (row 1 = headers, any order):
+          Name | Year | Make | Model | Trim | Mileage | Fee | Status | Photo | Tagline | Carfax | Autotrader | Link
+          - Name: leave blank to auto-assign a name
+          - Status: Available / Featured / Pending / Adopted (Adopted are hidden here)
+          - Photo: a file in this repo (e.g. cars/sunny/front.jpg or just front.jpg → cars/front.jpg), OR a full https:// URL
+          - Carfax: full https:// link to the CARFAX report (optional)
+          - Link: detail page or URL (optional)
+       2) In the Sheet: File → Share → Publish to web → CSV → copy the link
+       3) Paste that CSV link below (between the quotes). Empty = keep default cards.
+    ============================================================ */
+    var FAMILY_SHEET_CSV = "https://docs.google.com/spreadsheets/d/1zluzwZ9pzMfKtdlbhKxosIIQbHNExAK-yM_oc5rPBrY/gviz/tq?tqx=out:csv&gid=0";
 
-    // Close menu on scroll
-    window.addEventListener('scroll', closeMobileMenu);
+    (function(){
+      if(!FAMILY_SHEET_CSV){ return; } // no sheet yet → keep the built-in cards
+      var grid=document.getElementById('carsGrid');
+      var NAME_POOL=["Sunny","Luna","Ruby","Ace","Bluey","Cleo","Cooper","Daisy","Echo","Finn","Ginger","Hazel","Ivy","Jasper","Koda","Lily","Milo","Nova","Olive","Pepper","Quill","Rusty","Scout","Teddy","Uma","Violet","Willow","Ziggy","Biscuit","Mango","Bruno","Coco","Dexter","Ellie","Frankie","Gus","Honey","Indigo","Juno","Kiwi","Loki","Maple","Nemo","Otis","Piper","Rocky","Simba","Tilly","Waffle","Zoe"];
 
-    // ── LIGHTBOX ──────────────────────────────
-    const lightbox  = document.getElementById('lightbox');
-    const lbImg     = document.getElementById('lbImg');
-    const lbClose   = document.getElementById('lbClose');
-    const lbPrev    = document.getElementById('lbPrev');
-    const lbNext    = document.getElementById('lbNext');
-    const lbCounter = document.getElementById('lbCounter');
-
-    // Adopted 섹션 이미지 전부 수집
-    const adoptedImgs = Array.from(
-      document.querySelectorAll('#adopted .adopted-card img')
-    );
-    let lbIndex = 0;
-
-    function openLightbox(index) {
-      lbIndex = index;
-      lbImg.src = adoptedImgs[lbIndex].src;
-      lbImg.alt = adoptedImgs[lbIndex].alt;
-      lbCounter.textContent = `${lbIndex + 1} / ${adoptedImgs.length}`;
-      lightbox.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    function showNext() {
-      lbIndex = (lbIndex + 1) % adoptedImgs.length;
-      lbImg.src = adoptedImgs[lbIndex].src;
-      lbCounter.textContent = `${lbIndex + 1} / ${adoptedImgs.length}`;
-    }
-
-    function showPrev() {
-      lbIndex = (lbIndex - 1 + adoptedImgs.length) % adoptedImgs.length;
-      lbImg.src = adoptedImgs[lbIndex].src;
-      lbCounter.textContent = `${lbIndex + 1} / ${adoptedImgs.length}`;
-    }
-
-    // 카드 클릭 이벤트
-    document.querySelectorAll('#adopted .adopted-card').forEach((card, i) => {
-      card.addEventListener('click', () => openLightbox(i));
-    });
-
-    // 닫기 / 배경 클릭
-    lbClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
-    });
-
-    // 이전 / 다음 버튼
-    lbPrev.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
-    lbNext.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
-
-    // 키보드 지원
-    document.addEventListener('keydown', (e) => {
-      if (!lightbox.classList.contains('open')) return;
-      if (e.key === 'ArrowRight') showNext();
-      if (e.key === 'ArrowLeft')  showPrev();
-      if (e.key === 'Escape')     closeLightbox();
-    });
-
-    // ── Nav dark on scroll
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 60) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
+      function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+      function resolvePhoto(v){ v=(v||'').trim(); if(!v) return 'images/placeholder-car.svg'; if(/^https?:\/\//i.test(v)) return v; if(v.indexOf('/')>=0){return v.split('/').map(encodeURIComponent).join('/');} return 'cars/'+encodeURIComponent(v); }
+      function parseCSV(text){
+        var rows=[],row=[],cur='',q=false;
+        for(var i=0;i<text.length;i++){var c=text[i];
+          if(q){ if(c=='"'){ if(text[i+1]=='"'){cur+='"';i++;} else {q=false;} } else {cur+=c;} }
+          else { if(c=='"'){q=true;} else if(c==','){row.push(cur);cur='';} else if(c=='\n'){row.push(cur);rows.push(row);row=[];cur='';} else if(c=='\r'){} else {cur+=c;} }
+        }
+        if(cur!==''||row.length){row.push(cur);rows.push(row);}
+        return rows;
       }
-    });
+
+      fetch(FAMILY_SHEET_CSV).then(function(r){return r.text();}).then(function(t){
+        var rows=parseCSV(t); if(rows.length<2) return;
+        var head=rows[0].map(function(h){return h.trim().toLowerCase();});
+        function col(r,name){var i=head.indexOf(name);return i<0?'':(r[i]||'').trim();}
+        var used={}, cards=[];
+        // reserve names typed in the sheet so auto names never collide with them
+        for(var j=1;j<rows.length;j++){ var en=col(rows[j],'name'); if(en){ used[en.toLowerCase()]=1; } }
+        // deterministic: the same car (year/make/model/trim/mileage) always gets the same name
+        function autoName(seed){
+          var s=(seed||'').toLowerCase(), hsh=0, i;
+          for(i=0;i<s.length;i++){ hsh=(hsh*31+s.charCodeAt(i))>>>0; }
+          var p=hsh%NAME_POOL.length;
+          for(var n=0;n<NAME_POOL.length;n++){ var cand=NAME_POOL[(p+n)%NAME_POOL.length]; if(!used[cand.toLowerCase()]){ used[cand.toLowerCase()]=1; return cand; } }
+          var fb=NAME_POOL[p]+' '+((hsh%99)+1); used[fb.toLowerCase()]=1; return fb;
+        }
+        function slugify(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+        for(var k=1;k<rows.length;k++){
+          var r=rows[k]; if(!r || r.join('').trim()==='') continue;
+          var status=(col(r,'status')||'available').toLowerCase();
+          if(status.indexOf('adopt')>=0) continue;
+          var model=[col(r,'year'),col(r,'make'),col(r,'model'),col(r,'trim')].filter(Boolean).join(' ');
+          var name=col(r,'name'); if(!name){ name=autoName(model+'|'+col(r,'mileage')); }
+          var slug=slugify(model+' '+col(r,'mileage').replace(/,/g,''));
+          var mi=col(r,'mileage'); if(mi){ var mnum=mi.replace(/,/g,''); model+=(model?' · ':'')+(/^\d+$/.test(mnum)?Number(mnum).toLocaleString()+' mi':mi); }
+          var fee=col(r,'fee'); var feeTxt=fee?(/^\$?[\d,]+$/.test(fee)?'$'+Number(fee.replace(/[^0-9]/g,'')).toLocaleString():fee):'Ask';
+          var link=col(r,'link')||('car.html?car='+slug); var carfax=col(r,'carfax'); var autot=col(r,'autotrader'); var feat=status.indexOf('feature')>=0;
+          var badge=feat?'⭐ Featured':(status.indexOf('pend')>=0?'⏳ Pending':'💙 Available');
+          var h='<div class="car-card'+(feat?' featured':'')+'">'
+            +'<a class="car-img-wrap" href="'+esc(link)+'"><img src="'+resolvePhoto(col(r,'photo'))+'" onerror="this.onerror=null;this.src=\'images/placeholder-car.svg\'" alt="'+esc(name)+'" /></a>'
+            +'<div class="car-body"><span class="car-status">'+badge+'</span>'
+            +'<p class="car-name">'+esc(name)+'</p><p class="car-model">'+esc(model)+'</p>'
+            +'<div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>'+esc(feeTxt)+'</strong></div>'
+            +'<div class="car-actions">'
+            +(carfax?'<a class="carfax-link" href="'+esc(carfax)+'" target="_blank" rel="noopener">🔍 CARFAX</a>':'')
+            +(autot?'<a class="at-link" href="'+esc(autot)+'" target="_blank" rel="noopener">🚗 Autotrader</a>':'')
+            +'<a class="btn-sm" href="'+esc(link)+'">Meet Me</a></div></div></div></div>';
+          cards.push(h);
+        }
+        if(cards.length){ grid.innerHTML=cards.join(''); }
+      }).catch(function(e){ /* fetch failed → keep default cards */ });
+    })();
   </script>
 </body>
 </html>
