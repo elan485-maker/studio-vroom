@@ -349,221 +349,16 @@
     <button class="filter-btn">SUV</button>
     <button class="filter-btn">Under $20k</button>
     <button class="filter-btn">Low Mileage</button>
-    <span class="filter-count"><strong>5</strong> looking for a forever family</span>
+    <span class="filter-count" id="family-count"><strong>—</strong> looking for a forever family</span>
   </div>
 
   <div class="family-section">
-    <div class="cars-grid">
-
-      <!-- Sunny -->
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img src="images/car-sunny.jpg" alt="Sunny" / onerror="this.src='images/placeholder-car.svg'">
-          <span class="car-badge">🩵 Available</span>
-        </div>
-        <div class="car-body">
-          <p class="car-name">Sunny</p>
-          <p class="car-model">2019 Toyota Camry LE • Silver</p>
-          <div class="car-traits">
-            <span class="trait">😌 Calm &amp; Reliable</span>
-            <span class="trait">🌟 Low Mileage</span>
-            <span class="trait">⛽ Fuel Efficient</span>
-          </div>
-          <div class="car-specs">
-            <div class="spec-item">
-              <div class="spec-label">Mileage</div>
-              <div class="spec-value">38,200 mi</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Year</div>
-              <div class="spec-value">2019</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Engine</div>
-              <div class="spec-value">2.5L 4-cyl</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Trans.</div>
-              <div class="spec-value">Automatic</div>
-            </div>
-          </div>
-          <div class="car-footer">
-            <div>
-              <div class="car-fee-label">Adoption Fee</div>
-              <div class="car-fee">$17,900</div>
-            </div>
-            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
-          </div>
-        </div>
+    <div class="cars-grid" id="cars-grid">
+      <!-- Cars loaded dynamically from ERP -->
+      <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-light);">
+        <div style="font-size:32px;margin-bottom:12px;">🩵</div>
+        <div style="font-size:15px;">Loading the family…</div>
       </div>
-
-      <!-- Blu -->
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img src="images/car-gray.jpg" alt="Blu" / onerror="this.src='images/placeholder-car.svg'">
-          <span class="car-badge">🩵 Available</span>
-        </div>
-        <div class="car-body">
-          <p class="car-name">Blu</p>
-          <p class="car-model">2020 Honda Accord Sport • Blue</p>
-          <div class="car-traits">
-            <span class="trait">⚡ Energetic</span>
-            <span class="trait">🏙️ City-Ready</span>
-            <span class="trait">🎵 Great Sound System</span>
-          </div>
-          <div class="car-specs">
-            <div class="spec-item">
-              <div class="spec-label">Mileage</div>
-              <div class="spec-value">29,400 mi</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Year</div>
-              <div class="spec-value">2020</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Engine</div>
-              <div class="spec-value">1.5L Turbo</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Trans.</div>
-              <div class="spec-value">CVT</div>
-            </div>
-          </div>
-          <div class="car-footer">
-            <div>
-              <div class="car-fee-label">Adoption Fee</div>
-              <div class="car-fee">$21,500</div>
-            </div>
-            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Luna -->
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img src="images/car-luna.jpg" alt="Luna" / onerror="this.src='images/placeholder-car.svg'">
-          <span class="car-badge">🩵 Available</span>
-        </div>
-        <div class="car-body">
-          <p class="car-name">Luna</p>
-          <p class="car-model">2018 Nissan Rogue SV • White</p>
-          <div class="car-traits">
-            <span class="trait">🌙 Smooth &amp; Quiet</span>
-            <span class="trait">👨‍👩‍👧 Family Friendly</span>
-            <span class="trait">🛡️ Safety Rated</span>
-          </div>
-          <div class="car-specs">
-            <div class="spec-item">
-              <div class="spec-label">Mileage</div>
-              <div class="spec-value">54,800 mi</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Year</div>
-              <div class="spec-value">2018</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Engine</div>
-              <div class="spec-value">2.5L 4-cyl</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Trans.</div>
-              <div class="spec-value">CVT</div>
-            </div>
-          </div>
-          <div class="car-footer">
-            <div>
-              <div class="car-fee-label">Adoption Fee</div>
-              <div class="car-fee">$16,400</div>
-            </div>
-            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Max -->
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img src="images/car-rosie.jpg" alt="Max" / onerror="this.src='images/placeholder-car.svg'">
-          <span class="car-badge">🩵 Available</span>
-        </div>
-        <div class="car-body">
-          <p class="car-name">Max</p>
-          <p class="car-model">2021 Jeep Compass Latitude • Black</p>
-          <div class="car-traits">
-            <span class="trait">🏔️ Adventurous</span>
-            <span class="trait">💪 Strong &amp; Bold</span>
-            <span class="trait">🌧️ AWD Ready</span>
-          </div>
-          <div class="car-specs">
-            <div class="spec-item">
-              <div class="spec-label">Mileage</div>
-              <div class="spec-value">22,100 mi</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Year</div>
-              <div class="spec-value">2021</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Engine</div>
-              <div class="spec-value">2.4L 4-cyl</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Trans.</div>
-              <div class="spec-value">9-Speed Auto</div>
-            </div>
-          </div>
-          <div class="car-footer">
-            <div>
-              <div class="car-fee-label">Adoption Fee</div>
-              <div class="car-fee">$24,800</div>
-            </div>
-            <a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rosie — Adopted -->
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img src="images/about.jpg" alt="Rosie" style="filter:grayscale(30%)" / onerror="this.src='images/placeholder-car.svg'">
-          <span class="car-badge adopted">🩵 Adopted</span>
-        </div>
-        <div class="car-body">
-          <p class="car-name">Rosie</p>
-          <p class="car-model">2017 Ford Escape SE • Red</p>
-          <div class="car-traits">
-            <span class="trait">🌸 Sweet &amp; Spirited</span>
-            <span class="trait">☀️ Happy Commuter</span>
-          </div>
-          <div class="car-specs">
-            <div class="spec-item">
-              <div class="spec-label">Mileage</div>
-              <div class="spec-value">67,300 mi</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Year</div>
-              <div class="spec-value">2017</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Engine</div>
-              <div class="spec-value">1.5L Turbo</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">Trans.</div>
-              <div class="spec-value">6-Speed Auto</div>
-            </div>
-          </div>
-          <div class="car-footer">
-            <div>
-              <div class="car-fee-label">Adopted 🩵</div>
-              <div class="car-fee" style="color:var(--text-light); font-size:16px;">Found her forever home!</div>
-            </div>
-            <span class="btn-meet adopted-btn">Adopted ✓</span>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -580,13 +375,116 @@
   </footer>
 
   <script>
-    // Simple filter functionality
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    // ── Public Inventory API ──────────────────────────────────────────────────
+    const INVENTORY_API = 'https://script.google.com/macros/s/AKfycbzRom3vv3EjRNCTlWDiutUYy8O3jXXS-2Tdwt0x015zCYRxfSlqhH2Ljo3sw0ll3gDE/exec?api=inventory';
+
+    function fmtMiles(n) {
+      const num = Number(n);
+      return isNaN(num) || num === 0 ? '—' : num.toLocaleString() + ' mi';
+    }
+    function fmtFee(n) {
+      const num = Number(n);
+      return isNaN(num) || num === 0 ? 'Contact Us' : '$' + num.toLocaleString();
+    }
+    function escHtml(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderCard(car) {
+      const adopted = String(car.status) === 'Adopted';
+      const img     = car.photoUrl ? escHtml(car.photoUrl) : 'images/placeholder-car.svg';
+      const name    = escHtml(car.name);
+      const model   = escHtml((car.year ? car.year + ' ' : '') + (car.model || ''));
+      const miles   = fmtMiles(car.mileage);
+      const fee     = fmtFee(car.adoptionFee);
+
+      return `
+        <div class="car-card" data-status="${adopted ? 'adopted' : 'available'}">
+          <div class="car-img-wrap">
+            <img src="${img}" alt="${name}"${adopted ? ' style="filter:grayscale(30%)"' : ''}
+                 onerror="this.src='images/placeholder-car.svg'">
+            <span class="car-badge${adopted ? ' adopted' : ''}">🩵 ${adopted ? 'Adopted' : 'Available'}</span>
+          </div>
+          <div class="car-body">
+            <p class="car-name">${name}</p>
+            <p class="car-model">${model}</p>
+            <div class="car-specs">
+              <div class="spec-item">
+                <div class="spec-label">Mileage</div>
+                <div class="spec-value">${miles}</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-label">Year</div>
+                <div class="spec-value">${escHtml(car.year || '—')}</div>
+              </div>
+            </div>
+            <div class="car-footer">
+              <div>
+                ${adopted
+                  ? '<div class="car-fee-label">Adopted 🩵</div><div class="car-fee" style="color:var(--text-light);font-size:16px;">Found a forever home!</div>'
+                  : `<div class="car-fee-label">Adoption Fee</div><div class="car-fee">${fee}</div>`}
+              </div>
+              ${adopted
+                ? '<span class="btn-meet adopted-btn">Adopted ✓</span>'
+                : '<a href="car-detail.html" class="btn-meet">Meet Me 🩵</a>'}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function loadInventory() {
+      const grid     = document.getElementById('cars-grid');
+      const countEl  = document.getElementById('family-count');
+      try {
+        const res  = await fetch(INVENTORY_API);
+        const data = await res.json();
+        const cars = data.family || [];
+
+        if (cars.length === 0) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-light);">No cars available right now — check back soon! 🩵</div>';
+        } else {
+          grid.innerHTML = cars.map(renderCard).join('');
+        }
+
+        // Update filter count
+        const available = cars.filter(c => String(c.status) !== 'Adopted').length;
+        if (countEl) countEl.innerHTML = `<strong>${available}</strong> looking for a forever family`;
+
+        // Wire up filter buttons after cards are rendered
+        initFilters();
+
+      } catch (err) {
+        console.error('Inventory fetch failed:', err);
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-light);">Could not load inventory — please refresh. 🙏</div>';
+      }
+    }
+
+    function initFilters() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const f = btn.textContent.trim();
+          document.querySelectorAll('.car-card').forEach(card => {
+            const show =
+              f === 'All' ? true :
+              f === 'Sedan' ? card.querySelector('.car-model')?.textContent.match(/Camry|Accord|Sonata|Civic|Altima/i) :
+              f === 'SUV'   ? card.querySelector('.car-model')?.textContent.match(/Rogue|Compass|Escape|CR-V|RAV4|Explorer|Pilot/i) :
+              f === 'Under $20k' ? (() => {
+                const fee = card.querySelector('.car-fee')?.textContent.replace(/[$,]/g,'');
+                return fee && Number(fee) < 20000;
+              })() :
+              f === 'Low Mileage' ? (() => {
+                const mi = card.querySelector('.spec-value')?.textContent.replace(/[^0-9]/g,'');
+                return mi && Number(mi) < 40000;
+              })() : true;
+            card.style.display = show ? '' : 'none';
+          });
+        });
       });
-    });
+    }
+
+    loadInventory();
   </script>
 </body>
 </html>
