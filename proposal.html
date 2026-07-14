@@ -23,7 +23,6 @@
   a{color:inherit}
   .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 
-  /* header */
   header{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
   .hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
   .logo{font-family:'Playfair Display',serif;font-weight:800;font-size:1.35rem;letter-spacing:.2px}
@@ -35,7 +34,6 @@
   .print-btn{border:1px solid var(--line);background:var(--white);border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.8rem;padding:6px 14px;cursor:pointer;color:var(--brown-soft)}
   .print-btn:hover{border-color:var(--orange)}
 
-  /* generic */
   .eyebrow{color:var(--orange-deep);font-weight:800;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
   .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius)}
   .muted{color:var(--brown-soft)}
@@ -50,7 +48,6 @@
   .spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 18px;animation:spin .9s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* list view */
   .list-head{margin-bottom:22px}
   .list-head h1{font-size:1.9rem;margin:6px 0 4px}
   .car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
@@ -65,13 +62,11 @@
   .car-card .price{font-weight:800;font-size:1.05rem}
   .ribbon{position:absolute;top:12px;left:12px;z-index:2}
 
-  /* detail view */
   .back-link{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.85rem;color:var(--brown-soft);cursor:pointer;border:0;background:none;font-family:'Nunito',sans-serif;margin-bottom:14px}
   .back-link:hover{color:var(--orange-deep)}
   .detail-grid{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start}
   @media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
 
-  /* gallery */
   .gallery .main{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--sky-soft);border:1px solid var(--line)}
   .gallery .main img{width:100%;height:100%;object-fit:cover}
   .gallery .nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.92);cursor:pointer;font-size:1rem;color:var(--brown);display:flex;align-items:center;justify-content:center}
@@ -95,18 +90,11 @@
   .spec{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
   .spec .k{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brown-soft)}
   .spec .v{font-weight:700;font-size:.95rem;margin-top:2px;word-break:break-all}
+  .spec.due{background:var(--sky-soft);border-color:#d5e9f2}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{border:1px solid var(--line);background:var(--white);border-radius:999px;padding:5px 13px;font-size:.83rem;font-weight:600;color:var(--brown)}
   .prose{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;font-size:.95rem;white-space:pre-line}
 
-  /* auction card */
-  .auction-card{background:var(--sky-soft);border:1px solid #d5e9f2;border-radius:var(--radius);padding:16px 18px}
-  .auction-card .row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed #cfe3ed;font-size:.92rem}
-  .auction-card .row:last-child{border-bottom:0}
-  .auction-card .row .k{width:110px;flex-shrink:0;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#4a748a;padding-top:2px}
-  .auction-card .row .v{font-weight:700}
-
-  /* quote */
   .quote-col{position:sticky;top:78px}
   @media(max-width:900px){.quote-col{position:static}}
   .quote-card{padding:20px 20px 18px}
@@ -116,7 +104,6 @@
   .q-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
   .q-row .k{color:var(--brown-soft);font-weight:600}
   .q-row .v{font-weight:700;white-space:nowrap}
-  .q-row.discount .v{color:var(--orange-deep)}
   .q-row .k .note{display:block;font-size:.75rem;color:var(--brown-soft);font-weight:400}
   .q-total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 4px}
   .q-total .k{font-weight:800;font-size:1rem}
@@ -137,7 +124,7 @@
     body{background:#fff}
     header{position:static}
     .detail-grid{grid-template-columns:1fr 340px}
-    .card,.spec,.prose,.auction-card{border-color:#ddd}
+    .card,.spec,.prose{border-color:#ddd}
     main{padding:12px 0}
   }
 </style>
@@ -160,7 +147,7 @@
   <div class="wrap" id="app">
     <div class="state" id="loading">
       <div class="spinner"></div>
-      <p class="muted" data-i18n="loading">차량 정보를 불러오는 중입니다…</p>
+      <p class="muted">차량 정보를 불러오는 중입니다…</p>
     </div>
   </div>
 </main>
@@ -172,60 +159,50 @@
 </footer>
 
 <script>
-/* ================= CONFIG ================= */
-const SHEET_ID = '15JsJZWz18E4tIKdjwh4qRZubJWgrTQumuCTT7Kb0Luk';
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv';
-// Optional: Google Drive API key. If set, a Google Drive FOLDER link in the
-// Photos column is automatically expanded into every image in that folder.
+/* ================= CONFIG =================
+   Two Google Sheets drive this page:
+   - CARS  = the candidate-car pool (each car entered once)
+   - PROPS = per-customer proposals (Token + CarID + tax rate)
+   Both must be shared "Anyone with the link – Viewer". */
+const CARS_SHEET_ID  = '1eFN_d9viD-jCxegANDV9XXk2ecMaizV-UZloQs8RoVQ';
+const PROPS_SHEET_ID = '1xl0UVsays1L3bDIZZOLHQBAQHMOU-6fLn4PPRfVxDCc';
+const csvUrl = id => 'https://docs.google.com/spreadsheets/d/' + id + '/gviz/tq?tqx=out:csv';
+// Optional Google Drive API key: lets a Drive FOLDER link in Photos auto-expand to every image inside.
 const DRIVE_API_KEY = '';
 
 /* ================= I18N ================= */
 const I18N = {
   ko: {
-    loading:'차량 정보를 불러오는 중입니다…',
     notFound:'제안서를 찾을 수 없습니다', notFoundSub:'링크가 정확한지 확인해 주세요. 문의: 224-716-2703',
     loadError:'데이터를 불러올 수 없습니다', loadErrorSub:'잠시 후 다시 시도해 주세요. 계속되면 연락 주세요: 224-716-2703',
-    preparedFor:'고객님을 위한 추천 차량', vehiclesForYou:'추천 차량 리스트', viewDetails:'자세히 보기',
+    preparedFor:'고객님을 위한 추천 차량', vehiclesForYou:'추천 차량 리스트',
     backToList:'← 차량 리스트로 돌아가기',
     specs:'차량 정보', year:'연식', make:'브랜드', model:'모델', trim:'트림', mileage:'마일리지', vin:'VIN',
-    options:'옵션', history:'히스토리', description:'차량 특징', auction:'옥션 정보',
-    auctionDate:'날짜', auctionTime:'시간', auctionHouse:'옥션장', auctionLocation:'위치',
-    quote:'견적', vehiclePrice:'차량 가격', auctionFee:'옥션 수수료', serviceFee:'서비스 수수료',
-    inspectionFee:'인스펙션 비용', docFee:'서류 비용', registrationFee:'타이틀 & 등록비', otherFee:'기타 비용',
-    tax:'세금', taxRate:'세율', discount:'할인', shipping:'쉬핑 (배송)',
-    shipIncluded:'포함', shipExtra:'별도', shipCustomer:'고객 직접 수배',
-    shipIncludedNote:'배송비는 최종 가격에 포함되어 있습니다', shipExtraNote:'배송비는 별도이며 최종 가격에 합산되었습니다',
-    shipCustomerNote:'배송은 고객님께서 직접 수배하시는 조건입니다',
+    options:'옵션', history:'히스토리', description:'차량 특징',
+    dueDate:'Due Date',
+    quote:'견적', estPrice:'차량 예상 가격', tax:'세금', taxRate:'세율',
+    registration:'Registration', titleFee:'Title Fee', docFee:'Doc Fee',
     total:'최종 가격', validUntil:'견적 유효기간', carfax:'CARFAX 리포트 보기',
-    sold:'판매 완료', expired:'기간 만료', pending:'진행 중',
-    expiredMsg:'이 제안서는 유효기간이 지났습니다. 최신 견적은 연락 주세요.',
+    sold:'판매 완료', pending:'진행 중',
     soldMsg:'이 차량은 판매 완료되었습니다. 비슷한 차량을 찾아드릴게요!',
-    dday:'옥션까지 {n}일', dtoday:'오늘 옥션!', dpast:'옥션 종료',
-    miles:'마일', questions:'문의하기', contactName:'Studio Vroom', print:'인쇄',
-    photos:'사진'
+    dday:'Due D-{n}', dtoday:'Due today', dpast:'마감',
+    miles:'마일', questions:'문의하기', print:'인쇄'
   },
   en: {
-    loading:'Loading vehicle details…',
     notFound:'Proposal not found', notFoundSub:'Please check your link. Questions? 224-716-2703',
     loadError:'Could not load data', loadErrorSub:'Please try again shortly. If it continues, call 224-716-2703',
-    preparedFor:'Vehicles selected for', vehiclesForYou:'Your vehicle shortlist', viewDetails:'View details',
+    preparedFor:'Vehicles selected for', vehiclesForYou:'Your vehicle shortlist',
     backToList:'← Back to your list',
     specs:'Vehicle Details', year:'Year', make:'Make', model:'Model', trim:'Trim', mileage:'Mileage', vin:'VIN',
-    options:'Options', history:'History', description:'Highlights', auction:'Auction Info',
-    auctionDate:'Date', auctionTime:'Time', auctionHouse:'Auction House', auctionLocation:'Location',
-    quote:'Quote', vehiclePrice:'Vehicle Price', auctionFee:'Auction Fee', serviceFee:'Service Fee',
-    inspectionFee:'Inspection Fee', docFee:'Documentation Fee', registrationFee:'Title & Registration', otherFee:'Other Fee',
-    tax:'Sales Tax', taxRate:'rate', discount:'Discount', shipping:'Shipping',
-    shipIncluded:'Included', shipExtra:'Extra', shipCustomer:'Arranged by customer',
-    shipIncludedNote:'Shipping is included in the total price', shipExtraNote:'Shipping is extra and added to the total',
-    shipCustomerNote:'Shipping to be arranged by the customer',
+    options:'Options', history:'History', description:'Highlights',
+    dueDate:'Due Date',
+    quote:'Quote', estPrice:'Estimated Vehicle Price', tax:'Sales Tax', taxRate:'rate',
+    registration:'Registration', titleFee:'Title Fee', docFee:'Doc Fee',
     total:'Total Price', validUntil:'Quote valid until', carfax:'View CARFAX report',
-    sold:'Sold', expired:'Expired', pending:'In progress',
-    expiredMsg:'This proposal has expired. Contact us for an updated quote.',
+    sold:'Sold', pending:'In progress',
     soldMsg:'This vehicle has been sold — let us find you a similar one!',
-    dday:'{n} days to auction', dtoday:'Auction today!', dpast:'Auction ended',
-    miles:'mi', questions:'Contact us', contactName:'Studio Vroom', print:'Print',
-    photos:'Photos'
+    dday:'Due D-{n}', dtoday:'Due today', dpast:'Past due',
+    miles:'mi', questions:'Contact us', print:'Print'
   }
 };
 let lang = (new URLSearchParams(location.search).get('lang') === 'en') ? 'en' : 'ko';
@@ -233,11 +210,7 @@ const t = k => (I18N[lang][k] !== undefined ? I18N[lang][k] : k);
 
 /* ================= HELPERS ================= */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const num = v => {
-  if (v == null) return 0;
-  const n = parseFloat(String(v).replace(/[$,\s]/g, ''));
-  return isNaN(n) ? 0 : n;
-};
+const num = v => { if (v == null) return 0; const n = parseFloat(String(v).replace(/[$,\s]/g, '')); return isNaN(n) ? 0 : n; };
 const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', {minimumFractionDigits: (n % 1 ? 2 : 0), maximumFractionDigits: 2});
 
 function parseCSV(text) {
@@ -257,59 +230,45 @@ function parseCSV(text) {
   if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
   return rows;
 }
-
 function rowsToObjects(rows) {
   if (!rows.length) return [];
   const heads = rows[0].map(h => h.trim().toLowerCase());
   return rows.slice(1).map(r => {
-    const o = {};
-    heads.forEach((h, i) => { if (h) o[h] = (r[i] || '').trim(); });
+    const o = {}; heads.forEach((h, i) => { if (h) o[h] = (r[i] || '').trim(); });
     return o;
   }).filter(o => Object.values(o).some(v => v !== ''));
 }
 
-/* Photo helpers: Drive file links -> displayable, Drive folder links -> API expansion */
-const driveFileId = url => {
-  let m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/);
-  return m ? m[1] : null;
-};
-const driveFolderId = url => {
-  const m = url.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([\w-]+)/);
-  return m ? m[1] : null;
-};
+/* Photo helpers */
+const driveFileId = url => { let m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/); return m ? m[1] : null; };
+const driveFolderId = url => { const m = url.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([\w-]+)/); return m ? m[1] : null; };
 const driveImg = id => 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1600';
-
 async function resolvePhotos(raw) {
   const parts = String(raw || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
   const out = [];
   for (const p of parts) {
     const folder = driveFolderId(p);
-    if (folder && DRIVE_API_KEY) {
-      try {
-        const q = encodeURIComponent("'" + folder + "' in parents and mimeType contains 'image/' and trashed=false");
-        const r = await fetch('https://www.googleapis.com/drive/v3/files?q=' + q + '&orderBy=name&pageSize=100&fields=files(id,name)&key=' + DRIVE_API_KEY);
-        if (r.ok) {
-          const j = await r.json();
-          (j.files || []).forEach(f => out.push(driveImg(f.id)));
-          continue;
-        }
-      } catch (e) { /* fall through */ }
+    if (folder) {
+      if (DRIVE_API_KEY) {
+        try {
+          const q = encodeURIComponent("'" + folder + "' in parents and mimeType contains 'image/' and trashed=false");
+          const r = await fetch('https://www.googleapis.com/drive/v3/files?q=' + q + '&orderBy=name&pageSize=100&fields=files(id,name)&key=' + DRIVE_API_KEY);
+          if (r.ok) { const j = await r.json(); (j.files || []).forEach(f => out.push(driveImg(f.id))); }
+        } catch (e) {}
+      }
       continue;
     }
-    if (folder && !DRIVE_API_KEY) continue; // folder link but no API key configured
     const fid = driveFileId(p);
     out.push(fid ? driveImg(fid) : p);
   }
   return out;
 }
 
-function carName(c) {
-  return [c.year, c.make, c.model].filter(Boolean).join(' ');
-}
+const carName = c => [c.year, c.make, c.model].filter(Boolean).join(' ');
 
-function auctionBadge(c) {
-  if (!c.auctiondate) return '';
-  const d = new Date(c.auctiondate + 'T00:00:00');
+function dueBadge(c) {
+  if (!c.duedate) return '';
+  const d = new Date(c.duedate + 'T00:00:00');
   if (isNaN(d)) return '';
   const today = new Date(); today.setHours(0,0,0,0);
   const diff = Math.round((d - today) / 86400000);
@@ -319,37 +278,25 @@ function auctionBadge(c) {
   else { txt = t('dpast'); cls = ''; }
   return '<span class="badge ' + cls + '">' + esc(txt) + '</span>';
 }
-
 function statusBadge(c) {
   const s = (c.status || '').toLowerCase();
   if (s === 'sold') return '<span class="badge red">' + t('sold') + '</span>';
-  if (s === 'expired') return '<span class="badge">' + t('expired') + '</span>';
   if (s === 'pending') return '<span class="badge">' + t('pending') + '</span>';
   return '';
 }
 
-/* ================= QUOTE MATH ================= */
+/* ================= QUOTE MATH =================
+   Shows ONLY: estimated vehicle price, tax (rate adjustable per proposal),
+   registration, title fee, doc fee. */
 function computeQuote(c) {
-  const fees = [
-    ['vehiclePrice', num(c.vehicleprice)],
-    ['auctionFee', num(c.auctionfee)],
-    ['serviceFee', num(c.servicefee)],
-    ['inspectionFee', num(c.inspectionfee)],
-    ['docFee', num(c.docfee)],
-    ['registrationFee', num(c.registrationfee)],
-    ['otherFee', num(c.otherfee)]
-  ];
-  const feeSum = fees.reduce((s, [, v]) => s + v, 0);
-  const taxRate = num(c.taxrate);
-  const tax = c.taxamount !== '' && c.taxamount != null && String(c.taxamount).trim() !== ''
-    ? num(c.taxamount)
-    : num(c.vehicleprice) * taxRate / 100;
-  const discount = num(c.discount);
-  const shipMode = (c.shippingmode || 'extra').toLowerCase();
-  const shipAmt = num(c.shippingamount);
-  const shipAdded = shipMode === 'extra' ? shipAmt : 0;
-  const total = feeSum + tax + shipAdded - discount;
-  return { fees, tax, taxRate, discount, shipMode, shipAmt, total };
+  const est = num(c.estprice);
+  const rate = num(c.taxrate);
+  const tax = est * rate / 100;
+  const reg = num(c.registrationfee);
+  const title = num(c.titlefee);
+  const doc = num(c.docfee);
+  const total = est + tax + reg + title + doc;
+  return { est, rate, tax, reg, title, doc, total };
 }
 
 /* ================= RENDER ================= */
@@ -375,10 +322,10 @@ function renderList() {
       '<div class="body">' +
         '<div class="meta">' + esc([c.trim, c.mileage ? Number(num(c.mileage)).toLocaleString() + ' ' + t('miles') : ''].filter(Boolean).join(' · ')) + '</div>' +
         '<h3>' + esc(carName(c)) + '</h3>' +
-        '<div class="meta">' + (c.auctiondate ? esc(t('auctionDate')) + ': ' + esc(c.auctiondate) + (c.auctionlocation ? ' · ' + esc(c.auctionlocation) : '') : '') + '</div>' +
+        '<div class="meta">' + (c.duedate ? esc(t('dueDate')) + ': ' + esc(c.duedate) : '') + '</div>' +
         '<div class="price-row"><span class="muted" style="font-size:.8rem">' + esc(t('total')) + '</span>' +
         '<span class="price">' + money(q.total) + '</span></div>' +
-        '<div style="margin-top:8px">' + auctionBadge(c) + '</div>' +
+        '<div style="margin-top:8px">' + dueBadge(c) + '</div>' +
       '</div></div>';
   });
   html += '</div>';
@@ -386,9 +333,9 @@ function renderList() {
   window.scrollTo(0, 0);
 }
 
-function specHTML(k, v) {
+function specHTML(k, v, cls) {
   if (!v) return '';
-  return '<div class="spec"><div class="k">' + esc(t(k)) + '</div><div class="v">' + esc(v) + '</div></div>';
+  return '<div class="spec' + (cls ? ' ' + cls : '') + '"><div class="k">' + esc(t(k)) + '</div><div class="v">' + esc(v) + '</div></div>';
 }
 
 function renderDetail() {
@@ -396,20 +343,16 @@ function renderDetail() {
   const q = computeQuote(c);
   const ph = PHOTOS[CUR] || [];
   GAL = Math.min(GAL, Math.max(0, ph.length - 1));
-  const desc = lang === 'ko' ? (c.description_ko || c.description_en || c.description || '')
-                             : (c.description_en || c.description_ko || c.description || '');
+  const desc = lang === 'ko' ? (c.description_ko || c.description_en || '') : (c.description_en || c.description_ko || '');
   const s = (c.status || '').toLowerCase();
   const opts = String(c.options || '').split(/[\n,]+/).map(x => x.trim()).filter(Boolean);
 
   let html = '';
   if (CARS.length > 1) html += '<button class="back-link" onclick="backToList()">' + esc(t('backToList')) + '</button>';
-
   if (s === 'sold') html += '<div class="prose" style="border-color:#ecccc7;background:#fdf4f2;margin-bottom:16px"><strong>' + t('soldMsg') + '</strong></div>';
-  if (s === 'expired') html += '<div class="prose" style="margin-bottom:16px"><strong>' + t('expiredMsg') + '</strong></div>';
 
   html += '<div class="detail-grid"><div>';
 
-  /* gallery */
   html += '<div class="gallery"><div class="main">' +
     (ph.length ? '<img id="galMain" src="' + esc(ph[GAL]) + '" alt="' + esc(carName(c)) + '">' : '') +
     (ph.length > 1 ? '<button class="nav prev" onclick="galStep(-1)">‹</button><button class="nav next" onclick="galStep(1)">›</button>' +
@@ -422,17 +365,16 @@ function renderDetail() {
   }
   html += '</div>';
 
-  /* title */
   html += '<div class="title-block"><div class="eyebrow">Studio Vroom · Proposal' + (c.customer ? ' · ' + esc(c.customer) : '') + '</div>' +
     '<h1>' + esc(carName(c)) + '</h1>' +
     (c.trim ? '<div class="sub">' + esc(c.trim) + '</div>' : '') +
-    '<div class="badge-row">' + statusBadge(c) + auctionBadge(c) + '</div></div>';
+    '<div class="badge-row">' + statusBadge(c) + dueBadge(c) + '</div></div>';
 
-  /* specs */
   html += '<section class="block"><h2>' + t('specs') + '</h2><div class="spec-grid">' +
     specHTML('year', c.year) + specHTML('make', c.make) + specHTML('model', c.model) + specHTML('trim', c.trim) +
     specHTML('mileage', c.mileage ? Number(num(c.mileage)).toLocaleString() + ' ' + t('miles') : '') +
-    specHTML('vin', c.vin) + '</div></section>';
+    specHTML('vin', c.vin) +
+    specHTML('dueDate', c.duedate, 'due') + '</div></section>';
 
   if (opts.length) {
     html += '<section class="block"><h2>' + t('options') + '</h2><div class="chips">' +
@@ -441,39 +383,19 @@ function renderDetail() {
   if (c.history) html += '<section class="block"><h2>' + t('history') + '</h2><div class="prose">' + esc(c.history) + '</div></section>';
   if (desc) html += '<section class="block"><h2>' + t('description') + '</h2><div class="prose">' + esc(desc) + '</div></section>';
 
-  /* auction */
-  if (c.auctiondate || c.auctionhouse || c.auctionlocation) {
-    html += '<section class="block"><h2>' + t('auction') + '</h2><div class="auction-card">' +
-      (c.auctiondate ? '<div class="row"><div class="k">' + t('auctionDate') + '</div><div class="v">' + esc(c.auctiondate) + '</div></div>' : '') +
-      (c.auctiontime ? '<div class="row"><div class="k">' + t('auctionTime') + '</div><div class="v">' + esc(c.auctiontime) + '</div></div>' : '') +
-      (c.auctionhouse ? '<div class="row"><div class="k">' + t('auctionHouse') + '</div><div class="v">' + esc(c.auctionhouse) + '</div></div>' : '') +
-      (c.auctionlocation ? '<div class="row"><div class="k">' + t('auctionLocation') + '</div><div class="v">' + esc(c.auctionlocation) + '</div></div>' : '') +
-      '</div></section>';
-  }
-
   html += '</div>'; /* end left col */
 
-  /* quote column */
-  const feeRows = q.fees.map(([k, v], idx) => {
-    if (idx === 0 || v > 0) {
-      return '<div class="q-row"><span class="k">' + t(k) + '</span><span class="v">' + money(v) + '</span></div>';
-    }
-    return '';
-  }).join('');
-  const taxRow = (q.tax > 0 || q.taxRate > 0)
-    ? '<div class="q-row"><span class="k">' + t('tax') + (q.taxRate ? ' <span class="note">' + t('taxRate') + ' ' + q.taxRate + '%</span>' : '') + '</span><span class="v">' + money(q.tax) + '</span></div>' : '';
-  const discountRow = q.discount > 0
-    ? '<div class="q-row discount"><span class="k">' + t('discount') + '</span><span class="v">−' + money(q.discount) + '</span></div>' : '';
-
-  let shipBadge, shipVal, shipNote;
-  if (q.shipMode === 'included') { shipBadge = '<span class="badge green">' + t('shipIncluded') + '</span>'; shipVal = t('shipIncluded'); shipNote = t('shipIncludedNote'); }
-  else if (q.shipMode === 'customer') { shipBadge = '<span class="badge">' + t('shipCustomer') + '</span>'; shipVal = '—'; shipNote = t('shipCustomerNote'); }
-  else { shipBadge = '<span class="badge orange">' + t('shipExtra') + '</span>'; shipVal = money(q.shipAmt); shipNote = t('shipExtraNote'); }
-  const shipRow = '<div class="q-row"><span class="k">' + t('shipping') + ' ' + shipBadge + '<span class="note">' + shipNote + '</span></span><span class="v">' + shipVal + '</span></div>';
+  /* quote column — only est price, tax, registration, title, doc */
+  const rows = [];
+  rows.push('<div class="q-row"><span class="k">' + t('estPrice') + '</span><span class="v">' + money(q.est) + '</span></div>');
+  rows.push('<div class="q-row"><span class="k">' + t('tax') + (q.rate ? ' <span class="note">' + t('taxRate') + ' ' + q.rate + '%</span>' : '') + '</span><span class="v">' + money(q.tax) + '</span></div>');
+  if (q.reg > 0) rows.push('<div class="q-row"><span class="k">' + t('registration') + '</span><span class="v">' + money(q.reg) + '</span></div>');
+  if (q.title > 0) rows.push('<div class="q-row"><span class="k">' + t('titleFee') + '</span><span class="v">' + money(q.title) + '</span></div>');
+  if (q.doc > 0) rows.push('<div class="q-row"><span class="k">' + t('docFee') + '</span><span class="v">' + money(q.doc) + '</span></div>');
 
   html += '<div class="quote-col"><div class="card quote-card">' +
     '<div class="q-head"><h2>' + t('quote') + '</h2><span class="eyebrow">' + esc(carName(c)) + '</span></div>' +
-    '<div class="q-rows">' + feeRows + taxRow + shipRow + discountRow + '</div>' +
+    '<div class="q-rows">' + rows.join('') + '</div>' +
     '<div class="q-total"><span class="k">' + t('total') + '</span><span class="v">' + money(q.total) + '</span></div>' +
     (c.validuntil ? '<div class="q-valid">' + t('validUntil') + ': ' + esc(c.validuntil) + '</div>' : '') +
     (c.notes ? '<div class="q-notes">' + esc(c.notes) + '</div>' : '') +
@@ -484,35 +406,25 @@ function renderDetail() {
     '<div class="line">860 Eagle Dr, Bensenville, IL 60106</div></div>' +
     '</div>';
 
-  html += '</div>'; /* end grid */
+  html += '</div>';
   app.innerHTML = html;
   window.scrollTo(0, 0);
 }
 
-/* gallery controls */
 function galStep(d) {
-  const ph = PHOTOS[CUR] || [];
-  if (!ph.length) return;
+  const ph = PHOTOS[CUR] || []; if (!ph.length) return;
   GAL = (GAL + d + ph.length) % ph.length;
-  const img = document.getElementById('galMain');
-  if (img) img.src = ph[GAL];
-  const cnt = document.getElementById('galCount');
-  if (cnt) cnt.textContent = (GAL + 1) + ' / ' + ph.length;
+  const img = document.getElementById('galMain'); if (img) img.src = ph[GAL];
+  const cnt = document.getElementById('galCount'); if (cnt) cnt.textContent = (GAL + 1) + ' / ' + ph.length;
   document.querySelectorAll('.thumbs button').forEach((b, i) => b.classList.toggle('on', i === GAL));
 }
 function galTo(i) { GAL = i - 1; galStep(1); }
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft') galStep(-1);
-  if (e.key === 'ArrowRight') galStep(1);
-});
-
+document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') galStep(-1); if (e.key === 'ArrowRight') galStep(1); });
 function openCar(i) { CUR = i; GAL = 0; renderDetail(); }
 function backToList() { renderList(); }
 
-/* lang toggle */
 function setLang(l) {
-  lang = l;
-  document.documentElement.lang = l;
+  lang = l; document.documentElement.lang = l;
   document.querySelectorAll('#langToggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
   document.getElementById('printBtn').textContent = t('print');
   if (!CARS.length) return;
@@ -521,23 +433,35 @@ function setLang(l) {
 document.querySelectorAll('#langToggle button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
 
 /* ================= INIT ================= */
+async function fetchCsv(id) {
+  const r = await fetch(csvUrl(id));
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return rowsToObjects(parseCSV(await r.text()));
+}
 async function init() {
   document.querySelectorAll('#langToggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
   document.getElementById('printBtn').textContent = t('print');
   TOKEN = new URLSearchParams(location.search).get('t') || '';
   if (!TOKEN) { renderState(t('notFound'), t('notFoundSub')); return; }
-  let text;
-  try {
-    const r = await fetch(SHEET_CSV);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    text = await r.text();
-  } catch (e) {
-    renderState(t('loadError'), t('loadErrorSub'));
-    return;
-  }
-  const all = rowsToObjects(parseCSV(text));
-  CARS = all.filter(c => (c.token || '').toLowerCase() === TOKEN.toLowerCase() && (c.status || '').toLowerCase() !== 'draft');
+
+  let cars, props;
+  try { [cars, props] = await Promise.all([fetchCsv(CARS_SHEET_ID), fetchCsv(PROPS_SHEET_ID)]); }
+  catch (e) { renderState(t('loadError'), t('loadErrorSub')); return; }
+
+  const carMap = {};
+  cars.forEach(c => { if (c.carid) carMap[c.carid.toLowerCase()] = c; });
+
+  const mine = props.filter(p => (p.token || '').toLowerCase() === TOKEN.toLowerCase());
+  mine.sort((a, b) => num(a.sortorder) - num(b.sortorder));
+
+  CARS = mine.map(p => {
+    const c = carMap[(p.carid || '').toLowerCase()];
+    if (!c) return null;
+    return Object.assign({}, c, { taxrate: p.taxrate, notes: p.notes, validuntil: p.validuntil, customer: p.customer });
+  }).filter(Boolean).filter(c => (c.status || '').toLowerCase() !== 'draft');
+
   if (!CARS.length) { renderState(t('notFound'), t('notFoundSub')); return; }
+
   PHOTOS = await Promise.all(CARS.map(c => resolvePhotos(c.photos)));
   if (CARS.length > 1) renderList(); else { CUR = 0; renderDetail(); }
 }
