@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio Vroom — Vehicle Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#C8E8F4; --sky-soft:#EAF6FB; --cream:#FDF8F2; --orange:#F4A261;
+    --orange-deep:#E76F51; --brown:#3A3028; --brown-soft:#7A6E62;
+    --line:#ece4d8; --white:#ffffff; --green:#5F9E6E; --red:#C05B4D;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--brown);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Playfair Display',serif;line-height:1.25}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  /* header */
+  header{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+  .hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+  .logo{font-family:'Playfair Display',serif;font-weight:800;font-size:1.35rem;letter-spacing:.2px}
+  .logo span{color:var(--orange-deep)}
+  .hd-right{display:flex;align-items:center;gap:10px}
+  .lang-toggle{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--cream)}
+  .lang-toggle button{border:0;background:transparent;font-family:'Nunito',sans-serif;font-weight:700;font-size:.8rem;padding:6px 14px;cursor:pointer;color:var(--brown-soft)}
+  .lang-toggle button.on{background:var(--brown);color:var(--white)}
+  .print-btn{border:1px solid var(--line);background:var(--white);border-radius:999px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.8rem;padding:6px 14px;cursor:pointer;color:var(--brown-soft)}
+  .print-btn:hover{border-color:var(--orange)}
+
+  /* generic */
+  .eyebrow{color:var(--orange-deep);font-weight:800;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius)}
+  .muted{color:var(--brown-soft)}
+  .badge{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.06em;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--cream);color:var(--brown-soft);text-transform:uppercase}
+  .badge.orange{background:#fdeedd;border-color:#f6d3ad;color:#b05f1d}
+  .badge.green{background:#eef6ef;border-color:#cfe4d3;color:var(--green)}
+  .badge.red{background:#f9ecea;border-color:#ecccc7;color:var(--red)}
+
+  main{padding:34px 0 60px}
+  .state{padding:80px 0;text-align:center}
+  .state h2{font-size:1.5rem;margin-bottom:10px}
+  .spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 18px;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* list view */
+  .list-head{margin-bottom:22px}
+  .list-head h1{font-size:1.9rem;margin:6px 0 4px}
+  .car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  .car-card{overflow:hidden;cursor:pointer;transition:box-shadow .18s ease,transform .18s ease;position:relative}
+  .car-card:hover{box-shadow:0 8px 22px rgba(58,48,40,.10);transform:translateY(-2px)}
+  .car-card .cover{aspect-ratio:4/3;background:var(--sky-soft);overflow:hidden}
+  .car-card .cover img{width:100%;height:100%;object-fit:cover}
+  .car-card .body{padding:14px 16px 16px}
+  .car-card h3{font-size:1.12rem;margin:4px 0 2px;font-family:'Nunito',sans-serif;font-weight:800}
+  .car-card .meta{font-size:.85rem;color:var(--brown-soft)}
+  .car-card .price-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .car-card .price{font-weight:800;font-size:1.05rem}
+  .ribbon{position:absolute;top:12px;left:12px;z-index:2}
+
+  /* detail view */
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.85rem;color:var(--brown-soft);cursor:pointer;border:0;background:none;font-family:'Nunito',sans-serif;margin-bottom:14px}
+  .back-link:hover{color:var(--orange-deep)}
+  .detail-grid{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start}
+  @media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
+
+  /* gallery */
+  .gallery .main{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--sky-soft);border:1px solid var(--line)}
+  .gallery .main img{width:100%;height:100%;object-fit:cover}
+  .gallery .nav{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.92);cursor:pointer;font-size:1rem;color:var(--brown);display:flex;align-items:center;justify-content:center}
+  .gallery .nav:hover{border-color:var(--orange)}
+  .gallery .nav.prev{left:12px}.gallery .nav.next{right:12px}
+  .gallery .count{position:absolute;right:12px;bottom:12px;background:rgba(58,48,40,.72);color:#fff;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:999px}
+  .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;margin-top:10px}
+  .thumbs button{border:2px solid transparent;border-radius:10px;overflow:hidden;padding:0;cursor:pointer;background:var(--sky-soft);aspect-ratio:4/3}
+  .thumbs button.on{border-color:var(--orange)}
+  .thumbs img{width:100%;height:100%;object-fit:cover}
+
+  .title-block{margin:20px 0 6px}
+  .title-block h1{font-size:1.8rem;margin-top:4px}
+  .title-block .sub{color:var(--brown-soft);font-size:.95rem;margin-top:2px}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+  section.block{margin-top:22px}
+  section.block h2{font-size:1.15rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  section.block h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  .spec{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+  .spec .k{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brown-soft)}
+  .spec .v{font-weight:700;font-size:.95rem;margin-top:2px;word-break:break-all}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:var(--white);border-radius:999px;padding:5px 13px;font-size:.83rem;font-weight:600;color:var(--brown)}
+  .prose{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;font-size:.95rem;white-space:pre-line}
+
+  /* auction card */
+  .auction-card{background:var(--sky-soft);border:1px solid #d5e9f2;border-radius:var(--radius);padding:16px 18px}
+  .auction-card .row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed #cfe3ed;font-size:.92rem}
+  .auction-card .row:last-child{border-bottom:0}
+  .auction-card .row .k{width:110px;flex-shrink:0;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#4a748a;padding-top:2px}
+  .auction-card .row .v{font-weight:700}
+
+  /* quote */
+  .quote-col{position:sticky;top:78px}
+  @media(max-width:900px){.quote-col{position:static}}
+  .quote-card{padding:20px 20px 18px}
+  .quote-card .q-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .quote-card h2{font-size:1.2rem}
+  .q-rows{border-top:1px solid var(--line)}
+  .q-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+  .q-row .k{color:var(--brown-soft);font-weight:600}
+  .q-row .v{font-weight:700;white-space:nowrap}
+  .q-row.discount .v{color:var(--orange-deep)}
+  .q-row .k .note{display:block;font-size:.75rem;color:var(--brown-soft);font-weight:400}
+  .q-total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 4px}
+  .q-total .k{font-weight:800;font-size:1rem}
+  .q-total .v{font-family:'Playfair Display',serif;font-weight:800;font-size:1.7rem;color:var(--brown)}
+  .q-valid{font-size:.78rem;color:var(--brown-soft);margin-top:8px;text-align:right}
+  .q-notes{margin-top:14px;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.83rem;color:var(--brown-soft);white-space:pre-line}
+  .carfax-link{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:.85rem;font-weight:700;color:var(--brown);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 16px;background:var(--white)}
+  .carfax-link:hover{border-color:var(--orange)}
+  .contact-card{margin-top:16px;padding:16px 18px;font-size:.9rem}
+  .contact-card .name{font-weight:800;margin-bottom:4px}
+  .contact-card a{text-decoration:none;color:var(--brown)}
+  .contact-card .line{color:var(--brown-soft)}
+
+  footer{border-top:1px solid var(--line);background:var(--white);padding:22px 0;text-align:center;font-size:.82rem;color:var(--brown-soft)}
+
+  @media print{
+    header .hd-right,.thumbs,.gallery .nav,.gallery .count,.back-link,footer{display:none!important}
+    body{background:#fff}
+    header{position:static}
+    .detail-grid{grid-template-columns:1fr 340px}
+    .card,.spec,.prose,.auction-card{border-color:#ddd}
+    main{padding:12px 0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hd">
+    <div class="logo">Studio <span>Vroom</span></div>
+    <div class="hd-right">
+      <button class="print-btn" id="printBtn" onclick="window.print()">Print</button>
+      <div class="lang-toggle" id="langToggle">
+        <button data-lang="ko">한국어</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" id="app">
+    <div class="state" id="loading">
+      <div class="spinner"></div>
+      <p class="muted" data-i18n="loading">차량 정보를 불러오는 중입니다…</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Studio Vroom · 860 Eagle Dr, Bensenville, IL 60106 · 224-716-2703 · info@studio-vroom.com
+  </div>
+</footer>
+
+<script>
+/* ================= CONFIG ================= */
+const SHEET_ID = '15JsJZWz18E4tIKdjwh4qRZubJWgrTQumuCTT7Kb0Luk';
+const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv';
+// Optional: Google Drive API key. If set, a Google Drive FOLDER link in the
+// Photos column is automatically expanded into every image in that folder.
+const DRIVE_API_KEY = '';
+
+/* ================= I18N ================= */
+const I18N = {
+  ko: {
+    loading:'차량 정보를 불러오는 중입니다…',
+    notFound:'제안서를 찾을 수 없습니다', notFoundSub:'링크가 정확한지 확인해 주세요. 문의: 224-716-2703',
+    loadError:'데이터를 불러올 수 없습니다', loadErrorSub:'잠시 후 다시 시도해 주세요. 계속되면 연락 주세요: 224-716-2703',
+    preparedFor:'고객님을 위한 추천 차량', vehiclesForYou:'추천 차량 리스트', viewDetails:'자세히 보기',
+    backToList:'← 차량 리스트로 돌아가기',
+    specs:'차량 정보', year:'연식', make:'브랜드', model:'모델', trim:'트림', mileage:'마일리지', vin:'VIN',
+    options:'옵션', history:'히스토리', description:'차량 특징', auction:'옥션 정보',
+    auctionDate:'날짜', auctionTime:'시간', auctionHouse:'옥션장', auctionLocation:'위치',
+    quote:'견적', vehiclePrice:'차량 가격', auctionFee:'옥션 수수료', serviceFee:'서비스 수수료',
+    inspectionFee:'인스펙션 비용', docFee:'서류 비용', registrationFee:'타이틀 & 등록비', otherFee:'기타 비용',
+    tax:'세금', taxRate:'세율', discount:'할인', shipping:'쉬핑 (배송)',
+    shipIncluded:'포함', shipExtra:'별도', shipCustomer:'고객 직접 수배',
+    shipIncludedNote:'배송비는 최종 가격에 포함되어 있습니다', shipExtraNote:'배송비는 별도이며 최종 가격에 합산되었습니다',
+    shipCustomerNote:'배송은 고객님께서 직접 수배하시는 조건입니다',
+    total:'최종 가격', validUntil:'견적 유효기간', carfax:'CARFAX 리포트 보기',
+    sold:'판매 완료', expired:'기간 만료', pending:'진행 중',
+    expiredMsg:'이 제안서는 유효기간이 지났습니다. 최신 견적은 연락 주세요.',
+    soldMsg:'이 차량은 판매 완료되었습니다. 비슷한 차량을 찾아드릴게요!',
+    dday:'옥션까지 {n}일', dtoday:'오늘 옥션!', dpast:'옥션 종료',
+    miles:'마일', questions:'문의하기', contactName:'Studio Vroom', print:'인쇄',
+    photos:'사진'
+  },
+  en: {
+    loading:'Loading vehicle details…',
+    notFound:'Proposal not found', notFoundSub:'Please check your link. Questions? 224-716-2703',
+    loadError:'Could not load data', loadErrorSub:'Please try again shortly. If it continues, call 224-716-2703',
+    preparedFor:'Vehicles selected for', vehiclesForYou:'Your vehicle shortlist', viewDetails:'View details',
+    backToList:'← Back to your list',
+    specs:'Vehicle Details', year:'Year', make:'Make', model:'Model', trim:'Trim', mileage:'Mileage', vin:'VIN',
+    options:'Options', history:'History', description:'Highlights', auction:'Auction Info',
+    auctionDate:'Date', auctionTime:'Time', auctionHouse:'Auction House', auctionLocation:'Location',
+    quote:'Quote', vehiclePrice:'Vehicle Price', auctionFee:'Auction Fee', serviceFee:'Service Fee',
+    inspectionFee:'Inspection Fee', docFee:'Documentation Fee', registrationFee:'Title & Registration', otherFee:'Other Fee',
+    tax:'Sales Tax', taxRate:'rate', discount:'Discount', shipping:'Shipping',
+    shipIncluded:'Included', shipExtra:'Extra', shipCustomer:'Arranged by customer',
+    shipIncludedNote:'Shipping is included in the total price', shipExtraNote:'Shipping is extra and added to the total',
+    shipCustomerNote:'Shipping to be arranged by the customer',
+    total:'Total Price', validUntil:'Quote valid until', carfax:'View CARFAX report',
+    sold:'Sold', expired:'Expired', pending:'In progress',
+    expiredMsg:'This proposal has expired. Contact us for an updated quote.',
+    soldMsg:'This vehicle has been sold — let us find you a similar one!',
+    dday:'{n} days to auction', dtoday:'Auction today!', dpast:'Auction ended',
+    miles:'mi', questions:'Contact us', contactName:'Studio Vroom', print:'Print',
+    photos:'Photos'
+  }
+};
+let lang = (new URLSearchParams(location.search).get('lang') === 'en') ? 'en' : 'ko';
+const t = k => (I18N[lang][k] !== undefined ? I18N[lang][k] : k);
+
+/* ================= HELPERS ================= */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => {
+  if (v == null) return 0;
+  const n = parseFloat(String(v).replace(/[$,\s]/g, ''));
+  return isNaN(n) ? 0 : n;
+};
+const money = n => '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', {minimumFractionDigits: (n % 1 ? 2 : 0), maximumFractionDigits: 2});
+
+function parseCSV(text) {
+  const rows = []; let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"') { if (text[i+1] === '"') { cur += '"'; i++; } else inQ = false; }
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { row.push(cur); cur = ''; }
+      else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+      else if (c !== '\r') cur += c;
+    }
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+
+function rowsToObjects(rows) {
+  if (!rows.length) return [];
+  const heads = rows[0].map(h => h.trim().toLowerCase());
+  return rows.slice(1).map(r => {
+    const o = {};
+    heads.forEach((h, i) => { if (h) o[h] = (r[i] || '').trim(); });
+    return o;
+  }).filter(o => Object.values(o).some(v => v !== ''));
+}
+
+/* Photo helpers: Drive file links -> displayable, Drive folder links -> API expansion */
+const driveFileId = url => {
+  let m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/);
+  return m ? m[1] : null;
+};
+const driveFolderId = url => {
+  const m = url.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([\w-]+)/);
+  return m ? m[1] : null;
+};
+const driveImg = id => 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1600';
+
+async function resolvePhotos(raw) {
+  const parts = String(raw || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+  const out = [];
+  for (const p of parts) {
+    const folder = driveFolderId(p);
+    if (folder && DRIVE_API_KEY) {
+      try {
+        const q = encodeURIComponent("'" + folder + "' in parents and mimeType contains 'image/' and trashed=false");
+        const r = await fetch('https://www.googleapis.com/drive/v3/files?q=' + q + '&orderBy=name&pageSize=100&fields=files(id,name)&key=' + DRIVE_API_KEY);
+        if (r.ok) {
+          const j = await r.json();
+          (j.files || []).forEach(f => out.push(driveImg(f.id)));
+          continue;
+        }
+      } catch (e) { /* fall through */ }
+      continue;
+    }
+    if (folder && !DRIVE_API_KEY) continue; // folder link but no API key configured
+    const fid = driveFileId(p);
+    out.push(fid ? driveImg(fid) : p);
+  }
+  return out;
+}
+
+function carName(c) {
+  return [c.year, c.make, c.model].filter(Boolean).join(' ');
+}
+
+function auctionBadge(c) {
+  if (!c.auctiondate) return '';
+  const d = new Date(c.auctiondate + 'T00:00:00');
+  if (isNaN(d)) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((d - today) / 86400000);
+  let txt, cls = 'orange';
+  if (diff > 0) txt = t('dday').replace('{n}', diff);
+  else if (diff === 0) txt = t('dtoday');
+  else { txt = t('dpast'); cls = ''; }
+  return '<span class="badge ' + cls + '">' + esc(txt) + '</span>';
+}
+
+function statusBadge(c) {
+  const s = (c.status || '').toLowerCase();
+  if (s === 'sold') return '<span class="badge red">' + t('sold') + '</span>';
+  if (s === 'expired') return '<span class="badge">' + t('expired') + '</span>';
+  if (s === 'pending') return '<span class="badge">' + t('pending') + '</span>';
+  return '';
+}
+
+/* ================= QUOTE MATH ================= */
+function computeQuote(c) {
+  const fees = [
+    ['vehiclePrice', num(c.vehicleprice)],
+    ['auctionFee', num(c.auctionfee)],
+    ['serviceFee', num(c.servicefee)],
+    ['inspectionFee', num(c.inspectionfee)],
+    ['docFee', num(c.docfee)],
+    ['registrationFee', num(c.registrationfee)],
+    ['otherFee', num(c.otherfee)]
+  ];
+  const feeSum = fees.reduce((s, [, v]) => s + v, 0);
+  const taxRate = num(c.taxrate);
+  const tax = c.taxamount !== '' && c.taxamount != null && String(c.taxamount).trim() !== ''
+    ? num(c.taxamount)
+    : num(c.vehicleprice) * taxRate / 100;
+  const discount = num(c.discount);
+  const shipMode = (c.shippingmode || 'extra').toLowerCase();
+  const shipAmt = num(c.shippingamount);
+  const shipAdded = shipMode === 'extra' ? shipAmt : 0;
+  const total = feeSum + tax + shipAdded - discount;
+  return { fees, tax, taxRate, discount, shipMode, shipAmt, total };
+}
+
+/* ================= RENDER ================= */
+const app = document.getElementById('app');
+let CARS = [], PHOTOS = [], TOKEN = '', CUR = 0, GAL = 0;
+
+function renderState(title, sub) {
+  app.innerHTML = '<div class="state"><h2>' + esc(title) + '</h2><p class="muted">' + esc(sub) + '</p></div>';
+}
+
+function renderList() {
+  const customer = CARS[0].customer || '';
+  let html = '<div class="list-head"><div class="eyebrow">Studio Vroom · Proposal</div>' +
+    '<h1>' + esc(t('vehiclesForYou')) + '</h1>' +
+    (customer ? '<p class="muted">' + esc(t('preparedFor')) + ' — <strong>' + esc(customer) + '</strong></p>' : '') +
+    '</div><div class="car-grid">';
+  CARS.forEach((c, i) => {
+    const q = computeQuote(c);
+    const cover = PHOTOS[i] && PHOTOS[i][0] ? PHOTOS[i][0] : '';
+    html += '<div class="car-card card" onclick="openCar(' + i + ')">' +
+      '<div class="ribbon">' + statusBadge(c) + '</div>' +
+      '<div class="cover">' + (cover ? '<img src="' + esc(cover) + '" alt="' + esc(carName(c)) + '" loading="lazy">' : '') + '</div>' +
+      '<div class="body">' +
+        '<div class="meta">' + esc([c.trim, c.mileage ? Number(num(c.mileage)).toLocaleString() + ' ' + t('miles') : ''].filter(Boolean).join(' · ')) + '</div>' +
+        '<h3>' + esc(carName(c)) + '</h3>' +
+        '<div class="meta">' + (c.auctiondate ? esc(t('auctionDate')) + ': ' + esc(c.auctiondate) + (c.auctionlocation ? ' · ' + esc(c.auctionlocation) : '') : '') + '</div>' +
+        '<div class="price-row"><span class="muted" style="font-size:.8rem">' + esc(t('total')) + '</span>' +
+        '<span class="price">' + money(q.total) + '</span></div>' +
+        '<div style="margin-top:8px">' + auctionBadge(c) + '</div>' +
+      '</div></div>';
+  });
+  html += '</div>';
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function specHTML(k, v) {
+  if (!v) return '';
+  return '<div class="spec"><div class="k">' + esc(t(k)) + '</div><div class="v">' + esc(v) + '</div></div>';
+}
+
+function renderDetail() {
+  const c = CARS[CUR];
+  const q = computeQuote(c);
+  const ph = PHOTOS[CUR] || [];
+  GAL = Math.min(GAL, Math.max(0, ph.length - 1));
+  const desc = lang === 'ko' ? (c.description_ko || c.description_en || c.description || '')
+                             : (c.description_en || c.description_ko || c.description || '');
+  const s = (c.status || '').toLowerCase();
+  const opts = String(c.options || '').split(/[\n,]+/).map(x => x.trim()).filter(Boolean);
+
+  let html = '';
+  if (CARS.length > 1) html += '<button class="back-link" onclick="backToList()">' + esc(t('backToList')) + '</button>';
+
+  if (s === 'sold') html += '<div class="prose" style="border-color:#ecccc7;background:#fdf4f2;margin-bottom:16px"><strong>' + t('soldMsg') + '</strong></div>';
+  if (s === 'expired') html += '<div class="prose" style="margin-bottom:16px"><strong>' + t('expiredMsg') + '</strong></div>';
+
+  html += '<div class="detail-grid"><div>';
+
+  /* gallery */
+  html += '<div class="gallery"><div class="main">' +
+    (ph.length ? '<img id="galMain" src="' + esc(ph[GAL]) + '" alt="' + esc(carName(c)) + '">' : '') +
+    (ph.length > 1 ? '<button class="nav prev" onclick="galStep(-1)">‹</button><button class="nav next" onclick="galStep(1)">›</button>' +
+      '<div class="count" id="galCount">' + (GAL + 1) + ' / ' + ph.length + '</div>' : '') +
+    '</div>';
+  if (ph.length > 1) {
+    html += '<div class="thumbs">' + ph.map((p, i) =>
+      '<button class="' + (i === GAL ? 'on' : '') + '" onclick="galTo(' + i + ')"><img src="' + esc(p) + '" loading="lazy" alt=""></button>'
+    ).join('') + '</div>';
+  }
+  html += '</div>';
+
+  /* title */
+  html += '<div class="title-block"><div class="eyebrow">Studio Vroom · Proposal' + (c.customer ? ' · ' + esc(c.customer) : '') + '</div>' +
+    '<h1>' + esc(carName(c)) + '</h1>' +
+    (c.trim ? '<div class="sub">' + esc(c.trim) + '</div>' : '') +
+    '<div class="badge-row">' + statusBadge(c) + auctionBadge(c) + '</div></div>';
+
+  /* specs */
+  html += '<section class="block"><h2>' + t('specs') + '</h2><div class="spec-grid">' +
+    specHTML('year', c.year) + specHTML('make', c.make) + specHTML('model', c.model) + specHTML('trim', c.trim) +
+    specHTML('mileage', c.mileage ? Number(num(c.mileage)).toLocaleString() + ' ' + t('miles') : '') +
+    specHTML('vin', c.vin) + '</div></section>';
+
+  if (opts.length) {
+    html += '<section class="block"><h2>' + t('options') + '</h2><div class="chips">' +
+      opts.map(o => '<span class="chip">' + esc(o) + '</span>').join('') + '</div></section>';
+  }
+  if (c.history) html += '<section class="block"><h2>' + t('history') + '</h2><div class="prose">' + esc(c.history) + '</div></section>';
+  if (desc) html += '<section class="block"><h2>' + t('description') + '</h2><div class="prose">' + esc(desc) + '</div></section>';
+
+  /* auction */
+  if (c.auctiondate || c.auctionhouse || c.auctionlocation) {
+    html += '<section class="block"><h2>' + t('auction') + '</h2><div class="auction-card">' +
+      (c.auctiondate ? '<div class="row"><div class="k">' + t('auctionDate') + '</div><div class="v">' + esc(c.auctiondate) + '</div></div>' : '') +
+      (c.auctiontime ? '<div class="row"><div class="k">' + t('auctionTime') + '</div><div class="v">' + esc(c.auctiontime) + '</div></div>' : '') +
+      (c.auctionhouse ? '<div class="row"><div class="k">' + t('auctionHouse') + '</div><div class="v">' + esc(c.auctionhouse) + '</div></div>' : '') +
+      (c.auctionlocation ? '<div class="row"><div class="k">' + t('auctionLocation') + '</div><div class="v">' + esc(c.auctionlocation) + '</div></div>' : '') +
+      '</div></section>';
+  }
+
+  html += '</div>'; /* end left col */
+
+  /* quote column */
+  const feeRows = q.fees.map(([k, v], idx) => {
+    if (idx === 0 || v > 0) {
+      return '<div class="q-row"><span class="k">' + t(k) + '</span><span class="v">' + money(v) + '</span></div>';
+    }
+    return '';
+  }).join('');
+  const taxRow = (q.tax > 0 || q.taxRate > 0)
+    ? '<div class="q-row"><span class="k">' + t('tax') + (q.taxRate ? ' <span class="note">' + t('taxRate') + ' ' + q.taxRate + '%</span>' : '') + '</span><span class="v">' + money(q.tax) + '</span></div>' : '';
+  const discountRow = q.discount > 0
+    ? '<div class="q-row discount"><span class="k">' + t('discount') + '</span><span class="v">−' + money(q.discount) + '</span></div>' : '';
+
+  let shipBadge, shipVal, shipNote;
+  if (q.shipMode === 'included') { shipBadge = '<span class="badge green">' + t('shipIncluded') + '</span>'; shipVal = t('shipIncluded'); shipNote = t('shipIncludedNote'); }
+  else if (q.shipMode === 'customer') { shipBadge = '<span class="badge">' + t('shipCustomer') + '</span>'; shipVal = '—'; shipNote = t('shipCustomerNote'); }
+  else { shipBadge = '<span class="badge orange">' + t('shipExtra') + '</span>'; shipVal = money(q.shipAmt); shipNote = t('shipExtraNote'); }
+  const shipRow = '<div class="q-row"><span class="k">' + t('shipping') + ' ' + shipBadge + '<span class="note">' + shipNote + '</span></span><span class="v">' + shipVal + '</span></div>';
+
+  html += '<div class="quote-col"><div class="card quote-card">' +
+    '<div class="q-head"><h2>' + t('quote') + '</h2><span class="eyebrow">' + esc(carName(c)) + '</span></div>' +
+    '<div class="q-rows">' + feeRows + taxRow + shipRow + discountRow + '</div>' +
+    '<div class="q-total"><span class="k">' + t('total') + '</span><span class="v">' + money(q.total) + '</span></div>' +
+    (c.validuntil ? '<div class="q-valid">' + t('validUntil') + ': ' + esc(c.validuntil) + '</div>' : '') +
+    (c.notes ? '<div class="q-notes">' + esc(c.notes) + '</div>' : '') +
+    (c.carfax ? '<a class="carfax-link" href="' + esc(c.carfax) + '" target="_blank" rel="noopener">🔎 ' + t('carfax') + '</a>' : '') +
+    '</div>' +
+    '<div class="card contact-card"><div class="name">' + t('questions') + '</div>' +
+    '<div class="line"><a href="tel:2247162703">224-716-2703</a> · <a href="mailto:info@studio-vroom.com">info@studio-vroom.com</a></div>' +
+    '<div class="line">860 Eagle Dr, Bensenville, IL 60106</div></div>' +
+    '</div>';
+
+  html += '</div>'; /* end grid */
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+/* gallery controls */
+function galStep(d) {
+  const ph = PHOTOS[CUR] || [];
+  if (!ph.length) return;
+  GAL = (GAL + d + ph.length) % ph.length;
+  const img = document.getElementById('galMain');
+  if (img) img.src = ph[GAL];
+  const cnt = document.getElementById('galCount');
+  if (cnt) cnt.textContent = (GAL + 1) + ' / ' + ph.length;
+  document.querySelectorAll('.thumbs button').forEach((b, i) => b.classList.toggle('on', i === GAL));
+}
+function galTo(i) { GAL = i - 1; galStep(1); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') galStep(-1);
+  if (e.key === 'ArrowRight') galStep(1);
+});
+
+function openCar(i) { CUR = i; GAL = 0; renderDetail(); }
+function backToList() { renderList(); }
+
+/* lang toggle */
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll('#langToggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+  document.getElementById('printBtn').textContent = t('print');
+  if (!CARS.length) return;
+  if (CARS.length > 1 && app.querySelector('.car-grid')) renderList(); else renderDetail();
+}
+document.querySelectorAll('#langToggle button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+
+/* ================= INIT ================= */
+async function init() {
+  document.querySelectorAll('#langToggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+  document.getElementById('printBtn').textContent = t('print');
+  TOKEN = new URLSearchParams(location.search).get('t') || '';
+  if (!TOKEN) { renderState(t('notFound'), t('notFoundSub')); return; }
+  let text;
+  try {
+    const r = await fetch(SHEET_CSV);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    text = await r.text();
+  } catch (e) {
+    renderState(t('loadError'), t('loadErrorSub'));
+    return;
+  }
+  const all = rowsToObjects(parseCSV(text));
+  CARS = all.filter(c => (c.token || '').toLowerCase() === TOKEN.toLowerCase() && (c.status || '').toLowerCase() !== 'draft');
+  if (!CARS.length) { renderState(t('notFound'), t('notFoundSub')); return; }
+  PHOTOS = await Promise.all(CARS.map(c => resolvePhotos(c.photos)));
+  if (CARS.length > 1) renderList(); else { CUR = 0; renderDetail(); }
+}
+init();
+</script>
+</body>
+</html>
