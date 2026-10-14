@@ -952,14 +952,17 @@
        1) Google Sheet columns (row 1 = headers, any order):
           Name | Year | Make | Model | Trim | Mileage | Fee | Status | Photo | Tagline | Carfax | Autotrader | Link
           - Name: leave blank to auto-assign a name
-          - Status: Available / Featured / Pending / Adopted (Adopted are hidden here)
-          - Photo: a file in this repo (e.g. cars/sunny/front.jpg or just front.jpg → cars/front.jpg), OR a full https:// URL
+          - Status: Available / Featured / Pending / Sold or Adopted (Sold/Adopted are hidden here)
+          - Photo: a folder name in cars/ (e.g. 2016-subaru-wrx → cover + gallery from cars/manifest.json),
+                   a file in this repo (cars/sunny/front.jpg or front.jpg → cars/front.jpg), OR a full https:// URL.
+                   Leave blank to auto-match a cars/ folder by year/make/model.
+                   To add photos: drop originals into cars/<Year Make Model>/ and run tools/build_photos.py
           - Carfax: full https:// link to the CARFAX report (optional)
           - Link: detail page or URL (optional)
        2) In the Sheet: File → Share → Publish to web → CSV → copy the link
        3) Paste that CSV link below (between the quotes). Empty = keep default cards.
     ============================================================ */
-    var FAMILY_SHEET_CSV = "https://docs.google.com/spreadsheets/d/1zluzwZ9pzMfKtdlbhKxosIIQbHNExAK-yM_oc5rPBrY/gviz/tq?tqx=out:csv&gid=0";
+    var FAMILY_SHEET_CSV = "https://docs.google.com/spreadsheets/d/1zluzwZ9pzMfKtdlbhKxosIIQbHNExAK-yM_oc5rPBrY/gviz/tq?tqx=out:csv&gid=1035035441";
 
     (function(){
       if(!FAMILY_SHEET_CSV){ return; } // no sheet yet → keep the built-in cards
@@ -967,7 +970,21 @@
       var NAME_POOL=["Sunny","Luna","Ruby","Ace","Bluey","Cleo","Cooper","Daisy","Echo","Finn","Ginger","Hazel","Ivy","Jasper","Koda","Lily","Milo","Nova","Olive","Pepper","Quill","Rusty","Scout","Teddy","Uma","Violet","Willow","Ziggy","Biscuit","Mango","Bruno","Coco","Dexter","Ellie","Frankie","Gus","Honey","Indigo","Juno","Kiwi","Loki","Maple","Nemo","Otis","Piper","Rocky","Simba","Tilly","Waffle","Zoe"];
 
       function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-      function resolvePhoto(v){ v=(v||'').trim(); if(!v) return 'images/placeholder-car.svg'; if(/^https?:\/\//i.test(v)) return v; if(v.indexOf('/')>=0){return v.split('/').map(encodeURIComponent).join('/');} return 'cars/'+encodeURIComponent(v); }
+      // Photo cell: a folder in cars/ (e.g. 2016-subaru-wrx → cover photo from cars/manifest.json), a file, a URL, or several comma-separated.
+      // Empty → auto-match a cars/ folder by "year make model" (or make+model if the year differs). Same rules as car.html.
+      var MANIFEST={};
+      function loadManifest(){return fetch('cars/manifest.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():{};}).then(function(m){MANIFEST=m||{};}).catch(function(){MANIFEST={};});}
+      function encPath(p){return p.split('/').map(encodeURIComponent).join('/');}
+      function slugify(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+      function folderCover(key){var e=MANIFEST[key];if(!e||!e.photos||!e.photos.length)return null;var f=e.cover&&e.photos.indexOf(e.cover)>=0?e.cover:e.photos[0];return 'cars/'+encPath(key)+'/'+encodeURIComponent(f);}
+      function autoFolder(year,make,model){var exact=slugify([year,make,model].join(' '));if(MANIFEST[exact])return exact;var mm=slugify([make,model].join(' ')),hits=Object.keys(MANIFEST).filter(function(k){return k.replace(/^\d{4}-/,'')===mm;});return hits.length===1?hits[0]:null;}
+      function resolvePhoto(v,year,make,model){
+        var parts=String(v||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+        if(!parts.length){var k=autoFolder(year,make,model);return (k&&folderCover(k))||'images/placeholder-car.svg';}
+        var p=parts[0]; if(/^https?:\/\//i.test(p)) return p;
+        var cov=folderCover(p.replace(/^cars\//,'').replace(/\/$/,'')); if(cov) return cov;
+        return p.indexOf('/')>=0?encPath(p):'cars/'+encodeURIComponent(p);
+      }
       function parseCSV(text){
         var rows=[],row=[],cur='',q=false;
         for(var i=0;i<text.length;i++){var c=text[i];
@@ -978,7 +995,7 @@
         return rows;
       }
 
-      fetch(FAMILY_SHEET_CSV).then(function(r){return r.text();}).then(function(t){
+      loadManifest().then(function(){return fetch(FAMILY_SHEET_CSV);}).then(function(r){return r.text();}).then(function(t){
         var rows=parseCSV(t); if(rows.length<2) return;
         var head=rows[0].map(function(h){return h.trim().toLowerCase();});
         function col(r,name){var i=head.indexOf(name);return i<0?'':(r[i]||'').trim();}
@@ -993,11 +1010,10 @@
           for(var n=0;n<NAME_POOL.length;n++){ var cand=NAME_POOL[(p+n)%NAME_POOL.length]; if(!used[cand.toLowerCase()]){ used[cand.toLowerCase()]=1; return cand; } }
           var fb=NAME_POOL[p]+' '+((hsh%99)+1); used[fb.toLowerCase()]=1; return fb;
         }
-        function slugify(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
         for(var k=1;k<rows.length;k++){
           var r=rows[k]; if(!r || r.join('').trim()==='') continue;
           var status=(col(r,'status')||'available').toLowerCase();
-          if(status.indexOf('adopt')>=0) continue;
+          if(status.indexOf('adopt')>=0||status.indexOf('sold')>=0) continue;
           var model=[col(r,'year'),col(r,'make'),col(r,'model'),col(r,'trim')].filter(Boolean).join(' ');
           var name=col(r,'name'); if(!name){ name=autoName(model+'|'+col(r,'mileage')); }
           var slug=slugify(model+' '+col(r,'mileage').replace(/,/g,''));
@@ -1006,7 +1022,7 @@
           var link=col(r,'link')||('car.html?car='+slug); var carfax=col(r,'carfax'); var autot=col(r,'autotrader'); var feat=status.indexOf('feature')>=0;
           var badge=feat?'⭐ Featured':(status.indexOf('pend')>=0?'⏳ Pending':'💙 Available');
           var h='<div class="car-card'+(feat?' featured':'')+'">'
-            +'<a class="car-img-wrap" href="'+esc(link)+'"><img src="'+resolvePhoto(col(r,'photo'))+'" onerror="this.onerror=null;this.src=\'images/placeholder-car.svg\'" alt="'+esc(name)+'" /></a>'
+            +'<a class="car-img-wrap" href="'+esc(link)+'"><img loading="lazy" src="'+resolvePhoto(col(r,'photo'),col(r,'year'),col(r,'make'),col(r,'model'))+'" onerror="this.onerror=null;this.src=\'images/placeholder-car.svg\'" alt="'+esc(name)+'" /></a>'
             +'<div class="car-body"><span class="car-status">'+badge+'</span>'
             +'<p class="car-name">'+esc(name)+'</p><p class="car-model">'+esc(model)+'</p>'
             +'<div class="car-foot"><div class="car-fee"><span>Adoption Fee</span><strong>'+esc(feeTxt)+'</strong></div>'

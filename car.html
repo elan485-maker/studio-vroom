@@ -27,11 +27,30 @@
 
     .back{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14px;color:var(--brown-soft);margin-bottom:22px}
     .back:hover{color:var(--orange-deep)}
-    main{padding:112px 0 40px}
+    main.wrap{padding:112px 28px 40px}
 
     .detail{display:grid;grid-template-columns:1.15fr 1fr;gap:44px;align-items:start}
-    .media{border-radius:24px;overflow:hidden;background:var(--sky);box-shadow:0 16px 46px rgba(58,48,40,.16);aspect-ratio:4/3}
-    .media img{width:100%;height:100%;object-fit:cover}
+    .media{border-radius:24px;overflow:hidden;background:var(--sky);box-shadow:0 16px 46px rgba(58,48,40,.16);aspect-ratio:4/3;position:relative}
+    .media img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+    .media .gnav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:0;background:rgba(253,248,242,.88);color:var(--brown);font-size:22px;line-height:42px;text-align:center;cursor:pointer;box-shadow:0 4px 14px rgba(58,48,40,.2);transition:.2s;opacity:0}
+    .media:hover .gnav{opacity:1}
+    .media .gnav:hover{background:var(--orange);color:#fff}
+    .media .gnav.prev{left:14px}.media .gnav.next{right:14px}
+    .media .gcount{position:absolute;right:14px;bottom:12px;background:rgba(58,48,40,.62);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px;letter-spacing:.04em}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:12px}
+    .thumbs button{border:2.5px solid transparent;border-radius:12px;overflow:hidden;padding:0;background:var(--cream-2);aspect-ratio:4/3;cursor:pointer;transition:.18s;opacity:.72}
+    .thumbs button img{width:100%;height:100%;object-fit:cover;cursor:pointer}
+    .thumbs button:hover{opacity:1}
+    .thumbs button.on{border-color:var(--orange);opacity:1;box-shadow:0 6px 16px rgba(232,129,74,.28)}
+    @media(max-width:680px){.media .gnav{opacity:1;width:36px;height:36px;line-height:36px;font-size:18px}.thumbs{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}}
+    .lightbox{position:fixed;inset:0;z-index:400;background:rgba(20,15,12,.94);display:none;align-items:center;justify-content:center;flex-direction:column}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:94vw;max-height:84vh;object-fit:contain;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+    .lightbox .lb-close{position:absolute;top:18px;right:22px;background:none;border:0;color:#fff;font-size:34px;cursor:pointer;line-height:1}
+    .lightbox .lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);border:0;color:#fff;width:50px;height:50px;border-radius:50%;font-size:26px;cursor:pointer}
+    .lightbox .lb-nav:hover{background:var(--orange)}
+    .lightbox .lb-prev{left:18px}.lightbox .lb-next{right:18px}
+    .lightbox .lb-cap{color:#d9cfc3;font-size:13px;margin-top:14px;font-weight:700;letter-spacing:.05em}
     .status-badge{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.05em;color:var(--orange-deep);margin-bottom:10px}
     .car-title{font-size:clamp(38px,6vw,60px);font-weight:500;font-style:italic;margin-bottom:6px}
     .car-sub{font-size:17px;color:var(--brown-soft);margin-bottom:16px}
@@ -105,18 +124,43 @@
   </footer>
 
   <script>
-    var FAMILY_SHEET_CSV = "https://docs.google.com/spreadsheets/d/1zluzwZ9pzMfKtdlbhKxosIIQbHNExAK-yM_oc5rPBrY/gviz/tq?tqx=out:csv&gid=0";
+    var FAMILY_SHEET_CSV = "https://docs.google.com/spreadsheets/d/1zluzwZ9pzMfKtdlbhKxosIIQbHNExAK-yM_oc5rPBrY/gviz/tq?tqx=out:csv&gid=1035035441";
     var NAME_POOL=["Sunny","Luna","Ruby","Ace","Bluey","Cleo","Cooper","Daisy","Echo","Finn","Ginger","Hazel","Ivy","Jasper","Koda","Lily","Milo","Nova","Olive","Pepper","Quill","Rusty","Scout","Teddy","Uma","Violet","Willow","Ziggy","Biscuit","Mango","Bruno","Coco","Dexter","Ellie","Frankie","Gus","Honey","Indigo","Juno","Kiwi","Loki","Maple","Nemo","Otis","Piper","Rocky","Simba","Tilly","Waffle","Zoe"];
 
     function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
     function slugify(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
-    function resolvePhoto(v){v=(v||'').trim();if(!v)return 'images/placeholder-car.svg';if(/^https?:\/\//i.test(v))return v;if(v.indexOf('/')>=0){return v.split('/').map(encodeURIComponent).join('/');}return 'cars/'+encodeURIComponent(v);}
+    // ── Photos ──
+    // Sheet "Photo" cell can be: a folder in cars/ (e.g. 2016-subaru-wrx → all photos from cars/manifest.json),
+    // a single file (cars/x/front.jpg or front.jpg), a full https:// URL, or several of these separated by commas.
+    // Empty cell → auto-match a cars/ folder by "year make model" (or make+model if the year differs).
+    var MANIFEST={};
+    function loadManifest(){return fetch('cars/manifest.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():{};}).then(function(m){MANIFEST=m||{};}).catch(function(){MANIFEST={};});}
+    function encPath(p){return p.split('/').map(encodeURIComponent).join('/');}
+    function folderPhotos(key){var e=MANIFEST[key];if(!e||!e.photos||!e.photos.length)return null;var list=e.photos.slice();if(e.cover&&list.indexOf(e.cover)>0){list.splice(list.indexOf(e.cover),1);list.unshift(e.cover);}return list.map(function(f){return 'cars/'+encPath(key)+'/'+encodeURIComponent(f);});}
+    function thumbOf(src){return /^cars\/[^/]+\/\d\d\.jpg$/.test(src)?src.replace(/\.jpg$/,'-thumb.jpg'):src;}
+    function autoFolder(year,make,model){
+      var exact=slugify([year,make,model].join(' '));if(MANIFEST[exact])return exact;
+      var mm=slugify([make,model].join(' ')),hits=Object.keys(MANIFEST).filter(function(k){return k.replace(/^\d{4}-/,'')===mm;});
+      return hits.length===1?hits[0]:null;
+    }
+    function photosFor(v,year,make,model){
+      var out=[];String(v||'').split(',').forEach(function(part){
+        part=part.trim();if(!part)return;
+        if(/^https?:\/\//i.test(part)){out.push(part);return;}
+        var key=part.replace(/^cars\//,'').replace(/\/$/,'');
+        var fp=folderPhotos(key);if(fp){out=out.concat(fp);return;}
+        out.push(part.indexOf('/')>=0?encPath(part):'cars/'+encodeURIComponent(part));
+      });
+      if(!out.length){var k=autoFolder(year,make,model);if(k)out=folderPhotos(k)||[];}
+      return out.length?out:['images/placeholder-car.svg'];
+    }
+    function resolvePhoto(v){return photosFor(v)[0];}
     function parseCSV(text){var rows=[],row=[],cur='',q=false;for(var i=0;i<text.length;i++){var c=text[i];if(q){if(c=='"'){if(text[i+1]=='"'){cur+='"';i++;}else{q=false;}}else{cur+=c;}}else{if(c=='"'){q=true;}else if(c==','){row.push(cur);cur='';}else if(c=='\n'){row.push(cur);rows.push(row);row=[];cur='';}else if(c=='\r'){}else{cur+=c;}}}if(cur!==''||row.length){row.push(cur);rows.push(row);}return rows;}
     function qparam(k){return decodeURIComponent((new RegExp('[?&]'+k+'=([^&]*)').exec(location.search)||[,''])[1]).replace(/\+/g,' ');}
 
     var content=document.getElementById('content');
 
-    fetch(FAMILY_SHEET_CSV).then(function(r){return r.text();}).then(function(t){
+    loadManifest().then(function(){return fetch(FAMILY_SHEET_CSV);}).then(function(r){return r.text();}).then(function(t){
       var rows=parseCSV(t); if(rows.length<2){ notfound(); return; }
       var head=rows[0].map(function(h){return h.trim().toLowerCase();});
       function col(r,name){var i=head.indexOf(name);return i<0?'':(r[i]||'').trim();}
@@ -130,7 +174,7 @@
       var found=null;
       for(var k=1;k<rows.length;k++){
         var r=rows[k]; if(!r||r.join('').trim()==='') continue;
-        var status=(col(r,'status')||'available').toLowerCase(); if(status.indexOf('adopt')>=0) continue;
+        var status=(col(r,'status')||'available').toLowerCase(); if(status.indexOf('adopt')>=0||status.indexOf('sold')>=0) continue;
         var raw=[col(r,'year'),col(r,'make'),col(r,'model'),col(r,'trim')].filter(Boolean).join(' ');
         var name=col(r,'name'); if(!name){ name=autoName(raw+'|'+col(r,'mileage')); }
         var slug=slugify(raw+' '+col(r,'mileage').replace(/,/g,''));
@@ -155,9 +199,15 @@
       var subject=encodeURIComponent('Adoption inquiry: '+name+' ('+f.raw+')');
       var specs=[['Year',year],['Make',make],['Model',model],['Trim',trim],['Mileage',mi]].filter(function(x){return x[1];})
         .map(function(x){return '<div class="spec"><span>'+x[0]+'</span><strong>'+esc(x[1])+'</strong></div>';}).join('');
+      var photos=photosFor(col(r,'photo'),year,make,model), multi=photos.length>1;
+      var gallery='<div class="media">'
+        +'<img id="gmain" src="'+photos[0]+'" onerror="this.onerror=null;this.src=\'images/placeholder-car.svg\'" alt="'+esc(name)+'" />'
+        +(multi?'<button class="gnav prev" aria-label="Previous photo">&#8249;</button><button class="gnav next" aria-label="Next photo">&#8250;</button><span class="gcount" id="gcount">1 / '+photos.length+'</span>':'')
+        +'</div>'
+        +(multi?'<div class="thumbs" id="gthumbs">'+photos.map(function(p,i){return '<button class="'+(i?'':'on')+'" data-i="'+i+'" aria-label="Photo '+(i+1)+'"><img loading="lazy" src="'+thumbOf(p)+'" onerror="this.onerror=null;this.src=\''+p+'\'" alt="" /></button>';}).join('')+'</div>':'');
       content.innerHTML=
         '<div class="detail">'
-        +'<div class="media"><img src="'+resolvePhoto(col(r,'photo'))+'" onerror="this.onerror=null;this.src=\'images/placeholder-car.svg\'" alt="'+esc(name)+'" /></div>'
+        +'<div>'+gallery+'</div>'
         +'<div class="info">'
         +'<span class="status-badge">'+badge+'</span>'
         +'<h1 class="car-title">'+esc(name)+'</h1>'
@@ -180,6 +230,32 @@
           +'<div><h3>Come Visit</h3><p>860 Eagle Dr, Bensenville, IL 60106<br><a href="https://maps.app.goo.gl/WuVvDdQnndSTCDySA" target="_blank">Get directions &rarr;</a></p></div>'
           +'<div><h3>Hours &amp; Contact</h3><p>Mon&ndash;Fri: 10am&ndash;7pm &middot; Sat: 10am&ndash;3pm<br>Sun: Closed &middot; By appointment<br><a href="tel:2247162703">(224) 716-2703</a> &middot; <a href="mailto:info@studio-vroom.com">info@studio-vroom.com</a></p></div>'
         +'</div>';
+      initGallery(photos,name);
+    }
+
+    function initGallery(photos,name){
+      var cur=0,main=document.getElementById('gmain'),count=document.getElementById('gcount'),thumbs=document.getElementById('gthumbs');
+      var lb=document.createElement('div');lb.className='lightbox';lb.innerHTML='<button class="lb-close" aria-label="Close">&times;</button>'+(photos.length>1?'<button class="lb-nav lb-prev" aria-label="Previous">&#8249;</button><button class="lb-nav lb-next" aria-label="Next">&#8250;</button>':'')+'<img alt="'+esc(name)+'" /><div class="lb-cap"></div>';
+      document.body.appendChild(lb);
+      var lbImg=lb.querySelector('img'),lbCap=lb.querySelector('.lb-cap');
+      function show(i){cur=(i+photos.length)%photos.length;main.src=photos[cur];if(count)count.textContent=(cur+1)+' / '+photos.length;
+        if(thumbs){var bs=thumbs.querySelectorAll('button');for(var k=0;k<bs.length;k++)bs[k].classList.toggle('on',k===cur);if(bs[cur]&&bs[cur].scrollIntoView)bs[cur].scrollIntoView({block:'nearest',inline:'nearest'});}
+        if(lb.classList.contains('open')){lbImg.src=photos[cur];lbCap.textContent=esc(name)+' · '+(cur+1)+' / '+photos.length;}}
+      function openLb(){lb.classList.add('open');document.body.style.overflow='hidden';show(cur);}
+      function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+      main.addEventListener('click',openLb);
+      lb.querySelector('.lb-close').addEventListener('click',closeLb);
+      lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
+      var p=document.querySelector('.gnav.prev'),n=document.querySelector('.gnav.next'),lp=lb.querySelector('.lb-prev'),ln=lb.querySelector('.lb-next');
+      if(p)p.addEventListener('click',function(){show(cur-1);});if(n)n.addEventListener('click',function(){show(cur+1);});
+      if(lp)lp.addEventListener('click',function(){show(cur-1);});if(ln)ln.addEventListener('click',function(){show(cur+1);});
+      if(thumbs)thumbs.addEventListener('click',function(e){var b=e.target.closest('button');if(b)show(+b.getAttribute('data-i'));});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();if(photos.length>1){if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1);}});
+      var sx=null;function ts(e){sx=e.touches[0].clientX;}function te(e){if(sx===null)return;var dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>40&&photos.length>1)show(dx<0?cur+1:cur-1);}
+      main.parentNode.addEventListener('touchstart',ts,{passive:true});main.parentNode.addEventListener('touchend',te);
+      lb.addEventListener('touchstart',ts,{passive:true});lb.addEventListener('touchend',te);
+      // preload neighbours
+      photos.slice(1,4).forEach(function(s){var im=new Image();im.src=s;});
     }
   </script>
 </body>
