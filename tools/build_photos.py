@@ -36,12 +36,20 @@ FORCE = "--force" in sys.argv
 
 
 # Folder names may use short brand names; the Google Sheet uses the full make, so map them.
-ALIASES = {"vw": "volkswagen", "chevy": "chevrolet", "merc": "mercedes-benz", "mercedes": "mercedes-benz", "benz": "mercedes-benz"}
+# Slug rule = same as index.html/car.html slugify(): lowercase, non-alphanumerics → "-".
+ALIASES = [
+    (r"(^|-)vw(-|$)", r"\1volkswagen\2"),
+    (r"(^|-)chevy(-|$)", r"\1chevrolet\2"),
+    (r"(^|-)(merc|mercedes)(?!-benz)(-|$)", r"\1mercedes-benz\3"),
+    (r"(^|-)(?<!mercedes-)benz(-|$)", r"\1mercedes-benz\2"),
+]
 
 
 def slug(s):
-    words = [ALIASES.get(w, w) for w in re.sub(r"[^a-z0-9]+", " ", s.lower()).split()]
-    return "-".join(words)
+    s = re.sub(r"(^-|-$)", "", re.sub(r"[^a-z0-9]+", "-", s.lower()))
+    for pat, rep in ALIASES:
+        s = re.sub(pat, rep, s)
+    return s
 
 
 manifest = {}
