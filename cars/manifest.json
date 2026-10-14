@@ -16,7 +16,7 @@
    "12.jpg",
    "13.jpg"
   ],
-  "cover": "02.jpg"
+  "cover": "01.jpg"
  },
  "2012-porsche-panamera-s-v8": {
   "title": "2012 Porsche Panamera S V8",
@@ -49,7 +49,7 @@
    "17.jpg",
    "18.jpg"
   ],
-  "cover": "02.jpg"
+  "cover": "01.jpg"
  },
  "2019-audi-q5": {
   "title": "2019 Audi Q5",
@@ -82,7 +82,7 @@
    "26.jpg",
    "27.jpg"
   ],
-  "cover": "03.jpg"
+  "cover": "01.jpg"
  },
  "2021-lexus-nx300": {
   "title": "2021 Lexus NX300",
@@ -123,7 +123,7 @@
    "34.jpg",
    "35.jpg"
   ],
-  "cover": "03.jpg"
+  "cover": "01.jpg"
  },
  "2016-volkswagen-jetta": {
   "title": "2016 Volkswagen Jetta",
@@ -146,6 +146,6 @@
    "16.jpg",
    "17.jpg"
   ],
-  "cover": "02.jpg"
+  "cover": "01.jpg"
  }
 }
